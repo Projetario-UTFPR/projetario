@@ -1,0 +1,9 @@
+name: "Projetário's Pipeline"
+
+on:
+    push: 
+    pull_request: 
+
+jobs:
+    linting_and_format:
+        uses: "./.github/workflows/linting.yaml"
