@@ -1,0 +1,21 @@
+name: "Roda Cargo Clippy e Rust Format"
+
+on:
+    workflow_call: 
+
+jobs:
+    check_linting:
+        name: "ensures code follows standard code style guide"
+        runs-on: "ubuntu-latest"
+        steps:
+            - uses: actions/checkout@v4
+            - run: rustup update
+            - run: cargo clippy --all-targets --all-features -- -D warnings
+
+    check_code_fmt:
+        name: "ensures code is formatted"
+        runs-on: "ubuntu-latest"
+        steps:
+            - uses: actions/checkout@v4
+            - run: rustup update
+            - run: cargo fmt --all -- --check
