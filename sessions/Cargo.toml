@@ -1,0 +1,19 @@
+[package]
+name = "inertia-sessions"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+log = { workspace = true }
+inertia-rust = { workspace = true }
+actix-web = { workspace = true }
+actix-session = { workspace = true }
+serde_json = { workspace = true }
+config = { workspace = true }
+rand = { workspace = true }
+anyhow = {workspace = true }
+tokio ={ workspace = true }
+chrono ={ workspace = true }
+rstest = { workspace = true }
+dotenvy = { workspace = true }
+futures-util = "0.3.31"
