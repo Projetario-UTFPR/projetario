@@ -23,6 +23,6 @@
     "isolatedModules": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["./www/**/*.ts", "./www/**/*.tsx"],
+  "include": ["./www/**/*.ts", "./www/**/*.tsx", "vite.config.ts"],
   "exclude": ["dist", "public/bundle", "vite.config.js", "node_modules"]
 }
