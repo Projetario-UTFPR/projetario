@@ -6,3 +6,5 @@ node_modules/
 .env
 **/hot
 storage/
+.vscode/*
+!.vscode/settings.json.sample
