@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 use actix_web::{web::Data, HttpServer};
 use config::{
     app::{AppConfig, RustEnv},
