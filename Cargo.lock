@@ -2215,6 +2215,7 @@ dependencies = [
  "config",
  "dotenvy",
  "env_logger",
+ "futures-util",
  "inertia-rust",
  "inertia-sessions",
  "log",
