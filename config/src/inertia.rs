@@ -1,8 +1,8 @@
+use super::app::AppConfig;
 use inertia_rust::{
-    template_resolvers::ViteHBSTemplateResolver, Inertia, InertiaConfig, InertiaVersion,
+    Inertia, InertiaConfig, InertiaVersion, template_resolvers::ViteHBSTemplateResolver,
 };
 use vite_rust::Vite;
-use super::app::AppConfig;
 
 pub async fn get_inertia(vite: Vite) -> anyhow::Result<Inertia> {
     let assets_version =
