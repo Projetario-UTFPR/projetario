@@ -1,10 +1,8 @@
-#![allow(unused)]
-
 use std::env::var;
 use std::sync::OnceLock;
 
-use base64::engine::general_purpose;
 use base64::Engine;
+use base64::engine::general_purpose;
 
 static APP_CONFIG: OnceLock<AppConfig> = OnceLock::new();
 
