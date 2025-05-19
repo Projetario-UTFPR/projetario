@@ -1,7 +1,8 @@
 {
   "name": "projetario-www",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "vite build && vite build --ssr"
   },
   "repository": {
     "type": "git",
