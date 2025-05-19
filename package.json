@@ -1,0 +1,35 @@
+{
+  "name": "projetario-www",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Projetario-UTFPR/projetario.git"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Projetario-UTFPR/projetario/issues"
+  },
+  "homepage": "https://github.com/Projetario-UTFPR/projetario#readme",
+  "devDependencies": {
+    "@inertiajs/core": "2.0.11",
+    "@tailwindcss/vite": "4.1.7",
+    "@types/node": "22.15.19",
+    "@types/react": "19.1.4",
+    "@types/react-dom": "19.1.5",
+    "@vitejs/plugin-react": "4.4.1",
+    "laravel-vite-plugin": "1.2.0",
+    "typescript": "5.8.3",
+    "vite": "6.3.5"
+  },
+  "dependencies": {
+    "@inertiajs/react": "2.0.11",
+    "clsx": "2.1.1",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "tailwindcss": "4.1.7"
+  }
+}
