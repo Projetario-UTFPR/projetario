@@ -1,12 +1,12 @@
 use actix_session::{SessionExt, SessionMiddleware};
 use actix_web::{
+    App,
     cookie::{Key, SameSite},
     dev::{ServiceFactory, ServiceRequest, ServiceResponse},
-    App,
 };
 use config::app::{AppConfig, RustEnv};
 use futures_util::FutureExt;
-use inertia_rust::{actix::InertiaMiddleware, hashmap, InertiaProp};
+use inertia_rust::{InertiaProp, actix::InertiaMiddleware, hashmap};
 use inertia_sessions::{
     file_session::FileSessionStore,
     middlewares::{
