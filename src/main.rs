@@ -1,6 +1,6 @@
 #![allow(unused)]
 
-use actix_web::{web::Data, HttpServer};
+use actix_web::{HttpServer, web::Data};
 use config::{
     app::{AppConfig, RustEnv},
     inertia::get_inertia,
