@@ -51,6 +51,7 @@ futures-util = { workspace = true }
 sqlx = { version = "0.8.5", features = ["runtime-tokio", "tls-rustls-ring-native-roots", "postgres", "derive", "migrate", "chrono"] }
 thiserror = "2.0.12"
 validator = { version = "0.20", features = ["derive"] }
+uuid = "1.17.0"
 
 [dev-dependencies]
 pretty_assertions = {workspace = true }
