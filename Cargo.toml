@@ -9,8 +9,8 @@ package.version = "0.1.0"
 package.edition = "2024"
 
 [workspace.dependencies]
-inertia-sessions = { path = "sessions" }
-config = { path = "config" }
+inertia-sessions.path = "sessions"
+config.path = "config"
 actix-files = "0.6.6"
 actix-session = "0.10.1"
 actix-web = "4.11.0"
@@ -29,30 +29,32 @@ rstest = "0.25.0"
 dotenvy = "0.15.7"
 env_logger = "0.11.8"
 futures-util = "0.3.31"
+thiserror = "2.0.12"
 
 [dependencies]
-actix-files = { workspace = true }
-actix-session = { workspace = true }
-tokio = { workspace = true }
-vite-rust = { workspace = true }
-inertia-sessions = { workspace = true }
-config = { workspace = true }
-inertia-rust = { workspace = true }
-anyhow = { workspace = true }
-async-trait = { workspace = true }
-actix-web = { workspace = true }
-chrono = { workspace = true }
-dotenvy = { workspace = true }
-env_logger = { workspace = true }
-log = { workspace = true }
-serde = { workspace = true }
-serde_json = { workspace = true }
-futures-util = { workspace = true }
+actix-files.workspace = true
+actix-session.workspace = true
+tokio.workspace = true
+vite-rust.workspace = true
+inertia-sessions.workspace = true
+config.workspace = true
+inertia-rust.workspace = true
+anyhow.workspace = true
+async-trait.workspace = true
+actix-web.workspace = true
+chrono.workspace = true
+dotenvy.workspace = true
+env_logger.workspace = true
+log.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+futures-util.workspace = true
 sqlx = { version = "0.8.5", features = ["runtime-tokio", "tls-rustls-ring-native-roots", "postgres", "derive", "migrate", "chrono"] }
-thiserror = "2.0.12"
+thiserror.workspace = true
 validator = { version = "0.20", features = ["derive"] }
+uuid = { version = "1.17.0", features = ["v4"] }
 
 [dev-dependencies]
-pretty_assertions = {workspace = true }
-rstest = {workspace = true }
+pretty_assertions.workspace = true
+rstest.workspace = true
 tokio = { workspace = true, features = ["test-util"] }
