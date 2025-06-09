@@ -9,6 +9,7 @@ use config::{
 use env_logger::Target;
 use libs::actix::server::get_server;
 
+mod dominio;
 mod infra;
 mod libs;
 
