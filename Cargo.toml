@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 
 [workspace]
-members = [ "config", "sessions" ]
+members = ["config", "sessions"]
 package.version = "0.1.0"
 package.edition = "2024"
 
@@ -49,7 +49,7 @@ log.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 futures-util.workspace = true
-sqlx = { version = "0.8.5", features = ["runtime-tokio", "tls-rustls-ring-native-roots", "postgres", "derive", "migrate", "chrono"] }
+sqlx = { version = "0.8.5", features = ["runtime-tokio", "tls-rustls-ring-native-roots", "postgres", "derive", "migrate", "chrono", "uuid"] }
 thiserror.workspace = true
 validator = { version = "0.20", features = ["derive"] }
 uuid = { version = "1.17.0", features = ["v4"] }
