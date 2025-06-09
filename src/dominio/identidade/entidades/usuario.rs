@@ -119,7 +119,7 @@ impl Usuario {
     }
 
     /// Marca a estrutura como modificada permanentemente.
-    fn toque(&mut self) {
+    pub(super) fn toque(&mut self) {
         self.atualizada_em = Some(Utc::now().naive_utc());
     }
 }
