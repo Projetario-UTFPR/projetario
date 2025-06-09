@@ -12,6 +12,7 @@ use libs::actix::server::get_server;
 mod dominio;
 mod infra;
 mod libs;
+mod utils;
 
 #[actix_web::main]
 async fn main() -> anyhow::Result<()> {

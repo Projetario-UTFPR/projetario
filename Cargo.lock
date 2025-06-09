@@ -932,14 +932,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "erros"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "thiserror",
-]
-
-[[package]]
 name = "etcetera"
 version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2223,7 +2215,6 @@ dependencies = [
  "config",
  "dotenvy",
  "env_logger",
- "erros",
  "futures-util",
  "inertia-rust",
  "inertia-sessions",

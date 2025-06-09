@@ -4,14 +4,13 @@ version.workspace = true
 edition.workspace = true
 
 [workspace]
-members = [ "config", "erros", "sessions" ]
+members = [ "config", "sessions" ]
 package.version = "0.1.0"
 package.edition = "2024"
 
 [workspace.dependencies]
 inertia-sessions.path = "sessions"
 config.path = "config"
-erros.path = "erros"
 actix-files = "0.6.6"
 actix-session = "0.10.1"
 actix-web = "4.11.0"
@@ -33,7 +32,6 @@ futures-util = "0.3.31"
 thiserror = "2.0.12"
 
 [dependencies]
-erros.workspace = true
 actix-files.workspace = true
 actix-session.workspace = true
 tokio.workspace = true

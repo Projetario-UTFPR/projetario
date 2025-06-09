@@ -1,6 +1,6 @@
 use crate::dominio::identidade::enums::cargo::Cargo;
+use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 use chrono::{NaiveDateTime, Utc};
-use erros::erro_de_dominio::ErroDeDominio;
 use uuid::Uuid;
 
 #[derive(Debug)]
