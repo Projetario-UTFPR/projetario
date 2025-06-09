@@ -1,9 +1,10 @@
 use crate::dominio::identidade::enums::cargo::Cargo;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 use chrono::{NaiveDateTime, Utc};
+use sqlx::prelude::FromRow;
 use uuid::Uuid;
 
-#[derive(Debug)]
+#[derive(Debug, FromRow)]
 pub struct Usuario {
     pub(super) id: Uuid,
     pub(super) nome: String,
@@ -15,7 +16,7 @@ pub struct Usuario {
     pub(super) desativado_em: Option<NaiveDateTime>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, FromRow)]
 /// `UsuarioModelo` é a representação completa da tabela "usuarios" do banco de dados.
 pub struct UsuarioModelo {
     id: Uuid,

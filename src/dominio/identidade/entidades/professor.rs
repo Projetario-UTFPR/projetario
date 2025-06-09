@@ -1,7 +1,10 @@
+use sqlx::prelude::FromRow;
+
 use crate::dominio::identidade::{entidades::usuario::Usuario, enums::cargo::Cargo};
 
-#[derive(Debug)]
+#[derive(Debug, FromRow)]
 pub struct Professor {
+    #[sqlx(flatten)]
     usuario: Usuario,
     cargo: Cargo,
 }
