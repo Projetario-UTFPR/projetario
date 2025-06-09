@@ -16,6 +16,24 @@ pub struct Usuario {
 }
 
 impl Usuario {
+    pub(super) fn novo(
+        nome: String,
+        email: String,
+        senha_hash: String,
+        url_curriculo_lates: Option<String>,
+    ) -> Self {
+        Self {
+            id: Uuid::new_v4(),
+            nome,
+            email,
+            senha_hash,
+            url_curriculo_lates,
+            atualizada_em: None,
+            desativada_em: None,
+            registrada_em: Utc::now().naive_utc(),
+        }
+    }
+
     /// Desativa um usuario permanentemente na plataforma, tornando impossível
     /// identificar-se como esta na plataforma.
     pub fn desativar(&mut self) {

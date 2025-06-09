@@ -7,6 +7,32 @@ pub struct Professor {
 }
 
 impl Professor {
+    pub fn novo(
+        nome: String,
+        email: String,
+        senha_hash: String,
+        url_curriculo_lates: Option<String>,
+    ) -> Self {
+        let usuario = Usuario::novo(nome, email, senha_hash, url_curriculo_lates);
+        Self {
+            usuario,
+            cargo: Cargo::Professor,
+        }
+    }
+
+    pub fn novo_com_cargo(
+        nome: String,
+        email: String,
+        senha_hash: String,
+        url_curriculo_lates: Option<String>,
+        cargo: Cargo,
+    ) -> Self {
+        let usuario = Usuario::novo(nome, email, senha_hash, url_curriculo_lates);
+        Self { usuario, cargo }
+    }
+}
+
+impl Professor {
     pub fn obtenha_usuario(&self) -> &Usuario {
         self.as_ref()
     }

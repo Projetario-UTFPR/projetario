@@ -12,6 +12,24 @@ pub struct Aluno {
 }
 
 impl Aluno {
+    pub fn novo(
+        nome: String,
+        email: String,
+        senha_hash: String,
+        url_curriculo_lates: Option<String>,
+        periodo: i16,
+        registro_aluno: String,
+    ) -> Self {
+        let usuario = Usuario::novo(nome, email, senha_hash, url_curriculo_lates);
+        Self {
+            periodo,
+            registro_aluno,
+            usuario,
+        }
+    }
+}
+
+impl Aluno {
     pub fn obtenha_usuario(&self) -> &Usuario {
         self.as_ref()
     }
