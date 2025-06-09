@@ -13,11 +13,13 @@ impl Professor {
         senha_hash: String,
         url_curriculo_lates: Option<String>,
     ) -> Self {
-        let usuario = Usuario::novo(nome, email, senha_hash, url_curriculo_lates);
-        Self {
-            usuario,
-            cargo: Cargo::Professor,
-        }
+        Self::novo_com_cargo(
+            nome,
+            email,
+            senha_hash,
+            url_curriculo_lates,
+            Cargo::Professor,
+        )
     }
 
     pub fn novo_com_cargo(
