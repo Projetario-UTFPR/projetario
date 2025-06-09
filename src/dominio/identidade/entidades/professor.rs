@@ -1,7 +1,7 @@
-use crate::dominio::identidade::{entidades::usuario::Pessoa, enums::cargo::Cargo};
+use crate::dominio::identidade::{entidades::usuario::Usuario, enums::cargo::Cargo};
 
 #[derive(Debug)]
 pub struct Professor {
-    pessoa: Pessoa,
+    usuario: Usuario,
     cargo: Cargo,
 }
