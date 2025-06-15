@@ -9,6 +9,8 @@ use config::{
 use env_logger::Target;
 use libs::actix::server::get_server;
 
+use crate::utils::sqlx::{connect_to_db, migrate_db};
+
 mod dominio;
 mod infra;
 mod libs;
@@ -22,6 +24,9 @@ async fn main() -> anyhow::Result<()> {
         .parse_env("RUST_LOG")
         .target(Target::Stdout)
         .init();
+
+    let db_pool = connect_to_db().await?;
+    migrate_db(&db_pool).await?;
 
     let app_config = AppConfig::get();
 
