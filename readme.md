@@ -17,7 +17,7 @@ Feito isso, siga o passo-a-passo adiante:
 3. Adicione as variáveis de ambiente: `cp .env.sample .env`
 4. Gere a imagem Docker: `docker build -t projetario/app:0.1.0 .` (observe que o ponto
 é necessário)
-5. Levante os serviços com o comando `docker compose up -d`
+5. Levante os serviços com o comando `docker compose --profile preview up -d`
 
 Feito isso, basta acessar o sistema através da URL http://localhost:3000.
 

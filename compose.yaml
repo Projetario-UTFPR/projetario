@@ -9,6 +9,7 @@ services:
       POSTGRES_USER: ${MAIN_DB_USER}
       POSTGRES_PASSWORD: ${MAIN_DB_PASSWORD}
       POSTGRES_DB: ${MAIN_DB_NAME}
+
   app:
     container_name: projetario-app
     image: projetario/app:0.1.0
@@ -16,3 +17,7 @@ services:
       - 3000:80
     volumes:
       - .env:/app/.env
+    profiles:
+      - preview
+    depends_on:
+      - db
