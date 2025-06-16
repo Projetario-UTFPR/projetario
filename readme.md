@@ -20,6 +20,8 @@ Feito isso, siga o passo-a-passo adiante:
 
 Feito isso, basta acessar o sistema através da URL http://localhost:3000.
 
+Digite `docker compose stop` para parar os containers ou `docker compose down` para destruí-los.
+
 ## Contribuindo
 Para contribuir com o desenvolvimento do Projetário UTFPR, leia o
 [Guia de Contribuição](.github/contribuindo.md).
