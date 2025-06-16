@@ -3,6 +3,9 @@ name = "projetario"
 version.workspace = true
 edition.workspace = true
 
+[features]
+dockerimgb = []
+
 [workspace]
 members = ["config", "sessions"]
 package.version = "0.1.0"
@@ -25,11 +28,11 @@ serde_json = "1.0.140"
 rand = "0.9.1"
 chrono = { version = "0.4.41", features = ["serde"] }
 pretty_assertions = "1.4.1"
-rstest = "0.25.0"
 dotenvy = "0.15.7"
 env_logger = "0.11.8"
 futures-util = "0.3.31"
 thiserror = "2.0.12"
+rstest = "0.25.0"
 
 [dependencies]
 actix-files.workspace = true
@@ -53,6 +56,7 @@ sqlx = { version = "0.8.5", features = ["runtime-tokio", "tls-rustls-ring-native
 thiserror.workspace = true
 validator = { version = "0.20", features = ["derive"] }
 uuid = { version = "1.17.0", features = ["v4"] }
+openssl = { version = "0.10.73", features = ["vendored"]}
 
 [dev-dependencies]
 pretty_assertions.workspace = true

@@ -10,6 +10,8 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - run: rustup update
+            - name: "cache incremental build artifacts for speeding up clippy check"
+              uses: Swatinem/rust-cache@v2
             - run: cargo clippy --all-targets --all-features -- -D warnings
 
     check_code_fmt:
