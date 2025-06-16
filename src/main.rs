@@ -9,7 +9,10 @@ use config::{
 use env_logger::Target;
 use libs::actix::server::get_server;
 
-use crate::utils::sqlx::{connect_to_db, migrate_db};
+use crate::utils::{
+    resolve_uri,
+    sqlx::{connect_to_db, migrate_db},
+};
 
 mod dominio;
 mod infra;
@@ -37,21 +40,7 @@ async fn main() -> anyhow::Result<()> {
     let inertia = Data::new(get_inertia(vite).await?);
     let inertia_data = inertia.clone();
 
-    // Se estiver sendo compilado em uma imagem Docker, é necessário que escute na porta padrão
-    // no IP padrão, de modo que seja possível levantá-lo como um container docker e fazer o bind
-    // dessa porta em outra porta (como está sendo feito no arquivo `compose.yaml`.)
-    #[cfg(feature = "dockerimgb")]
-    let must_listen_to_public_port = true;
-    #[cfg(not(feature = "dockerimgb"))]
-    let must_listen_to_public_port = is_production_env;
-
-    let port = if must_listen_to_public_port { 80 } else { 3000 };
-
-    let host = if must_listen_to_public_port {
-        "0.0.0.0"
-    } else {
-        "127.0.0.1"
-    };
+    let (host, port) = resolve_uri(is_production_env);
 
     let http_server =
         HttpServer::new(move || get_server().app_data(inertia_data.clone())).bind((host, port))?;
