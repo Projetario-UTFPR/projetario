@@ -8,6 +8,11 @@ COPY Cargo.lock Cargo.toml rust-toolchain.toml ./
 COPY config/ ./config
 COPY sessions/ ./sessions/
 
+# É necessário para manter as dependências em cache. O Cargo não possui um meio de compilar
+# somente as dependências para evitar recompilar tudo a cada alteração no código fonte,
+# e esta é uma gambiarra pra atingir algo próximo disso.
+#
+# Veja: https://github.com/rust-lang/cargo/issues/2644#issuecomment-2335499312
 RUN \
     mkdir -v src && \
     echo 'fn main() {}' > src/main.rs && \
