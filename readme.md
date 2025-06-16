@@ -14,9 +14,10 @@ Para rodar, será necessário ter o [Docker](https://docs.docker.com/get-started
 Feito isso, siga o passo-a-passo adiante:
 1. Clone este repositório com o comando `git clone git@github.com:Projetario-UTFPR/projetario.git projetario`
 2. Navegue para o diretório do repositório: `cd projetario`
-3. Gere a imagem Docker: `docker build -t projetario/app:0.1.0 .` (observe que o ponto
+3. Adicione as variáveis de ambiente: `cp .env.sample .env`
+4. Gere a imagem Docker: `docker build -t projetario/app:0.1.0 .` (observe que o ponto
 é necessário)
-4. Levante os serviços com o comando `docker compose up -d`
+5. Levante os serviços com o comando `docker compose up -d`
 
 Feito isso, basta acessar o sistema através da URL http://localhost:3000.
 
@@ -28,4 +29,3 @@ Para contribuir com o desenvolvimento do Projetário UTFPR, leia o
 
 ## Licença
 O Projetário UTFPR é open-source e pode ser distribuído sob a [licença MIT](./LICENSE).
-
