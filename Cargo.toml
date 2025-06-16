@@ -53,6 +53,7 @@ sqlx = { version = "0.8.5", features = ["runtime-tokio", "tls-rustls-ring-native
 thiserror.workspace = true
 validator = { version = "0.20", features = ["derive"] }
 uuid = { version = "1.17.0", features = ["v4"] }
+openssl = { version = "0.10.73", features = ["vendored"]}
 
 [dev-dependencies]
 pretty_assertions.workspace = true
