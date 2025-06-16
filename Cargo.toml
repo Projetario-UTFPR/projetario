@@ -3,6 +3,9 @@ name = "projetario"
 version.workspace = true
 edition.workspace = true
 
+[features]
+dockerimgb = []
+
 [workspace]
 members = ["config", "sessions"]
 package.version = "0.1.0"
