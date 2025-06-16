@@ -50,7 +50,6 @@ COPY --from=build-frontend /app/dist/ ./dist/
 COPY www/root.hbs ./www/root.hbs
 
 EXPOSE 80
-EXPOSE 443
 
 # Cria um usuário somente para rodar o sistema, de modo que ele não tenha privilégios de super usuário.
 # Ele ainda precisa ter permissão pra manusear os arquivos dentro de /app, no entanto.
