@@ -1,18 +1,35 @@
 use crate::dominio::identidade::enums::cargo::Cargo;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 use chrono::{NaiveDateTime, Utc};
+use sqlx::prelude::FromRow;
 use uuid::Uuid;
 
-#[derive(Debug)]
+#[derive(Debug, FromRow)]
 pub struct Usuario {
     pub(super) id: Uuid,
     pub(super) nome: String,
     pub(super) email: String,
     pub(super) senha_hash: String,
     pub(super) url_curriculo_lates: Option<String>,
-    pub(super) registrada_em: NaiveDateTime,
-    pub(super) atualizada_em: Option<NaiveDateTime>,
-    pub(super) desativada_em: Option<NaiveDateTime>,
+    pub(super) registrado_em: NaiveDateTime,
+    pub(super) atualizado_em: Option<NaiveDateTime>,
+    pub(super) desativado_em: Option<NaiveDateTime>,
+}
+
+#[derive(Debug, FromRow)]
+/// `UsuarioModelo` é a representação completa da tabela "usuarios" do banco de dados.
+pub struct UsuarioModelo {
+    id: Uuid,
+    nome: String,
+    email: String,
+    senha_hash: String,
+    url_curriculo_lates: Option<String>,
+    cargo: Cargo,
+    registrado_em: NaiveDateTime,
+    atualizado_em: Option<NaiveDateTime>,
+    desativado_em: Option<NaiveDateTime>,
+    registro_aluno: Option<String>,
+    periodo: Option<i16>,
 }
 
 impl Usuario {
@@ -28,16 +45,16 @@ impl Usuario {
             email,
             senha_hash,
             url_curriculo_lates,
-            atualizada_em: None,
-            desativada_em: None,
-            registrada_em: Utc::now().naive_utc(),
+            atualizado_em: None,
+            desativado_em: None,
+            registrado_em: Utc::now().naive_utc(),
         }
     }
 
     /// Desativa um usuario permanentemente na plataforma, tornando impossível
     /// identificar-se como esta na plataforma.
     pub fn desativar(&mut self) {
-        self.desativada_em = Some(Utc::now().naive_utc());
+        self.desativado_em = Some(Utc::now().naive_utc());
     }
 }
 
@@ -68,15 +85,15 @@ impl Usuario {
     }
 
     pub fn obtenha_data_de_registro(&self) -> NaiveDateTime {
-        self.registrada_em
+        self.registrado_em
     }
 
     pub fn obtenha_data_de_modificacao(&self) -> Option<NaiveDateTime> {
-        self.atualizada_em
+        self.atualizado_em
     }
 
     pub fn esta_ativo(&self) -> bool {
-        self.desativada_em.is_none()
+        self.desativado_em.is_none()
     }
 }
 
@@ -138,22 +155,6 @@ impl Usuario {
 
     /// Marca a estrutura como modificada permanentemente.
     pub(super) fn toque(&mut self) {
-        self.atualizada_em = Some(Utc::now().naive_utc());
+        self.atualizado_em = Some(Utc::now().naive_utc());
     }
-}
-
-#[derive(Debug)]
-/// `UsuarioModelo` é a representação completa da tabela "usuarios" do banco de dados.
-pub struct UsuarioModelo {
-    id: Uuid,
-    nome: String,
-    email: String,
-    senha_hash: String,
-    curriculo_lates_url: Option<String>,
-    cargo: Cargo,
-    registrada_em: NaiveDateTime,
-    atualizada_em: Option<NaiveDateTime>,
-    ativa: bool,
-    registro_aluno: Option<String>,
-    periodo: Option<i16>,
 }

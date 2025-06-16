@@ -24,6 +24,7 @@ pub struct AppConfig {
     // infra settings
     pub main_database_schema: Option<&'static str>,
     pub main_database_url: &'static str,
+    pub main_database_connections: u32,
 
     // sessions settings
     pub sessions_flash_key: &'static str,
@@ -59,6 +60,10 @@ impl AppConfig {
             main_database_schema: var("MAIN_DB_SCHEMA")
                 .ok()
                 .map(|schema| Box::leak(schema.into_boxed_str()) as &'static str),
+            main_database_connections: var("MAIN_DATABASE_CONNECTIONS")
+                .expect("Environment variables should contain a valid `MAIN_DATABASE_CONNECTIONS`.")
+                .parse()
+                .expect("`MAIN_DATABASE_CONNECTIONS` value should be a unsigned 32 bits integer."),
             environment: var("RUST_ENV").map(Into::into).unwrap_or_default(),
             app_key: var("APP_KEY")
                 .map(|key| {

@@ -1,9 +1,11 @@
+use sqlx::prelude::FromRow;
 use uuid::Uuid;
 
 use crate::dominio::identidade::entidades::usuario::Usuario;
 
-#[derive(Debug)]
+#[derive(Debug, FromRow)]
 pub struct Aluno {
+    #[sqlx(flatten)]
     usuario: Usuario,
     registro_aluno: String,
     // o tipo `u8` seria preferível, mas não pode ser obtido de uma resposta do postgres,
