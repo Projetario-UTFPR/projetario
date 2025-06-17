@@ -11,11 +11,11 @@ createInertiaApp({
   resolve: resolvePage,
 
   setup: ({ App, el, props }) => {
-    const isSSR = document
-      .head
-      .querySelector("meta[name='ssr']")
-      ?.getAttribute("content") === "true";
-    
+    const isSSR =
+      document.head
+        .querySelector("meta[name='ssr']")
+        ?.getAttribute("content") === "true";
+
     isSSR
       ? hydrateRoot(el, <App {...props} />)
       : createRoot(el).render(<App {...props} />);
