@@ -6,16 +6,7 @@
     "useIgnoreFile": false
   },
   "files": {
-    "includes": [
-      "**",
-      "!src/**",
-      "!config/**",
-      "!node_modules/**",
-      "!sessions/",
-      "!**/dist/**",
-      "!build/**",
-      "!storage/**"
-    ]
+    "includes": ["www/**", "./*.ts", "./*.js", "./*.json", "!**/dist/**"]
   },
   "formatter": {
     "enabled": true,
