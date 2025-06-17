@@ -3,7 +3,7 @@ use uuid::Uuid;
 
 use crate::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Projeto {
     id: Uuid,
     titulo: String,
