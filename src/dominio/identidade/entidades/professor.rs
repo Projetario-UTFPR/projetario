@@ -1,6 +1,7 @@
 use sqlx::prelude::FromRow;
 
-use crate::dominio::identidade::{entidades::usuario::Usuario, enums::cargo::Cargo};
+use crate::dominio::identidade::entidades::usuario::Usuario;
+use crate::dominio::identidade::enums::cargo::Cargo;
 
 #[derive(Debug, FromRow)]
 pub struct Professor {
@@ -38,32 +39,22 @@ impl Professor {
 }
 
 impl Professor {
-    pub fn obtenha_usuario(&self) -> &Usuario {
-        self.as_ref()
-    }
+    pub fn obtenha_usuario(&self) -> &Usuario { self.as_ref() }
 
-    pub fn obtenha_usuario_mutavel(&mut self) -> &mut Usuario {
-        self.as_mut()
-    }
+    pub fn obtenha_usuario_mutavel(&mut self) -> &mut Usuario { self.as_mut() }
 
     pub fn coloque_cargo(&mut self, cargo: Cargo) {
         self.cargo = cargo;
         self.usuario.toque();
     }
 
-    pub fn obtenha_cargo(&self) -> &Cargo {
-        &self.cargo
-    }
+    pub fn obtenha_cargo(&self) -> &Cargo { &self.cargo }
 }
 
 impl AsRef<Usuario> for Professor {
-    fn as_ref(&self) -> &Usuario {
-        &self.usuario
-    }
+    fn as_ref(&self) -> &Usuario { &self.usuario }
 }
 
 impl AsMut<Usuario> for Professor {
-    fn as_mut(&mut self) -> &mut Usuario {
-        &mut self.usuario
-    }
+    fn as_mut(&mut self) -> &mut Usuario { &mut self.usuario }
 }

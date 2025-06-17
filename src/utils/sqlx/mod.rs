@@ -1,11 +1,11 @@
+use std::str::FromStr;
+use std::time::Duration;
+
 use config::app::{AppConfig, RustEnv};
-use sqlx::{
-    ConnectOptions, Connection, Database, PgConnection, PgPool,
-    any::AnyConnectOptions,
-    migrate::Migrator,
-    postgres::{PgConnectOptions, PgPoolOptions},
-};
-use std::{str::FromStr, time::Duration};
+use sqlx::any::AnyConnectOptions;
+use sqlx::migrate::Migrator;
+use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
+use sqlx::{ConnectOptions, Connection, Database, PgConnection, PgPool};
 
 pub async fn migrate_db(pool: &PgPool) -> anyhow::Result<()> {
     sqlx::migrate!().run(pool).await;

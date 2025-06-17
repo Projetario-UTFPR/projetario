@@ -1,18 +1,15 @@
 #![allow(unused)]
 
-use actix_web::{HttpServer, web::Data};
-use config::{
-    app::{AppConfig, RustEnv},
-    inertia::get_inertia,
-    vite::get_vite,
-};
+use actix_web::HttpServer;
+use actix_web::web::Data;
+use config::app::{AppConfig, RustEnv};
+use config::inertia::get_inertia;
+use config::vite::get_vite;
 use env_logger::Target;
 use libs::actix::server::get_server;
 
-use crate::utils::{
-    resolve_uri,
-    sqlx::{connect_to_db, migrate_db},
-};
+use crate::utils::resolve_uri;
+use crate::utils::sqlx::{connect_to_db, migrate_db};
 
 mod dominio;
 mod infra;
