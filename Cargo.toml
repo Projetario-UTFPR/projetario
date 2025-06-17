@@ -19,8 +19,18 @@ actix-session = "0.10.1"
 actix-web = "4.11.0"
 anyhow = "1.0.98"
 async-trait = "0.1.88"
-inertia-rust = { version = "2.4.3", features = ["actix", "vite-hbs-template-resolver", "actix-validator"] }
-tokio = { version = "1.45.0", features = ["fs", "io-std", "rt", "rt-multi-thread", "macros"] }
+inertia-rust = { version = "2.4.3", features = [
+    "actix",
+    "vite-hbs-template-resolver",
+    "actix-validator",
+] }
+tokio = { version = "1.45.0", features = [
+    "fs",
+    "io-std",
+    "rt",
+    "rt-multi-thread",
+    "macros",
+] }
 vite-rust = "0.2"
 log = "0.4.27"
 serde = "1.0.219"
@@ -52,13 +62,22 @@ log.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 futures-util.workspace = true
-sqlx = { version = "0.8.5", features = ["runtime-tokio", "tls-rustls-ring-native-roots", "postgres", "derive", "migrate", "chrono", "uuid"] }
+sqlx = { version = "0.8.5", features = [
+    "runtime-tokio",
+    "tls-rustls-ring-native-roots",
+    "postgres",
+    "derive",
+    "migrate",
+    "chrono",
+    "uuid",
+] }
 thiserror.workspace = true
 validator = { version = "0.20", features = ["derive"] }
 uuid = { version = "1.17.0", features = ["v4"] }
-openssl = { version = "0.10.73", features = ["vendored"]}
+openssl = { version = "0.10.73", features = ["vendored"] }
 
 [dev-dependencies]
 pretty_assertions.workspace = true
 rstest.workspace = true
 tokio = { workspace = true, features = ["test-util"] }
+fake = { version = "4.3.0", features = ["derive", "chrono"] }
