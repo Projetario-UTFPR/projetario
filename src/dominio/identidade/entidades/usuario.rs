@@ -113,8 +113,8 @@ impl Usuario {
 
     pub fn coloque_senha(&mut self, hash: String) -> Result<(), ErroDeDominio> {
         if !self.esta_ativo() {
-            return Err(ErroDeDominio::Integridade(
-                "Não é possível alterar a senha de um usuário desativada.".into(),
+            return Err(ErroDeDominio::integridade(
+                "Não é possível alterar a senha de um usuário desativada.",
             ));
         }
 
