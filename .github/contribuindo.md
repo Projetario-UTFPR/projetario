@@ -39,7 +39,7 @@ head -c 64 /dev/urandom | base64
 
 # ou injete diretamente no arquivo .env
 
-head -c 64 /dev/urandom | base64 >> .env
+head -c 64 /dev/urandom | base64 -w 0 >> .env
 ```
 
 ### Inicie o servidor do font-end em um processo (terminal)
