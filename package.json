@@ -3,7 +3,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && vite build --ssr",
-    "lint": "npx @biomejs/biome format --write www/"
+    "lint": "npx biome check www/",
+    "lint:fix": "npx biome check --write www/"
   },
   "repository": {
     "type": "git",
