@@ -20,4 +20,5 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - run: rustup toolchain install nightly
+            - run: rustup component add --toolchain nightly rustfmt
             - run: rustup run nightly -- rustfmt --check ./**/*.rs
