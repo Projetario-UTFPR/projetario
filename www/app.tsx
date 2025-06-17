@@ -1,7 +1,7 @@
 import "@/app.css";
 import { createInertiaApp } from "@inertiajs/react";
 import { createRoot, hydrateRoot } from "react-dom/client";
-import { resolveTitle, resolvePage } from "@/lib/inertia";
+import { resolvePage, resolveTitle } from "@/lib/inertia";
 
 createInertiaApp({
   progress: { includeCSS: true, color: "#FFB300" },
