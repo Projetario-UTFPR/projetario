@@ -19,5 +19,5 @@ jobs:
         runs-on: "ubuntu-latest"
         steps:
             - uses: actions/checkout@v4
-            - run: rustup update
-            - run: cargo fmt --all -- --check
+            - run: rustup toolchain install nightly
+            - run: rustup run nightly -- rustfmt --check ./**/*.rs
