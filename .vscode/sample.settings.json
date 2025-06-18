@@ -1,0 +1,23 @@
+{
+  "rust-analyzer.checkOnSave": true,
+  "rust-analyzer.check.command": "clippy",
+  "rust-analyzer.check.allTargets": true,
+  "rust-analyzer.check.features": "all",
+  "rust-analyzer.rustfmt.overrideCommand": [
+    "rustup",
+    "run",
+    "nightly",
+    "--",
+    "rustfmt"
+  ],
+  "[rust]": {
+    "editor.defaultFormatter": "rust-lang.rust-analyzer",
+    "editor.formatOnSave": true
+  },
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": { "source.fixAll.biome": "explicit" },
+  "[json]": { "editor.defaultFormatter": "biomejs.biome" },
+  "[javascript]": { "editor.defaultFormatter": "biomejs.biome" },
+  "[typescript]": { "editor.defaultFormatter": "biomejs.biome" },
+  "[typescriptreact]": { "editor.defaultFormatter": "biomejs.biome" }
+}

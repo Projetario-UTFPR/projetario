@@ -1,8 +1,9 @@
-use crate::dominio::identidade::enums::cargo::Cargo;
-use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 use chrono::{NaiveDateTime, Utc};
 use sqlx::prelude::FromRow;
 use uuid::Uuid;
+
+use crate::dominio::identidade::enums::cargo::Cargo;
+use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 
 #[derive(Debug, FromRow)]
 pub struct Usuario {
@@ -53,24 +54,16 @@ impl Usuario {
 
     /// Desativa um usuario permanentemente na plataforma, tornando impossível
     /// identificar-se como esta na plataforma.
-    pub fn desativar(&mut self) {
-        self.desativado_em = Some(Utc::now().naive_utc());
-    }
+    pub fn desativar(&mut self) { self.desativado_em = Some(Utc::now().naive_utc()); }
 }
 
 // getters
 impl Usuario {
-    pub fn obtenha_id(&self) -> &Uuid {
-        &self.id
-    }
+    pub fn obtenha_id(&self) -> &Uuid { &self.id }
 
-    pub fn obtenha_nome(&self) -> &str {
-        &self.nome
-    }
+    pub fn obtenha_nome(&self) -> &str { &self.nome }
 
-    pub fn obtenha_email(&self) -> &str {
-        &self.email
-    }
+    pub fn obtenha_email(&self) -> &str { &self.email }
 
     pub fn obtenha_hash_da_senha(&self) -> Option<&str> {
         if !self.esta_ativo() {
@@ -84,23 +77,17 @@ impl Usuario {
         self.url_curriculo_lates.as_deref()
     }
 
-    pub fn obtenha_data_de_registro(&self) -> NaiveDateTime {
-        self.registrado_em
-    }
+    pub fn obtenha_data_de_registro(&self) -> NaiveDateTime { self.registrado_em }
 
-    pub fn obtenha_data_de_modificacao(&self) -> Option<NaiveDateTime> {
-        self.atualizado_em
-    }
+    pub fn obtenha_data_de_modificacao(&self) -> Option<NaiveDateTime> { self.atualizado_em }
 
-    pub fn esta_ativo(&self) -> bool {
-        self.desativado_em.is_none()
-    }
+    pub fn esta_ativo(&self) -> bool { self.desativado_em.is_none() }
 }
 
 // setters
 //
-// só deve atualizar uma propriedade se o novo valor for diferente do atual para evitar alterar a data de
-// última modificação da entidade.
+// só deve atualizar uma propriedade se o novo valor for diferente do atual para evitar
+// alterar a data de última modificação da entidade.
 impl Usuario {
     pub fn coloque_nome(&mut self, nome: String) {
         if self.nome == nome {
@@ -154,7 +141,5 @@ impl Usuario {
     }
 
     /// Marca a estrutura como modificada permanentemente.
-    pub(super) fn toque(&mut self) {
-        self.atualizado_em = Some(Utc::now().naive_utc());
-    }
+    pub(super) fn toque(&mut self) { self.atualizado_em = Some(Utc::now().naive_utc()); }
 }

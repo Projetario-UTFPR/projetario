@@ -32,21 +32,13 @@ impl Aluno {
 }
 
 impl Aluno {
-    pub fn obtenha_usuario(&self) -> &Usuario {
-        self.as_ref()
-    }
+    pub fn obtenha_usuario(&self) -> &Usuario { self.as_ref() }
 
-    pub fn obtenha_usuario_mutavel(&mut self) -> &mut Usuario {
-        self.as_mut()
-    }
+    pub fn obtenha_usuario_mutavel(&mut self) -> &mut Usuario { self.as_mut() }
 
-    pub fn obtenha_registro_de_aluno(&mut self) -> &str {
-        &self.registro_aluno
-    }
+    pub fn obtenha_registro_de_aluno(&mut self) -> &str { &self.registro_aluno }
 
-    pub fn obtenha_periodo(&self) -> i16 {
-        self.periodo
-    }
+    pub fn obtenha_periodo(&self) -> i16 { self.periodo }
 
     pub fn coloque_periodo(&mut self, periodo: i16) {
         self.periodo = periodo;
@@ -55,13 +47,9 @@ impl Aluno {
 }
 
 impl AsRef<Usuario> for Aluno {
-    fn as_ref(&self) -> &Usuario {
-        &self.usuario
-    }
+    fn as_ref(&self) -> &Usuario { &self.usuario }
 }
 
 impl AsMut<Usuario> for Aluno {
-    fn as_mut(&mut self) -> &mut Usuario {
-        &mut self.usuario
-    }
+    fn as_mut(&mut self) -> &mut Usuario { &mut self.usuario }
 }

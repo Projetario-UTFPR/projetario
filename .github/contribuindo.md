@@ -9,7 +9,16 @@ Para contribuir, é necessário ter instalado os seguintes softwares:
 - [Node.js](https://nodejs.org/en).
 
 ### Configurando o ambiente de desenvolvimento
-1. Copie as configurações bases do vscode com o comando `cp .vscode/settings.json.sample .vscode/settings.json`.
+1. Copie as configurações bases do vscode com o comando `cp .vscode/sample.settings.json .vscode/settings.json`.
+
+## Extensões (VS Code)
+As extensões listadas adiante permitem um desenvolvimento mais simplificado e com mais corretude.
+Por exemplo, autocomplete, formatação automática, entre outras regras de linting que podem barrar o
+código se não corrigidas.
+
+- [Biome](https://marketplace.visualstudio.com/items?itemName=biomejs.biome)
+- [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+- [npm intellisense](https://marketplace.visualstudio.com/items?itemName=christian-kohler.npm-intellisense)
 
 ## Testes
 Para rodar testes, utilize o comando:
