@@ -22,7 +22,6 @@ impl Controller for ControllerProjetosDeExtensao {
 impl ControllerProjetosDeExtensao {
     // página que exibe o formulário para criação de um novo projeto de extensão
     pub async fn novo(req: HttpRequest) -> RespostaDoApp {
-        // TODO: criar essa página no front-end
         Inertia::render(&req, "professores/projetos/novo-projeto-de-extensao".into())
             .await
             .map_err(Into::into)
