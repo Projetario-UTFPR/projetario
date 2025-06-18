@@ -1,0 +1,1 @@
+pub mod fabrica_repositorio_de_coordenadores_de_projetos;
