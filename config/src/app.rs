@@ -41,7 +41,7 @@ impl AppConfig {
     fn get_app_options() -> Self {
         let app_name = Box::leak(
             var("APP_NAME")
-                .unwrap_or("Inertia Rust".into())
+                .unwrap_or("Projetário UTFPR".into())
                 .into_boxed_str(),
         );
 
