@@ -38,6 +38,8 @@ where
         }
     }
 
+    /// Salva o `projeto` no banco de dados e **imediatamente associa o `usuario` como
+    /// coordenador do projeto**, se este for autorizado a coordenar projetos.
     pub async fn executar(
         &self,
         params: CriarProjetosDeExtensaoParams<'_>,
@@ -49,6 +51,8 @@ where
             data_de_inicio,
         } = params;
 
+        // TODO: Mover isso para a camada do controller
+        // e receber a instância de `Professor` diretamente
         let professor = match Professor::try_from(usuario) {
             Ok(professor) => professor,
             Err(msg) => {
