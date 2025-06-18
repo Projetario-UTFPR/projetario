@@ -13,6 +13,9 @@ use inertia_sessions::middlewares::garbage_collector::GarbageCollectorMiddleware
 use inertia_sessions::middlewares::reflash_temporary_session::ReflashTemporarySessionMiddleware;
 use serde_json::Map;
 
+use crate::infra::http::controllers::Controller;
+use crate::infra::http::controllers::professores::projetos_de_extensao::ControllerProjetosDeExtensao;
+
 pub fn get_server() -> App<
     impl ServiceFactory<
         ServiceRequest,
@@ -46,4 +49,5 @@ pub fn get_server() -> App<
                 .cookie_secure(app_config.environment == RustEnv::Production)
                 .build(),
         )
+        .configure(ControllerProjetosDeExtensao::register)
 }
