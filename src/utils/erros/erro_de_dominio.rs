@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use thiserror::Error;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum TipoErroDeDominio {
     Interno,
     Integridade,
@@ -10,39 +10,51 @@ pub enum TipoErroDeDominio {
     NãoAutorizado,
 }
 
+impl TipoErroDeDominio {
+    pub fn como_codigo(&self) -> String {
+        match self {
+            Self::Integridade => "integridade",
+            Self::Interno => "interno",
+            Self::NãoAutorizado => "não_autorizado",
+            Self::ValorInvalido => "valor_inválido",
+        }
+        .into()
+    }
+}
+
 #[derive(Debug, Error)]
 pub struct ErroDeDominio {
-    tipo: TipoErroDeDominio,
+    tipo_: TipoErroDeDominio,
     msg: String,
 }
 
 impl ErroDeDominio {
-    pub fn novo(tipo: TipoErroDeDominio, msg: String) -> Self { Self { tipo, msg } }
+    pub fn novo(tipo: TipoErroDeDominio, msg: String) -> Self { Self { tipo_: tipo, msg } }
 
     pub fn integridade<S: ToString>(msg: S) -> Self {
         Self {
-            tipo: TipoErroDeDominio::Integridade,
+            tipo_: TipoErroDeDominio::Integridade,
             msg: msg.to_string(),
         }
     }
 
     pub fn valor_invalido<S: ToString>(msg: S) -> Self {
         Self {
-            tipo: TipoErroDeDominio::ValorInvalido,
+            tipo_: TipoErroDeDominio::ValorInvalido,
             msg: msg.to_string(),
         }
     }
 
     pub fn nao_autorizado<S: ToString>(msg: S) -> Self {
         Self {
-            tipo: TipoErroDeDominio::NãoAutorizado,
+            tipo_: TipoErroDeDominio::NãoAutorizado,
             msg: msg.to_string(),
         }
     }
 
     pub fn interno() -> Self {
         Self {
-            tipo: TipoErroDeDominio::Interno,
+            tipo_: TipoErroDeDominio::Interno,
             msg: "Houve um problema no nosso servidor.".to_string(),
         }
     }
@@ -51,6 +63,10 @@ impl ErroDeDominio {
         self.msg = msg.into();
         self
     }
+
+    pub fn mensagem(&self) -> &str { &self.msg }
+
+    pub fn tipo(&self) -> TipoErroDeDominio { self.tipo_.clone() }
 }
 
 impl Display for ErroDeDominio {
