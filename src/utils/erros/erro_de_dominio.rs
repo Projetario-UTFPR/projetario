@@ -4,6 +4,7 @@ use thiserror::Error;
 
 #[derive(Debug)]
 pub enum TipoErroDeDominio {
+    Interno,
     Integridade,
     ValorInvalido,
     NãoAutorizado,
@@ -39,6 +40,18 @@ impl ErroDeDominio {
             tipo: TipoErroDeDominio::NãoAutorizado,
             msg: msg.to_string(),
         }
+    }
+
+    pub fn interno() -> Self {
+        Self {
+            tipo: TipoErroDeDominio::Interno,
+            msg: "Houve um problema no nosso servidor.".to_string(),
+        }
+    }
+
+    pub fn com_mensagem(mut self, msg: &str) -> Self {
+        self.msg = msg.into();
+        self
     }
 }
 
