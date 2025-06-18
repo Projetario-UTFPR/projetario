@@ -1,9 +1,9 @@
 use std::sync::Arc;
 
 use actix_session::{SessionExt, SessionMiddleware};
-use actix_web::App;
 use actix_web::cookie::{Key, SameSite};
 use actix_web::dev::{ServiceFactory, ServiceRequest, ServiceResponse};
+use actix_web::{App, web};
 use config::app::{AppConfig, RustEnv};
 use futures_util::FutureExt;
 use inertia_rust::actix::InertiaMiddleware;
@@ -49,5 +49,5 @@ pub fn get_server() -> App<
                 .cookie_secure(app_config.environment == RustEnv::Production)
                 .build(),
         )
-        .configure(ControllerProjetosDeExtensao::register)
+        .service(web::scope("/professores").configure(ControllerProjetosDeExtensao::register))
 }

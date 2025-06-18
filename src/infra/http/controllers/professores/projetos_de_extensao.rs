@@ -12,9 +12,9 @@ pub struct ControllerProjetosDeExtensao;
 impl Controller for ControllerProjetosDeExtensao {
     fn register(cfg: &mut actix_web::web::ServiceConfig) {
         cfg.service(
-            web::scope("projetos/extensao/")
-                .route("novo", web::get().to(Self::novo))
-                .route("criar_e_associar", web::post().to(Self::criar_e_associar)),
+            web::scope("/projetos/extensao")
+                .route("/novo", web::get().to(Self::novo))
+                .route("/criar_e_associar", web::post().to(Self::criar_e_associar)),
         );
     }
 }
