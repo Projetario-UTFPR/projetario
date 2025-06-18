@@ -1,15 +1,12 @@
 use chrono::NaiveDateTime;
-use fake::{
-    Fake, Faker,
-    faker::{
-        chrono::pt_br::DateTime,
-        internet::pt_br::{FreeEmail, Password},
-        name::pt_br::Name,
-    },
-};
+use fake::faker::chrono::pt_br::DateTime;
+use fake::faker::internet::pt_br::{FreeEmail, Password};
+use fake::faker::name::pt_br::Name;
+use fake::{Fake, Faker};
 use uuid::Uuid;
 
-use crate::dominio::identidade::{entidades::usuario::UsuarioModelo, enums::cargo::Cargo};
+use crate::dominio::identidade::entidades::usuario::UsuarioModelo;
+use crate::dominio::identidade::enums::cargo::Cargo;
 
 pub struct FabricaUsuarioModelo;
 

@@ -4,11 +4,9 @@ use uuid::Uuid;
 use crate::dominio::identidade::entidades::professor::Professor;
 use crate::dominio::identidade::entidades::usuario::UsuarioModelo;
 use crate::dominio::projetos::entidades::projeto::Projeto;
+use crate::dominio::projetos::repositorios::coordenadores_de_projetos::RepositorioDeCoordenadoresDeProjetos;
+use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 use crate::utils::test::repositorios_em_memoria::TabelaThreadSafeEmMemoria;
-use crate::{
-    dominio::projetos::repositorios::coordenadores_de_projetos::RepositorioDeCoordenadoresDeProjetos,
-    utils::erros::erro_de_dominio::ErroDeDominio,
-};
 
 pub struct ProjetoCoordenadorTupla {
     pub id_professor: Uuid,

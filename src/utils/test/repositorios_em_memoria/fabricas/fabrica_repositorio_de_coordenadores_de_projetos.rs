@@ -1,13 +1,10 @@
 use std::sync::{Arc, Mutex};
 
-use crate::{
-    dominio::projetos::entidades::projeto::Projeto,
-    utils::test::repositorios_em_memoria::{
-        TabelaThreadSafeEmMemoria,
-        coordenadores_de_projetos::{
-            ProjetoCoordenadorTupla, RepositorioDeCoordenadoresDeProjetosEmMemoria,
-        },
-    },
+use crate::dominio::projetos::entidades::projeto::Projeto;
+use crate::utils::test::repositorios_em_memoria::TabelaThreadSafeEmMemoria;
+use crate::utils::test::repositorios_em_memoria::coordenadores_de_projetos::{
+    ProjetoCoordenadorTupla,
+    RepositorioDeCoordenadoresDeProjetosEmMemoria,
 };
 
 pub struct FabricaRepositorioDeCoordenadoresDeProjetos;

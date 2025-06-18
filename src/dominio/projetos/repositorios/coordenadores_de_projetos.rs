@@ -1,9 +1,8 @@
 use async_trait::async_trait;
 
-use crate::{
-    dominio::{identidade::entidades::professor::Professor, projetos::entidades::projeto::Projeto},
-    utils::erros::erro_de_dominio::ErroDeDominio,
-};
+use crate::dominio::identidade::entidades::professor::Professor;
+use crate::dominio::projetos::entidades::projeto::Projeto;
+use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 
 #[async_trait]
 pub trait RepositorioDeCoordenadoresDeProjetos {

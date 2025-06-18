@@ -17,9 +17,7 @@ pub struct ErroDeDominio {
 }
 
 impl ErroDeDominio {
-    pub fn novo(tipo: TipoErroDeDominio, msg: String) -> Self {
-        Self { tipo, msg }
-    }
+    pub fn novo(tipo: TipoErroDeDominio, msg: String) -> Self { Self { tipo, msg } }
 
     pub fn integridade<S: ToString>(msg: S) -> Self {
         Self {
@@ -56,7 +54,5 @@ impl ErroDeDominio {
 }
 
 impl Display for ErroDeDominio {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.msg)
-    }
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result { write!(f, "{}", self.msg) }
 }

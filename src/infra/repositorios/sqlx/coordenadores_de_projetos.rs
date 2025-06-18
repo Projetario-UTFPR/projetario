@@ -2,27 +2,21 @@ use std::ops::{Deref, DerefMut};
 
 use async_trait::async_trait;
 use futures_util::FutureExt;
-use sqlx::{AnyPool, Connection, Executor, PgPool, Pool, postgres::PgPoolCopyExt};
+use sqlx::postgres::PgPoolCopyExt;
+use sqlx::{AnyPool, Connection, Executor, PgPool, Pool};
 
-use crate::{
-    dominio::{
-        identidade::entidades::professor::Professor,
-        projetos::{
-            entidades::projeto::Projeto, enums::tipo_de_coordenacao::TipoDeCoordenacao,
-            repositorios::coordenadores_de_projetos::RepositorioDeCoordenadoresDeProjetos,
-        },
-    },
-    utils::erros::erro_de_dominio::ErroDeDominio,
-};
+use crate::dominio::identidade::entidades::professor::Professor;
+use crate::dominio::projetos::entidades::projeto::Projeto;
+use crate::dominio::projetos::enums::tipo_de_coordenacao::TipoDeCoordenacao;
+use crate::dominio::projetos::repositorios::coordenadores_de_projetos::RepositorioDeCoordenadoresDeProjetos;
+use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 
 pub struct RepositorioDeCoordenadoresDeProjetosSQLX<'this> {
     db_conn: &'this PgPool,
 }
 
 impl<'a> RepositorioDeCoordenadoresDeProjetosSQLX<'a> {
-    pub fn novo(pool: &'a PgPool) -> Self {
-        Self { db_conn: pool }
-    }
+    pub fn novo(pool: &'a PgPool) -> Self { Self { db_conn: pool } }
 }
 
 #[async_trait]

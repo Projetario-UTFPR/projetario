@@ -1,9 +1,7 @@
 use sqlx::PgPool;
 
-use crate::{
-    dominio::projetos::servicos::criar_projeto_de_extensao::ServicoCriarProjetoDeExtensao,
-    infra::repositorios::sqlx::coordenadores_de_projetos::RepositorioDeCoordenadoresDeProjetosSQLX,
-};
+use crate::dominio::projetos::servicos::criar_projeto_de_extensao::ServicoCriarProjetoDeExtensao;
+use crate::infra::repositorios::sqlx::coordenadores_de_projetos::RepositorioDeCoordenadoresDeProjetosSQLX;
 
 pub fn obtenha_servico_criar_projeto_de_extensao(
     db_conn: &PgPool,
