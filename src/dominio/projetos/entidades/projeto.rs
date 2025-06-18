@@ -43,45 +43,25 @@ impl Projeto {
 
 // getters
 impl Projeto {
-    pub fn obtenha_id(&self) -> &Uuid {
-        &self.id
-    }
+    pub fn obtenha_id(&self) -> &Uuid { &self.id }
 
-    pub fn obtenha_titulo(&self) -> &str {
-        &self.titulo
-    }
+    pub fn obtenha_titulo(&self) -> &str { &self.titulo }
 
-    pub fn obtenha_descricao(&self) -> &str {
-        &self.descricao
-    }
+    pub fn obtenha_descricao(&self) -> &str { &self.descricao }
 
-    pub fn obtenha_tipo(&self) -> TipoDeProjeto {
-        self.tipo
-    }
+    pub fn obtenha_tipo(&self) -> TipoDeProjeto { self.tipo }
 
-    pub fn obtenha_data_de_registro(&self) -> NaiveDateTime {
-        self.registrado_em
-    }
+    pub fn obtenha_data_de_registro(&self) -> NaiveDateTime { self.registrado_em }
 
-    pub fn obtenha_data_de_inicio(&self) -> NaiveDate {
-        self.iniciado_em
-    }
+    pub fn obtenha_data_de_inicio(&self) -> NaiveDate { self.iniciado_em }
 
-    pub fn obtenha_data_de_cancelamento(&self) -> Option<NaiveDateTime> {
-        self.cancelado_em
-    }
+    pub fn obtenha_data_de_cancelamento(&self) -> Option<NaiveDateTime> { self.cancelado_em }
 
-    pub fn obtenha_data_de_conclusao(&self) -> Option<NaiveDate> {
-        self.concluido_em
-    }
+    pub fn obtenha_data_de_conclusao(&self) -> Option<NaiveDate> { self.concluido_em }
 
-    pub fn obtenha_data_de_modificacao(&self) -> Option<NaiveDateTime> {
-        self.atualizado_em
-    }
+    pub fn obtenha_data_de_modificacao(&self) -> Option<NaiveDateTime> { self.atualizado_em }
 
-    pub fn esta_ativo(&self) -> bool {
-        self.cancelado_em.is_none() && self.concluido_em.is_none()
-    }
+    pub fn esta_ativo(&self) -> bool { self.cancelado_em.is_none() && self.concluido_em.is_none() }
 }
 
 // setters
@@ -104,15 +84,9 @@ impl Projeto {
         self.toque();
     }
 
-    pub fn toque(&mut self) {
-        self.atualizado_em = Some(Utc::now().naive_utc());
-    }
+    pub fn toque(&mut self) { self.atualizado_em = Some(Utc::now().naive_utc()); }
 
-    pub fn concluir(&mut self) {
-        self.concluido_em = Some(Utc::now().date_naive());
-    }
+    pub fn concluir(&mut self) { self.concluido_em = Some(Utc::now().date_naive()); }
 
-    pub fn cancelar(&mut self) {
-        self.cancelado_em = Some(Utc::now().naive_utc());
-    }
+    pub fn cancelar(&mut self) { self.cancelado_em = Some(Utc::now().naive_utc()); }
 }

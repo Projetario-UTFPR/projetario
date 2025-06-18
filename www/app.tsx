@@ -1,7 +1,7 @@
 import "@/app.css";
 import { createInertiaApp } from "@inertiajs/react";
 import { createRoot, hydrateRoot } from "react-dom/client";
-import { resolveTitle, resolvePage } from "@/lib/inertia";
+import { resolvePage, resolveTitle } from "@/lib/inertia";
 
 createInertiaApp({
   progress: { includeCSS: true, color: "#FFB300" },
@@ -11,11 +11,11 @@ createInertiaApp({
   resolve: resolvePage,
 
   setup: ({ App, el, props }) => {
-    const isSSR = document
-      .head
-      .querySelector("meta[name='ssr']")
-      ?.getAttribute("content") === "true";
-    
+    const isSSR =
+      document.head
+        .querySelector("meta[name='ssr']")
+        ?.getAttribute("content") === "true";
+
     isSSR
       ? hydrateRoot(el, <App {...props} />)
       : createRoot(el).render(<App {...props} />);

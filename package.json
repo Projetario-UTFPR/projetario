@@ -2,7 +2,9 @@
   "name": "projetario-www",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && vite build --ssr"
+    "build": "vite build && vite build --ssr",
+    "lint": "npx biome check www/",
+    "lint:fix": "npx biome check --write www/"
   },
   "repository": {
     "type": "git",
@@ -16,6 +18,7 @@
   },
   "homepage": "https://github.com/Projetario-UTFPR/projetario#readme",
   "devDependencies": {
+    "@biomejs/biome": "2.0.0",
     "@inertiajs/core": "2.0.11",
     "@tailwindcss/vite": "4.1.7",
     "@types/node": "22.15.19",

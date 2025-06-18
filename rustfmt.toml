@@ -1,0 +1,13 @@
+imports_granularity = "Module"
+imports_layout = "HorizontalVertical"
+group_imports = "StdExternalCrate"
+merge_derives = true
+fn_params_layout = "Tall"
+tab_spaces = 4
+reorder_imports = true
+condense_wildcard_suffixes = true
+fn_single_line = true
+format_code_in_doc_comments = true
+wrap_comments = false
+style_edition = "2024"
+edition = "2024"

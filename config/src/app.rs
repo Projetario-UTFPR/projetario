@@ -85,13 +85,9 @@ impl AppConfig {
         }
     }
 
-    pub fn initialize() {
-        APP_CONFIG.get_or_init(Self::get_app_options);
-    }
+    pub fn initialize() { APP_CONFIG.get_or_init(Self::get_app_options); }
 
-    pub fn get() -> &'static Self {
-        APP_CONFIG.get_or_init(Self::get_app_options)
-    }
+    pub fn get() -> &'static Self { APP_CONFIG.get_or_init(Self::get_app_options) }
 }
 
 impl<T: ToString> From<T> for RustEnv {

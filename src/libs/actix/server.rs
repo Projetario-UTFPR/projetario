@@ -1,21 +1,17 @@
+use std::sync::Arc;
+
 use actix_session::{SessionExt, SessionMiddleware};
-use actix_web::{
-    App,
-    cookie::{Key, SameSite},
-    dev::{ServiceFactory, ServiceRequest, ServiceResponse},
-};
+use actix_web::App;
+use actix_web::cookie::{Key, SameSite};
+use actix_web::dev::{ServiceFactory, ServiceRequest, ServiceResponse};
 use config::app::{AppConfig, RustEnv};
 use futures_util::FutureExt;
-use inertia_rust::{InertiaProp, actix::InertiaMiddleware, hashmap};
-use inertia_sessions::{
-    file_session::FileSessionStore,
-    middlewares::{
-        garbage_collector::GarbageCollectorMiddleware,
-        reflash_temporary_session::ReflashTemporarySessionMiddleware,
-    },
-};
+use inertia_rust::actix::InertiaMiddleware;
+use inertia_rust::{InertiaProp, hashmap};
+use inertia_sessions::file_session::FileSessionStore;
+use inertia_sessions::middlewares::garbage_collector::GarbageCollectorMiddleware;
+use inertia_sessions::middlewares::reflash_temporary_session::ReflashTemporarySessionMiddleware;
 use serde_json::Map;
-use std::sync::Arc;
 
 pub fn get_server() -> App<
     impl ServiceFactory<

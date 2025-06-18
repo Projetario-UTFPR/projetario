@@ -2,9 +2,9 @@ import { createInertiaApp } from "@inertiajs/react";
 import createServer from "@inertiajs/react/server";
 import ReactDOMServer from "react-dom/server";
 
-import { resolveTitle, resolvePage } from "@/lib/inertia";
+import { resolvePage, resolveTitle } from "@/lib/inertia";
 
-createServer(page =>
+createServer((page) =>
   createInertiaApp({
     page,
     title: resolveTitle,
