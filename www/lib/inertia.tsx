@@ -7,7 +7,7 @@ type PageComponent = ReactElement & {
   default: { layout: (_page: JSX.Element) => ReactElement };
 };
 
-const appName = "Inertia Rust";
+const appName = "Projetário UTFPR";
 
 export const resolveTitle = (title?: string) =>
   title ? `${appName} - ${title}` : appName;

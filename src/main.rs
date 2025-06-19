@@ -27,6 +27,7 @@ async fn main() -> anyhow::Result<()> {
 
     let db_pool = connect_to_db().await?;
     migrate_db(&db_pool).await?;
+    let db_pool = Data::new(db_pool);
 
     let app_config = AppConfig::get();
 
@@ -39,8 +40,12 @@ async fn main() -> anyhow::Result<()> {
 
     let (host, port) = resolve_uri(is_production_env);
 
-    let http_server =
-        HttpServer::new(move || get_server().app_data(inertia_data.clone())).bind((host, port))?;
+    let http_server = HttpServer::new(move || {
+        get_server()
+            .app_data(inertia_data.clone())
+            .app_data(db_pool.clone())
+    })
+    .bind((host, port))?;
 
     if is_production_env {
         ssr_server_process = inertia

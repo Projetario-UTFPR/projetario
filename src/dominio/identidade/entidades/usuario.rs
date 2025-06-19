@@ -20,17 +20,17 @@ pub struct Usuario {
 #[derive(Debug, FromRow)]
 /// `UsuarioModelo` é a representação completa da tabela "usuarios" do banco de dados.
 pub struct UsuarioModelo {
-    id: Uuid,
-    nome: String,
-    email: String,
-    senha_hash: String,
-    url_curriculo_lates: Option<String>,
-    cargo: Cargo,
-    registrado_em: NaiveDateTime,
-    atualizado_em: Option<NaiveDateTime>,
-    desativado_em: Option<NaiveDateTime>,
-    registro_aluno: Option<String>,
-    periodo: Option<i16>,
+    pub id: Uuid,
+    pub nome: String,
+    pub email: String,
+    pub senha_hash: String,
+    pub url_curriculo_lates: Option<String>,
+    pub cargo: Cargo,
+    pub registrado_em: NaiveDateTime,
+    pub atualizado_em: Option<NaiveDateTime>,
+    pub desativado_em: Option<NaiveDateTime>,
+    pub registro_aluno: Option<String>,
+    pub periodo: Option<i16>,
 }
 
 impl Usuario {
@@ -100,8 +100,8 @@ impl Usuario {
 
     pub fn coloque_senha(&mut self, hash: String) -> Result<(), ErroDeDominio> {
         if !self.esta_ativo() {
-            return Err(ErroDeDominio::Integridade(
-                "Não é possível alterar a senha de um usuário desativada.".into(),
+            return Err(ErroDeDominio::integridade(
+                "Não é possível alterar a senha de um usuário desativada.",
             ));
         }
 

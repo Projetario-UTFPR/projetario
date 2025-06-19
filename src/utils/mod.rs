@@ -1,6 +1,9 @@
 pub mod erros;
 pub mod sqlx;
 
+#[cfg(test)]
+pub mod test;
+
 pub fn resolve_uri<'b>(is_production_env: bool) -> (&'b str, u16) {
     // Se estiver sendo compilado em uma imagem Docker, é necessário que escute na porta padrão
     // no IP padrão, de modo que seja possível levantá-lo como um container docker e fazer o bind

@@ -1,9 +1,9 @@
 use std::sync::Arc;
 
 use actix_session::{SessionExt, SessionMiddleware};
-use actix_web::App;
 use actix_web::cookie::{Key, SameSite};
 use actix_web::dev::{ServiceFactory, ServiceRequest, ServiceResponse};
+use actix_web::{App, web};
 use config::app::{AppConfig, RustEnv};
 use futures_util::FutureExt;
 use inertia_rust::actix::InertiaMiddleware;
@@ -12,6 +12,9 @@ use inertia_sessions::file_session::FileSessionStore;
 use inertia_sessions::middlewares::garbage_collector::GarbageCollectorMiddleware;
 use inertia_sessions::middlewares::reflash_temporary_session::ReflashTemporarySessionMiddleware;
 use serde_json::Map;
+
+use crate::infra::http::controllers::Controller;
+use crate::infra::http::controllers::professores::projetos_de_extensao::ControllerProjetosDeExtensao;
 
 pub fn get_server() -> App<
     impl ServiceFactory<
@@ -46,4 +49,5 @@ pub fn get_server() -> App<
                 .cookie_secure(app_config.environment == RustEnv::Production)
                 .build(),
         )
+        .service(web::scope("/professores").configure(ControllerProjetosDeExtensao::register))
 }
