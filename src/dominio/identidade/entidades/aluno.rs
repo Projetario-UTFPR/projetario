@@ -4,6 +4,7 @@ use uuid::Uuid;
 use crate::dominio::identidade::entidades::usuario::{Usuario, UsuarioModelo};
 use crate::dominio::identidade::enums::cargo::Cargo;
 use crate::dominio::identidade::traits::IntoUsuarioModelo;
+use crate::utils::erros::ErroDeDominio;
 
 #[derive(Debug, FromRow)]
 pub struct Aluno {
@@ -71,5 +72,35 @@ impl IntoUsuarioModelo for Aluno {
             registro_aluno: Some(self.registro_aluno),
             periodo: Some(self.periodo),
         }
+    }
+}
+
+impl TryFrom<&UsuarioModelo> for Aluno {
+    type Error = ErroDeDominio;
+
+    fn try_from(value: &UsuarioModelo) -> Result<Self, Self::Error> {
+        if value.cargo != Cargo::Aluno || value.registro_aluno.is_none() || value.periodo.is_none()
+        {
+            return Err(ErroDeDominio::valor_invalido(
+                "O usuário encontrado não é um aluno válido.",
+            ));
+        }
+
+        let usuario = Usuario {
+            atualizado_em: value.atualizado_em,
+            desativado_em: value.desativado_em,
+            email: value.email.to_owned(),
+            id: value.id,
+            nome: value.nome.to_owned(),
+            registrado_em: value.registrado_em,
+            senha_hash: value.senha_hash.to_owned(),
+            url_curriculo_lates: value.url_curriculo_lates.to_owned(),
+        };
+
+        Ok(Aluno {
+            usuario,
+            registro_aluno: value.registro_aluno.to_owned().unwrap(),
+            periodo: value.periodo.unwrap(),
+        })
     }
 }
