@@ -81,3 +81,4 @@ pretty_assertions.workspace = true
 rstest.workspace = true
 tokio = { workspace = true, features = ["test-util"] }
 fake = { version = "4.3.0", features = ["derive", "chrono"] }
+rand.workspace = true
