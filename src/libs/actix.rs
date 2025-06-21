@@ -4,7 +4,7 @@ use actix_web::http::StatusCode;
 use actix_web::http::header::TryIntoHeaderValue;
 use serde::Serialize;
 
-use crate::utils::erros::erro_de_dominio::{ErroDeDominio, TipoErroDeDominio};
+use crate::utils::erros::{ErroDeDominio, TipoErroDeDominio};
 
 pub mod server;
 
