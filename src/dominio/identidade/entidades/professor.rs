@@ -2,6 +2,7 @@ use sqlx::prelude::FromRow;
 
 use crate::dominio::identidade::entidades::usuario::{Usuario, UsuarioModelo};
 use crate::dominio::identidade::enums::cargo::Cargo;
+use crate::dominio::identidade::traits::IntoUsuarioModelo;
 
 #[derive(Debug, FromRow)]
 pub struct Professor {
@@ -91,5 +92,23 @@ impl TryFrom<&UsuarioModelo> for Professor {
             usuario,
             cargo: value.cargo.to_owned(),
         })
+    }
+}
+
+impl IntoUsuarioModelo for Professor {
+    fn into_usuario_modelo(self) -> UsuarioModelo {
+        UsuarioModelo {
+            id: self.usuario.id,
+            nome: self.usuario.nome,
+            email: self.usuario.email,
+            senha_hash: self.usuario.senha_hash,
+            cargo: self.cargo,
+            url_curriculo_lates: self.usuario.url_curriculo_lates,
+            registrado_em: self.usuario.registrado_em,
+            atualizado_em: self.usuario.atualizado_em,
+            desativado_em: self.usuario.desativado_em,
+            registro_aluno: None,
+            periodo: None,
+        }
     }
 }

@@ -1,7 +1,9 @@
 use sqlx::prelude::FromRow;
 use uuid::Uuid;
 
-use crate::dominio::identidade::entidades::usuario::Usuario;
+use crate::dominio::identidade::entidades::usuario::{Usuario, UsuarioModelo};
+use crate::dominio::identidade::enums::cargo::Cargo;
+use crate::dominio::identidade::traits::IntoUsuarioModelo;
 
 #[derive(Debug, FromRow)]
 pub struct Aluno {
@@ -52,4 +54,22 @@ impl AsRef<Usuario> for Aluno {
 
 impl AsMut<Usuario> for Aluno {
     fn as_mut(&mut self) -> &mut Usuario { &mut self.usuario }
+}
+
+impl IntoUsuarioModelo for Aluno {
+    fn into_usuario_modelo(self) -> UsuarioModelo {
+        UsuarioModelo {
+            id: self.usuario.id,
+            nome: self.usuario.nome,
+            email: self.usuario.email,
+            senha_hash: self.usuario.senha_hash,
+            cargo: Cargo::Aluno,
+            url_curriculo_lates: self.usuario.url_curriculo_lates,
+            registrado_em: self.usuario.registrado_em,
+            atualizado_em: self.usuario.atualizado_em,
+            desativado_em: self.usuario.desativado_em,
+            registro_aluno: Some(self.registro_aluno),
+            periodo: Some(self.periodo),
+        }
+    }
 }
