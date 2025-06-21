@@ -2,7 +2,9 @@ use chrono::NaiveDateTime;
 use fake::faker::chrono::pt_br::DateTime;
 use fake::faker::internet::pt_br::{FreeEmail, Password};
 use fake::faker::name::pt_br::Name;
+use fake::faker::number;
 use fake::{Fake, Faker};
+use rand::Rng;
 use uuid::Uuid;
 
 use crate::dominio::identidade::entidades::usuario::UsuarioModelo;
@@ -25,11 +27,24 @@ pub struct UsuarioModeloConstrutor {
     pub periodo: Option<i16>,
 }
 
+impl UsuarioModeloConstrutor {
+    pub fn aluno() -> Self {
+        Self {
+            cargo: Some(Cargo::Aluno),
+            // garante que nunca haverá um registro de aluno "a0000001"
+            registro_aluno: Some(format!("a{:07}", rand::rng().random_range(2..=9999999))),
+            periodo: Some(2),
+            ..Default::default()
+        }
+    }
+}
+
 impl FabricaUsuarioModelo {
+    /// Por padrão, cria um usuario professor
     pub fn obtenha_entidade(parcial: UsuarioModeloConstrutor) -> UsuarioModelo {
         UsuarioModelo {
             id: parcial.id.unwrap_or(Uuid::new_v4()),
-            cargo: parcial.cargo.unwrap_or(Cargo::Aluno),
+            cargo: parcial.cargo.unwrap_or(Cargo::Professor),
             email: parcial.email.unwrap_or_else(|| FreeEmail().fake()),
             nome: parcial.nome.unwrap_or_else(|| Name().fake()),
             periodo: parcial.periodo,
