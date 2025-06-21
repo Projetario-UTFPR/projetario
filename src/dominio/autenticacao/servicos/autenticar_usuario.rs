@@ -9,13 +9,13 @@ use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 use crate::utils::erros::resultado_de_dominio::ResultadoDominio;
 
 pub enum TipoDeLogin<'this> {
-    EmailInstitucional(Cow<'this, &'this str>),
-    RegistroDeAluno(Cow<'this, &'this str>),
+    EmailInstitucional(&'this str),
+    RegistroDeAluno(&'this str),
 }
 
 pub struct AutenticarUsuarioParams<'this> {
     pub login: TipoDeLogin<'this>,
-    pub senha: Cow<'this, &'this str>,
+    pub senha: &'this str,
 }
 
 pub enum AutenticarUsuarioResult {
@@ -28,7 +28,7 @@ where
     RU: RepositorioDeUsuarios,
     Comparador: ComparadorDeHashDeSenha,
 {
-    comparer: Comparador,
+    comparador: Comparador,
     repositorio_usuarios: RU,
 }
 
@@ -69,8 +69,8 @@ where
         };
 
         let senha_esta_correta = self
-            .comparer
-            .compare(params.senha, Cow::Borrowed(&usuario.senha_hash.as_str()));
+            .comparador
+            .compare(params.senha, usuario.senha_hash.as_str());
 
         if !senha_esta_correta {
             return Ok(AutenticarUsuarioResult::NaoAutenticado);
