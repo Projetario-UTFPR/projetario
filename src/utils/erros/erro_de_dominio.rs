@@ -41,8 +41,8 @@ impl ErroDeDominio {
         }
     }
 
-    pub fn com_mensagem(mut self, msg: &str) -> Self {
-        self.msg = msg.into();
+    pub fn com_mensagem<T: ToString>(mut self, msg: T) -> Self {
+        self.msg = msg.to_string();
         self
     }
 
