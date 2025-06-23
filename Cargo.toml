@@ -73,7 +73,7 @@ sqlx = { version = "0.8.5", features = [
 ] }
 thiserror.workspace = true
 validator = { version = "0.20", features = ["derive"] }
-uuid = { version = "1.17.0", features = ["v4"] }
+uuid = { version = "1.17.0", features = ["v4", "serde"] }
 openssl = { version = "0.10.73", features = ["vendored"] }
 pbkdf2 = { version = "0.12", features = ["simple"] }
 
