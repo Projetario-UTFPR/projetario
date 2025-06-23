@@ -3,6 +3,7 @@ use crate::dominio::autenticacao::{
     ComparadorEHasherDeSenha,
     HasherDeSenha,
 };
+use crate::utils::erros::ResultadoDominio;
 
 pub struct ComparadorEHasherDeSenhaFake {
     sufix: &'static str,
@@ -25,5 +26,7 @@ impl ComparadorDeHashDeSenha for ComparadorEHasherDeSenhaFake {
 }
 
 impl HasherDeSenha for ComparadorEHasherDeSenhaFake {
-    fn aplique_hash(&self, senha_crua: &str) -> String { format!("{senha_crua}{}", self.sufix) }
+    fn aplique_hash(&self, senha_crua: &str) -> ResultadoDominio<String> {
+        Ok(format!("{senha_crua}{}", self.sufix))
+    }
 }

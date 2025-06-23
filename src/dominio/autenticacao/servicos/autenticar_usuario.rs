@@ -122,7 +122,7 @@ mod test {
 
         let mut professor = UsuarioModeloConstrutor {
             email: Some("professor@utfpr.edu.br".into()),
-            senha_hash: Some(comparador.aplique_hash("123456")),
+            senha_hash: Some(comparador.aplique_hash("123456").unwrap()),
             ..Default::default()
         };
 
@@ -134,7 +134,7 @@ mod test {
 
         let mut aluno = UsuarioModeloConstrutor::aluno();
         aluno.registro_aluno = Some("a2600554".into());
-        aluno.senha_hash = Some(comparador.aplique_hash("123456"));
+        aluno.senha_hash = Some(comparador.aplique_hash("123456").unwrap());
 
         repositorio_usuarios
             .usuarios_tbl
