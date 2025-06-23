@@ -1,4 +1,5 @@
 use chrono::{NaiveDateTime, Utc};
+use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 use uuid::Uuid;
 
@@ -17,7 +18,7 @@ pub struct Usuario {
     pub(super) desativado_em: Option<NaiveDateTime>,
 }
 
-#[derive(Debug, FromRow)]
+#[derive(Debug, FromRow, Serialize, Deserialize)]
 /// `UsuarioModelo` é a representação completa da tabela "usuarios" do banco de dados.
 pub struct UsuarioModelo {
     pub id: Uuid,
