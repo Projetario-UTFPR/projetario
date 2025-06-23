@@ -1,87 +1,69 @@
-use hmac::digest::generic_array::GenericArray;
-use hmac::digest::{Key, KeyInit, MacError};
-use hmac::{Hmac, Mac, SimpleHmac};
 use openssl::base64;
-use sha2::Sha256;
+use pbkdf2::Pbkdf2;
+use pbkdf2::password_hash::rand_core::OsRng;
+use pbkdf2::password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString};
 
 use crate::dominio::autenticacao::{
     ComparadorDeHashDeSenha,
     ComparadorEHasherDeSenha,
     HasherDeSenha,
 };
+use crate::utils::erros::{ErroDeDominio, ResultadoDominio};
 
-type HmacSha256 = Hmac<Sha256>;
+pub struct ComparadorEHasherDeSenhaCrypto;
 
-pub struct ComparadorEHasherDeSenhasCrypto;
-
-impl ComparadorEHasherDeSenhasCrypto {
+impl ComparadorEHasherDeSenhaCrypto {
     pub fn novo() -> Self { Self }
 }
 
-impl HasherDeSenha for ComparadorEHasherDeSenhasCrypto {
-    fn aplique_hash(&self, senha_crua: &str) -> String {
-        let rng = hmac::digest::crypto_common::rand_core::OsRng;
-        let salt = HmacSha256::generate_key(rng);
+impl HasherDeSenha for ComparadorEHasherDeSenhaCrypto {
+    fn aplique_hash(&self, senha_crua: &str) -> ResultadoDominio<String> {
+        let salt = SaltString::generate(&mut OsRng);
 
-        let mut mac: HmacSha256 = Mac::new(&salt);
-        mac.update(senha_crua.as_bytes());
-        let bytes_do_hash = mac.finalize();
+        let senha_hasheada = match Pbkdf2.hash_password(senha_crua.as_bytes(), &salt) {
+            Err(erro) => {
+                log::error!(
+                    "Houve uma falha no módulo Pbkdf2 ao aplicar hash em uma senha: {erro}"
+                );
 
-        let senha_hasheada = format!(
-            "{}-{}",
-            base64::encode_block(bytes_do_hash.into_bytes().as_slice()),
-            base64::encode_block(salt.as_slice())
-        );
+                return Err(ErroDeDominio::interno());
+            }
 
-        senha_hasheada
+            Ok(hash) => hash.to_string(),
+        };
+
+        Ok(senha_hasheada)
     }
 }
 
-impl ComparadorDeHashDeSenha for ComparadorEHasherDeSenhasCrypto {
+impl ComparadorDeHashDeSenha for ComparadorEHasherDeSenhaCrypto {
     fn compare(&self, senha_plana: &str, hash: &str) -> bool {
-        let partes = hash.split('-').collect::<Vec<&str>>();
-
-        if partes.len() != 2 {
-            return false;
-        }
-
-        let hash = partes[0];
-        let salt = partes[1];
-
-        let salt_como_bytes = match base64::decode_block(salt) {
+        let hash = match PasswordHash::new(hash) {
             Err(_) => return false,
-            Ok(bytes) => bytes,
+            Ok(hash) => hash,
         };
 
-        let salt = Key::<HmacSha256>::from_slice(&salt_como_bytes);
-        let mut mac: HmacSha256 = Mac::new(salt);
-
-        mac.update(senha_plana.as_bytes());
-
-        let hash_como_bytes = match base64::decode_block(hash) {
-            Err(_) => return false,
-            Ok(bytes) => bytes,
-        };
-
-        mac.verify_slice(&hash_como_bytes).is_ok()
+        Pbkdf2
+            .verify_password(senha_plana.as_bytes(), &hash)
+            .is_ok()
     }
 }
 
-impl ComparadorEHasherDeSenha for ComparadorEHasherDeSenhasCrypto {}
+impl ComparadorEHasherDeSenha for ComparadorEHasherDeSenhaCrypto {}
 
 #[cfg(test)]
 mod test {
     use pretty_assertions::assert_eq;
 
     use crate::dominio::autenticacao::{ComparadorDeHashDeSenha, HasherDeSenha};
-    use crate::infra::crypto::comparador_e_hasher_de_senhas::ComparadorEHasherDeSenhasCrypto;
+    use crate::infra::crypto::comparador_e_hasher_de_senhas::ComparadorEHasherDeSenhaCrypto;
 
     #[test]
     fn deveria_retornar_true_se_e_somente_se_as_senhas_coincidem() {
-        let hasher = ComparadorEHasherDeSenhasCrypto::novo();
+        let hasher = ComparadorEHasherDeSenhaCrypto::novo();
 
         let senha_em_plain_text = "12345678Aa!";
-        let senha_hash = hasher.aplique_hash(senha_em_plain_text);
+        let senha_hash = hasher.aplique_hash(senha_em_plain_text).unwrap();
 
         assert!(hasher.compare(senha_em_plain_text, &senha_hash));
         assert!(!hasher.compare("12345678aa!", &senha_hash));

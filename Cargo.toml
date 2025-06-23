@@ -75,8 +75,7 @@ thiserror.workspace = true
 validator = { version = "0.20", features = ["derive"] }
 uuid = { version = "1.17.0", features = ["v4"] }
 openssl = { version = "0.10.73", features = ["vendored"] }
-hmac = "0.12.1"
-sha2 = "0.10.9"
+pbkdf2 = { version = "0.12", features = ["simple"] }
 
 [dev-dependencies]
 pretty_assertions.workspace = true
