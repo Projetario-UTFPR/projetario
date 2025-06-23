@@ -3,6 +3,7 @@ use std::hash::Hash;
 
 use crate::dominio::autenticacao::{ComparadorDeHashDeSenha, HasherDeSenha};
 use crate::dominio::identidade::entidades::usuario::UsuarioModelo;
+use crate::dominio::identidade::politicas::registro_de_aluno::valide_registro_de_aluno;
 use crate::dominio::identidade::repositorios::usuarios::RepositorioDeUsuarios;
 use crate::dominio::identidade::traits::IntoUsuarioModelo;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
@@ -50,7 +51,9 @@ where
         params: AutenticarUsuarioParams<'_>,
     ) -> ResultadoDominio<AutenticarUsuarioResult> {
         if let TipoDeLogin::RegistroDeAluno(ra) = &params.login {
-            if !ra.starts_with('a') || !ra[1..].chars().all(|char| char.is_numeric()) {
+            let registro_eh_valido = valide_registro_de_aluno(ra);
+
+            if !registro_eh_valido {
                 return Err(ErroDeDominio::valor_invalido(
                     "O registro de aluno deve ser prefixado com a letra \"a\".",
                 ));
