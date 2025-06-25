@@ -5,6 +5,7 @@ Projetário UTFPR, bem como guias de instalação e sobre a arquitetura de diret
 ## Setup
 Para contribuir, é necessário ter instalado os seguintes softwares:
 - [Rust e sua toolchain](https://www.rust-lang.org/pt-BR/tools/install);
+    - Instale, também, a toolchain nightly + clippy com o comando `rustup toolchain install nightly ; rustup +nightly component add clippy`
 - [Docker](https://www.docker.com/);
 - [Node.js](https://nodejs.org/en).
 
