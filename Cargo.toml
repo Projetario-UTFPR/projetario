@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 
 [features]
-dockerimgb = []
+dockerimgb = ["openssl/vendored"]
 
 [workspace]
 members = ["config", "sessions"]
@@ -74,7 +74,7 @@ sqlx = { version = "0.8.5", features = [
 thiserror.workspace = true
 validator = { version = "0.20", features = ["derive"] }
 uuid = { version = "1.17.0", features = ["v4"] }
-openssl = { version = "0.10.73", features = ["vendored"] }
+openssl = { version = "0.10.73" }
 
 [dev-dependencies]
 pretty_assertions.workspace = true
