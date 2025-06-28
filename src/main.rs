@@ -25,7 +25,7 @@ async fn main() -> anyhow::Result<()> {
         .target(Target::Stdout)
         .init();
 
-    let db_pool = connect_to_db().await?;
+    let db_pool = connect_to_db_from_app_config().await?;
     migrate_db(&db_pool).await?;
     let db_pool = Data::new(db_pool);
 
