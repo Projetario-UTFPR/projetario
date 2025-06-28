@@ -18,7 +18,7 @@ pub struct UsuarioModeloConstrutor {
     pub nome: Option<String>,
     pub email: Option<String>,
     pub senha_hash: Option<String>,
-    pub url_curriculo_lates: Option<String>,
+    pub url_curriculo_lattes: Option<String>,
     pub cargo: Option<Cargo>,
     pub registrado_em: Option<NaiveDateTime>,
     pub atualizado_em: Option<NaiveDateTime>,
@@ -52,7 +52,7 @@ impl FabricaUsuarioModelo {
             senha_hash: parcial
                 .senha_hash
                 .unwrap_or_else(|| Password(10..15).fake()),
-            url_curriculo_lates: parcial.url_curriculo_lates,
+            url_curriculo_lattes: parcial.url_curriculo_lattes,
             registrado_em: parcial.registrado_em.unwrap_or_else(|| DateTime().fake()),
             atualizado_em: parcial.atualizado_em,
             desativado_em: parcial.desativado_em,

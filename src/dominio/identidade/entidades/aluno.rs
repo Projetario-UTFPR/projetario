@@ -21,11 +21,11 @@ impl Aluno {
         nome: String,
         email: String,
         senha_hash: String,
-        url_curriculo_lates: Option<String>,
+        url_curriculo_lattes: Option<String>,
         periodo: i16,
         registro_aluno: String,
     ) -> Self {
-        let usuario = Usuario::novo(nome, email, senha_hash, url_curriculo_lates);
+        let usuario = Usuario::novo(nome, email, senha_hash, url_curriculo_lattes);
         Self {
             periodo,
             registro_aluno,
@@ -65,7 +65,7 @@ impl IntoUsuarioModelo for Aluno {
             email: self.usuario.email,
             senha_hash: self.usuario.senha_hash,
             cargo: Cargo::Aluno,
-            url_curriculo_lates: self.usuario.url_curriculo_lates,
+            url_curriculo_lattes: self.usuario.url_curriculo_lattes,
             registrado_em: self.usuario.registrado_em,
             atualizado_em: self.usuario.atualizado_em,
             desativado_em: self.usuario.desativado_em,
@@ -94,7 +94,7 @@ impl TryFrom<&UsuarioModelo> for Aluno {
             nome: value.nome.to_owned(),
             registrado_em: value.registrado_em,
             senha_hash: value.senha_hash.to_owned(),
-            url_curriculo_lates: value.url_curriculo_lates.to_owned(),
+            url_curriculo_lattes: value.url_curriculo_lattes.to_owned(),
         };
 
         Ok(Aluno {

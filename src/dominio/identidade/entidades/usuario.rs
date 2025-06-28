@@ -12,7 +12,7 @@ pub struct Usuario {
     pub(super) nome: String,
     pub(super) email: String,
     pub(super) senha_hash: String,
-    pub(super) url_curriculo_lates: Option<String>,
+    pub(super) url_curriculo_lattes: Option<String>,
     pub(super) registrado_em: NaiveDateTime,
     pub(super) atualizado_em: Option<NaiveDateTime>,
     pub(super) desativado_em: Option<NaiveDateTime>,
@@ -25,7 +25,7 @@ pub struct UsuarioModelo {
     pub nome: String,
     pub email: String,
     pub senha_hash: String,
-    pub url_curriculo_lates: Option<String>,
+    pub url_curriculo_lattes: Option<String>,
     pub cargo: Cargo,
     pub registrado_em: NaiveDateTime,
     pub atualizado_em: Option<NaiveDateTime>,
@@ -39,14 +39,14 @@ impl Usuario {
         nome: String,
         email: String,
         senha_hash: String,
-        url_curriculo_lates: Option<String>,
+        url_curriculo_lattes: Option<String>,
     ) -> Self {
         Self {
             id: Uuid::new_v4(),
             nome,
             email,
             senha_hash,
-            url_curriculo_lates,
+            url_curriculo_lattes,
             atualizado_em: None,
             desativado_em: None,
             registrado_em: Utc::now().naive_utc(),
@@ -75,7 +75,7 @@ impl Usuario {
     }
 
     pub fn obtenha_url_do_curriculo_lattes(&self) -> Option<&str> {
-        self.url_curriculo_lates.as_deref()
+        self.url_curriculo_lattes.as_deref()
     }
 
     pub fn obtenha_data_de_registro(&self) -> NaiveDateTime { self.registrado_em }
@@ -121,23 +121,23 @@ impl Usuario {
         self.toque();
     }
 
-    pub fn coloque_url_curriculo_lates(&mut self, url: String) {
-        if let Some(ref url_atual) = self.url_curriculo_lates {
+    pub fn coloque_url_curriculo_lattes(&mut self, url: String) {
+        if let Some(ref url_atual) = self.url_curriculo_lattes {
             if url.eq(url_atual) {
                 return;
             }
         }
 
-        self.url_curriculo_lates = Some(url);
+        self.url_curriculo_lattes = Some(url);
         self.toque();
     }
 
-    pub fn remova_url_curriculo_lates(&mut self) {
-        if self.url_curriculo_lates.is_none() {
+    pub fn remova_url_curriculo_lattes(&mut self) {
+        if self.url_curriculo_lattes.is_none() {
             return;
         }
 
-        self.url_curriculo_lates = None;
+        self.url_curriculo_lattes = None;
         self.toque();
     }
 

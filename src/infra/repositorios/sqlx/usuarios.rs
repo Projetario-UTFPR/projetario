@@ -22,7 +22,7 @@ impl RepositorioDeUsuarios for RepositorioDeUsuariosSQLX<'_> {
     ) -> ResultadoDominio<Option<Professor>> {
         let query = query_as(
             "SELECT \
-            id, nome, email, senha_hash, url_curriculo_lates, registrado_em, atualizado_em, desativado_em, cargo \
+            id, nome, email, senha_hash, url_curriculo_lattes, registrado_em, atualizado_em, desativado_em, cargo \
             FROM \"usuario\" \
             WHERE email = $1
             AND cargo in ('professor', 'administrador') \
@@ -40,7 +40,7 @@ impl RepositorioDeUsuarios for RepositorioDeUsuariosSQLX<'_> {
     async fn encontre_aluno_pelo_ra(&self, ra: &str) -> ResultadoDominio<Option<Aluno>> {
         let query = query_as(
             "SELECT \
-            id, nome, email, senha_hash, url_curriculo_lates, registrado_em, atualizado_em, desativado_em, registro_aluno, periodo \
+            id, nome, email, senha_hash, url_curriculo_lattes, registrado_em, atualizado_em, desativado_em, registro_aluno, periodo \
             FROM \"usuario\" \
             WHERE registro_aluno = $1
             AND cargo = 'aluno' \
