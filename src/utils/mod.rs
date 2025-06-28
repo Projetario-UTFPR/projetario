@@ -2,7 +2,7 @@ pub mod common;
 pub mod erros;
 pub mod sqlx;
 
-#[cfg(test)]
+#[cfg(feature = "test-utils")]
 pub mod test;
 
 pub fn resolve_uri<'b>(is_production_env: bool) -> (&'b str, u16) {

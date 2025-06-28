@@ -5,6 +5,7 @@ edition.workspace = true
 
 [features]
 dockerimgb = []
+test-utils = ["dep:fake", "dep:rand"]
 
 [workspace]
 members = ["config", "sessions"]
@@ -76,10 +77,10 @@ validator = { version = "0.20", features = ["derive"] }
 uuid = { version = "1.17.0", features = ["v4", "serde"] }
 openssl = { version = "0.10.73", features = ["vendored"] }
 pbkdf2 = { version = "0.12", features = ["simple"] }
+fake = { version = "4.3.0", features = ["derive", "chrono"], optional = true }
+rand = { workspace = true, optional = true }
 
 [dev-dependencies]
 pretty_assertions.workspace = true
 rstest.workspace = true
 tokio = { workspace = true, features = ["test-util"] }
-fake = { version = "4.3.0", features = ["derive", "chrono"] }
-rand.workspace = true
