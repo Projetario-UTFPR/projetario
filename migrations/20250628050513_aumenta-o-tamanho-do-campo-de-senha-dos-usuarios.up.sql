@@ -1,3 +1,3 @@
 -- Add up migration script here
 ALTER TABLE "usuario"
-MODIFY COLUMN 'senha_hash' VARCHAR(120);
+ALTER COLUMN 'senha_hash' TYPE VARCHAR(120);
