@@ -1,20 +1,12 @@
-#![allow(unused)]
-
 use actix_web::HttpServer;
 use actix_web::web::Data;
 use config::app::{AppConfig, RustEnv};
 use config::inertia::get_inertia;
 use config::vite::get_vite;
 use env_logger::Target;
-use libs::actix::server::get_server;
-
-use crate::utils::resolve_uri;
-use crate::utils::sqlx::{connect_to_db, migrate_db};
-
-mod dominio;
-mod infra;
-mod libs;
-mod utils;
+use projetario::libs::actix::server::get_server;
+use projetario::utils::resolve_uri;
+use projetario::utils::sqlx::{connect_to_db_from_app_config, migrate_db};
 
 #[actix_web::main]
 async fn main() -> anyhow::Result<()> {
