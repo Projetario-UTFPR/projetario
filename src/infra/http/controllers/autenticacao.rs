@@ -1,6 +1,6 @@
 use actix_session::SessionExt;
-use actix_web::HttpRequest;
 use actix_web::web::{Data, Json};
+use actix_web::{HttpRequest, web};
 use config::app::AppConfig;
 use inertia_rust::validators::InertiaValidateOrRedirect;
 use inertia_rust::{Inertia, InertiaFacade, hashmap};
@@ -15,11 +15,17 @@ use crate::dominio::autenticacao::servicos::autenticar_usuario::{
 use crate::dominio::identidade::entidades::usuario::UsuarioModelo;
 use crate::infra::dtos::autenticacao::LoginDto;
 use crate::infra::fabricas::servicos::autenticacao::obtenha_servico_autenticar_usuario;
-use crate::infra::http::controllers::RedirectDoApp;
+use crate::infra::http::controllers::{Controller, RedirectDoApp};
 use crate::unwrap_or_redirect;
 use crate::utils::erros::{ErroDeDominio, ResultadoDominio};
 
 pub struct ControllerAutenticacao;
+
+impl Controller for ControllerAutenticacao {
+    fn register(cfg: &mut actix_web::web::ServiceConfig) {
+        cfg.service(web::scope("/autenticacao").route("/login", web::post().to(Self::login)));
+    }
+}
 
 impl ControllerAutenticacao {
     pub async fn login(

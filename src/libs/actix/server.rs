@@ -14,6 +14,7 @@ use inertia_sessions::middlewares::reflash_temporary_session::ReflashTemporarySe
 use serde_json::Map;
 
 use crate::infra::http::controllers::Controller;
+use crate::infra::http::controllers::autenticacao::ControllerAutenticacao;
 use crate::infra::http::controllers::professores::projetos_de_extensao::ControllerProjetosDeExtensao;
 
 pub fn get_server() -> App<
@@ -49,5 +50,6 @@ pub fn get_server() -> App<
                 .cookie_secure(app_config.environment == RustEnv::Production)
                 .build(),
         )
+        .configure(ControllerAutenticacao::register)
         .service(web::scope("/professores").configure(ControllerProjetosDeExtensao::register))
 }
