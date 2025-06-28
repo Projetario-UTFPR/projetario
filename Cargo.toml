@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 
 [features]
-dockerimgb = []
+dockerimgb = ["openssl/vendored"]
 test-utils = ["dep:fake", "dep:rand"]
 
 [workspace]
@@ -75,7 +75,7 @@ sqlx = { version = "0.8.5", features = [
 thiserror.workspace = true
 validator = { version = "0.20", features = ["derive"] }
 uuid = { version = "1.17.0", features = ["v4", "serde"] }
-openssl = { version = "0.10.73", features = ["vendored"] }
+openssl = { version = "0.10.73" }
 pbkdf2 = { version = "0.12", features = ["simple"] }
 fake = { version = "4.3.0", features = ["derive", "chrono"], optional = true }
 rand = { workspace = true, optional = true }
