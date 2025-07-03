@@ -55,6 +55,7 @@ pub fn get_server() -> App<
                 .cookie_http_only(true)
                 .cookie_same_site(SameSite::Lax)
                 .cookie_secure(app_config.environment == RustEnv::Production)
+                .cookie_name(app_config.sessions_cookie_name.to_string())
                 .build(),
         )
         .wrap(NormalizePath::trim())
