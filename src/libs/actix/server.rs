@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use actix_session::{SessionExt, SessionMiddleware};
+use actix_web::body::{BoxBody, EitherBody};
 use actix_web::cookie::{Key, SameSite};
 use actix_web::dev::{ServiceFactory, ServiceRequest, ServiceResponse};
 use actix_web::{App, web};
@@ -16,12 +17,13 @@ use serde_json::Map;
 use crate::infra::http::controllers::Controller;
 use crate::infra::http::controllers::autenticacao::ControllerAutenticacao;
 use crate::infra::http::controllers::professores::projetos_de_extensao::ControllerProjetosDeExtensao;
+use crate::infra::http::middlewares::usuario_da_requisicao::MiddlewareUsuarioDaRequisicao;
 
 pub fn get_server() -> App<
     impl ServiceFactory<
         ServiceRequest,
         Config = (),
-        Response = ServiceResponse,
+        Response = ServiceResponse<EitherBody<BoxBody>>,
         Error = actix_web::Error,
         InitError = (),
     >,
@@ -40,6 +42,7 @@ pub fn get_server() -> App<
 
             async { hashmap![ "flash" => InertiaProp::always(flash) ] }.boxed_local()
         })))
+        .wrap(MiddlewareUsuarioDaRequisicao)
         .wrap(ReflashTemporarySessionMiddleware)
         .wrap(GarbageCollectorMiddleware)
         .wrap(
