@@ -47,6 +47,7 @@ impl DBGuard<'_> {
     ///
     /// ## Panic
     /// Essa função resulta em pânico se a conexão já tiver sido retirada.
+    #[allow(dead_code)]
     pub fn extraia_conexao(&mut self) -> Data<PgPool> {
         if self.db_conn.is_none() {
             panic!(

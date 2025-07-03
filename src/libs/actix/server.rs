@@ -44,7 +44,7 @@ pub fn get_server() -> App<
                 log::warn!("Usuário da requisição não encontrada pelo `InertiaMiddleware`, caindo para o usuário convidado.");
                 &UsuarioDaRequisicao::Convidado
             }).clone();
-            
+
             let usuario = match usuario {
                 UsuarioDaRequisicao::Convidado => None,
                 UsuarioDaRequisicao::Aluno(aluno) => Some(aluno.into_usuario_modelo()),
