@@ -4,7 +4,8 @@ use actix_session::{SessionExt, SessionMiddleware};
 use actix_web::body::{BoxBody, EitherBody};
 use actix_web::cookie::{Key, SameSite};
 use actix_web::dev::{ServiceFactory, ServiceRequest, ServiceResponse};
-use actix_web::{App, web};
+use actix_web::middleware::NormalizePath;
+use actix_web::{App, HttpMessage, web};
 use config::app::{AppConfig, RustEnv};
 use futures_util::FutureExt;
 use inertia_rust::actix::InertiaMiddleware;
@@ -17,7 +18,10 @@ use serde_json::Map;
 use crate::infra::http::controllers::Controller;
 use crate::infra::http::controllers::autenticacao::ControllerAutenticacao;
 use crate::infra::http::controllers::professores::projetos_de_extensao::ControllerProjetosDeExtensao;
-use crate::infra::http::middlewares::usuario_da_requisicao::MiddlewareUsuarioDaRequisicao;
+use crate::infra::http::middlewares::usuario_da_requisicao::{
+    MiddlewareUsuarioDaRequisicao,
+    UsuarioDaRequisicao,
+};
 
 pub fn get_server() -> App<
     impl ServiceFactory<
@@ -33,6 +37,7 @@ pub fn get_server() -> App<
     let storage = FileSessionStore::default();
 
     App::new()
+        .wrap(GarbageCollectorMiddleware)
         .wrap(InertiaMiddleware::new().with_shared_props(Arc::new(|req| {
             let flash = req
                 .get_session()
@@ -42,9 +47,8 @@ pub fn get_server() -> App<
 
             async { hashmap![ "flash" => InertiaProp::always(flash) ] }.boxed_local()
         })))
-        .wrap(MiddlewareUsuarioDaRequisicao)
         .wrap(ReflashTemporarySessionMiddleware)
-        .wrap(GarbageCollectorMiddleware)
+        .wrap(MiddlewareUsuarioDaRequisicao)
         .wrap(
             SessionMiddleware::builder(storage, key)
                 .cookie_domain(None)
@@ -53,6 +57,7 @@ pub fn get_server() -> App<
                 .cookie_secure(app_config.environment == RustEnv::Production)
                 .build(),
         )
+        .wrap(NormalizePath::trim())
         .configure(ControllerAutenticacao::register)
         .service(web::scope("/professores").configure(ControllerProjetosDeExtensao::register))
 }
