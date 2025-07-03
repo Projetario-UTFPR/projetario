@@ -6,12 +6,20 @@ type InputProps = {
   id?: string;
   name?: string;
   placeholder?: string;
+  error?: string;
 };
 
-export function Input({ label, name, type = "text", placeholder }: InputProps) {
+export function Input({
+  label,
+  name,
+  type = "text",
+  placeholder,
+  error,
+}: InputProps) {
   return (
     <label className="flex flex-col gap-2 mb-3">
       <span className="text-base">{label}</span>
+      {error && <Form.AlertaDeErro>{error}</Form.AlertaDeErro>}
       <input
         type={type}
         name={name}
