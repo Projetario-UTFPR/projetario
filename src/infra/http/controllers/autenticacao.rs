@@ -1,6 +1,6 @@
 use actix_session::SessionExt;
 use actix_web::web::{Data, Json};
-use actix_web::{HttpRequest, web};
+use actix_web::{HttpRequest, Responder, web};
 use config::app::AppConfig;
 use inertia_rust::validators::InertiaValidateOrRedirect;
 use inertia_rust::{Inertia, InertiaFacade, hashmap};
@@ -15,7 +15,7 @@ use crate::dominio::autenticacao::servicos::autenticar_usuario::{
 use crate::dominio::identidade::entidades::usuario::UsuarioModelo;
 use crate::infra::dtos::autenticacao::LoginDto;
 use crate::infra::fabricas::servicos::autenticacao::obtenha_servico_autenticar_usuario;
-use crate::infra::http::controllers::{Controller, RedirectDoApp};
+use crate::infra::http::controllers::{Controller, RedirectDoApp, RespostaDoApp};
 use crate::infra::http::middlewares::somente_com_cargo::{
     AutorizacaoDaRota,
     MiddlewareEstaAutorizado,
@@ -29,7 +29,11 @@ impl Controller for ControllerAutenticacao {
     fn register(cfg: &mut actix_web::web::ServiceConfig) {
         cfg.service(
             web::scope("/autenticacao")
-                .route("/login", web::post().to(Self::login))
+                .route("/login", web::post().to(Self::autenticar))
+                .wrap(MiddlewareEstaAutorizado::novo(
+                    AutorizacaoDaRota::SomenteConvidado,
+                ))
+                .route("/login", web::get().to(Self::login))
                 .wrap(MiddlewareEstaAutorizado::novo(
                     AutorizacaoDaRota::SomenteConvidado,
                 )),
@@ -38,7 +42,11 @@ impl Controller for ControllerAutenticacao {
 }
 
 impl ControllerAutenticacao {
-    pub async fn login(
+    pub async fn login(req: HttpRequest) -> impl Responder {
+        Inertia::render(&req, "autenticacao/login".into()).await
+    }
+
+    pub async fn autenticar(
         req: HttpRequest,
         db_conn: Data<PgPool>,
         body: Json<LoginDto>,
