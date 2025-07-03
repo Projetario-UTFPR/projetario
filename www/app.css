@@ -18,6 +18,12 @@
   --container-sm: calc(716rem / 16);
 }
 
+@layer base {
+  #app {
+    height: 100%;
+  }
+}
+
 @layer components {
   .container-box {
     display: flex;
