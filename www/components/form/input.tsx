@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import Form from ".";
 
 type InputProps = {
   label: string;
@@ -7,6 +8,8 @@ type InputProps = {
   name?: string;
   placeholder?: string;
   error?: string;
+  onInput: (value: string) => void;
+  required?: boolean;
 };
 
 export function Input({
@@ -15,6 +18,8 @@ export function Input({
   type = "text",
   placeholder,
   error,
+  onInput,
+  required,
 }: InputProps) {
   return (
     <label className="flex flex-col gap-2 mb-3">
@@ -26,9 +31,11 @@ export function Input({
         placeholder={placeholder}
         className={clsx(
           "transition-all duration-150 rounded-3xl px-4 py-2 border border-black/20",
-          "leading-none placeholder:text-black/70",
+          "leading-none placeholder:text-black/60",
           "outline-none ring-yellow-500 ring-0 focus:ring-4",
         )}
+        onInput={(event) => onInput(event.currentTarget.value)}
+        required={required}
       />
     </label>
   );
