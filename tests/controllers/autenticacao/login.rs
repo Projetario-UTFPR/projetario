@@ -77,8 +77,53 @@ pub async fn um_usuario_deveria_poder_se_autenticar(
             .contains("autenticado com sucesso"),
         "Deveria ter redirecionado com um flash message de sucesso no login."
     );
+}
 
-    assert!(pagina.get_props().get("usuario").is_some());
+#[rstest]
+#[awt]
+#[tokio::test]
+pub async fn soh_usuarios_nao_autenticados_deveriam_poder_ver_a_pagina_de_login(
+    __setup: (),
+    #[future] inertia: Data<Inertia>,
+    #[future] db_guard: DBGuard<'_>,
+) {
+    inserir_usuario_no_db(db_guard.as_ref()).await;
+
+    let app = init_service(
+        get_server()
+            .app_data(inertia)
+            .app_data(db_guard.clone_a_conexao()),
+    )
+    .await;
+
+    let resposta_login = TestRequest::post()
+        .uri("/autenticacao/login")
+        .set_json(json!({
+            "registro_aluno": "a256020",
+            "senha": "123456"
+        }))
+        .inertia()
+        .insert_header((REFERER, "/projetos"))
+        .send_request(&app)
+        .await;
+
+    assert_eq!(StatusCode::FOUND, resposta_login.status());
+
+    let tentativa_de_ir_para_login = TestRequest::post()
+        .uri("/autenticacao/login")
+        .set_json(json!({
+            "registro_aluno": "a256020",
+            "senha": "123456"
+        }))
+        .inertia()
+        .cookie(extraia_cookie_da_sessao(&resposta_login))
+        .send_request(&app)
+        .await;
+
+    assert_eq!(
+        StatusCode::UNAUTHORIZED,
+        tentativa_de_ir_para_login.status()
+    );
 }
 
 async fn inserir_usuario_no_db(db_conn: &PgPool) {

@@ -16,6 +16,10 @@ use crate::dominio::identidade::entidades::usuario::UsuarioModelo;
 use crate::infra::dtos::autenticacao::LoginDto;
 use crate::infra::fabricas::servicos::autenticacao::obtenha_servico_autenticar_usuario;
 use crate::infra::http::controllers::{Controller, RedirectDoApp};
+use crate::infra::http::middlewares::somente_com_cargo::{
+    AutorizacaoDaRota,
+    MiddlewareEstaAutorizado,
+};
 use crate::unwrap_or_redirect;
 use crate::utils::erros::{ErroDeDominio, ResultadoDominio};
 
@@ -23,7 +27,13 @@ pub struct ControllerAutenticacao;
 
 impl Controller for ControllerAutenticacao {
     fn register(cfg: &mut actix_web::web::ServiceConfig) {
-        cfg.service(web::scope("/autenticacao").route("/login", web::post().to(Self::login)));
+        cfg.service(
+            web::scope("/autenticacao")
+                .route("/login", web::post().to(Self::login))
+                .wrap(MiddlewareEstaAutorizado::novo(
+                    AutorizacaoDaRota::SomenteConvidado,
+                )),
+        );
     }
 }
 
