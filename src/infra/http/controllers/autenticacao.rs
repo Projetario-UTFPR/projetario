@@ -101,11 +101,6 @@ impl ControllerAutenticacao {
 }
 
 fn colocar_usuario_nas_sessoes(req: &HttpRequest, usuario: UsuarioModelo) -> ResultadoDominio<()> {
-    let usuario = serde_json::to_string(&usuario).map_err(|erro| {
-        log::error!("Um erro inesperado aconteceu ao jsonificar um usuário: {erro}");
-        (ErroDeDominio::interno())
-    })?;
-
     req
         .get_session()
         .insert(AppConfig::get().sessions_user_key, usuario)
