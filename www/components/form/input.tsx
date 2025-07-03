@@ -1,0 +1,27 @@
+import clsx from "clsx";
+
+type InputProps = {
+  label: string;
+  type: "text" | "password";
+  id?: string;
+  name?: string;
+  placeholder?: string;
+};
+
+export function Input({ label, name, type = "text", placeholder }: InputProps) {
+  return (
+    <label className="flex flex-col gap-2 mb-3">
+      <span className="text-base">{label}</span>
+      <input
+        type={type}
+        name={name}
+        placeholder={placeholder}
+        className={clsx(
+          "transition-all duration-150 rounded-3xl px-4 py-2 border border-black/20",
+          "leading-none placeholder:text-black/70",
+          "outline-none ring-yellow-500 ring-0 focus:ring-4",
+        )}
+      />
+    </label>
+  );
+}
