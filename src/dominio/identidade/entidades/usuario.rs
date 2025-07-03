@@ -6,7 +6,7 @@ use uuid::Uuid;
 use crate::dominio::identidade::enums::cargo::Cargo;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 
-#[derive(Debug, FromRow)]
+#[derive(Debug, FromRow, Clone, PartialEq)]
 pub struct Usuario {
     pub(super) id: Uuid,
     pub(super) nome: String,

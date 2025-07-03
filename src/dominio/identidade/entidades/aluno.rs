@@ -6,7 +6,7 @@ use crate::dominio::identidade::enums::cargo::Cargo;
 use crate::dominio::identidade::traits::IntoUsuarioModelo;
 use crate::utils::erros::ErroDeDominio;
 
-#[derive(Debug, FromRow)]
+#[derive(Debug, FromRow, Clone, PartialEq)]
 pub struct Aluno {
     #[sqlx(flatten)]
     usuario: Usuario,
