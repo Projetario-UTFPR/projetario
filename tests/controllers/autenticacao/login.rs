@@ -45,7 +45,7 @@ pub async fn um_usuario_deveria_poder_se_autenticar(
             "senha": "123456"
         }))
         .inertia()
-        .insert_header((REFERER, "/projetos"))
+        .insert_header((REFERER, "/dev/hello/world"))
         .send_request(&app)
         .await;
 
@@ -54,7 +54,7 @@ pub async fn um_usuario_deveria_poder_se_autenticar(
     let local_do_redirect = extraia_valor_do_header_location(&resposta);
 
     assert_eq!(
-        "/projetos", local_do_redirect,
+        "/dev/hello/world", local_do_redirect,
         "Deveria ter autenticado e mandado de volta para a página de origem."
     );
 
@@ -65,10 +65,13 @@ pub async fn um_usuario_deveria_poder_se_autenticar(
         .send_request(&app)
         .await;
 
+    assert!(resposta_subsequente.status().is_success());
+
     let pagina = resposta_subsequente.into_assertable_inertia();
 
+    assert!(pagina.get_props()["autenticacao"].get("usuario").is_some());
     assert!(
-        pagina.get_props()["loginSucesso"]
+        pagina.get_props()["flash"]["sucessoLogin"]
             .to_string()
             .to_lowercase()
             .contains("autenticado com sucesso"),
@@ -90,7 +93,6 @@ async fn inserir_usuario_no_db(db_conn: &PgPool) {
 
     let usuario = FabricaUsuarioModelo::obtenha_entidade(usuario);
 
-    println!("{}\n\n", usuario.senha_hash);
     sqlx::query(
         "INSERT INTO \"usuario\" ( \
             id, \
