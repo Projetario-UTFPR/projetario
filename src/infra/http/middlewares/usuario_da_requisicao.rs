@@ -1,3 +1,4 @@
+use std::convert::Infallible;
 use std::pin::Pin;
 use std::rc::Rc;
 
@@ -5,7 +6,7 @@ use actix_session::SessionExt;
 use actix_web::body::EitherBody;
 use actix_web::dev::{Service, ServiceRequest, ServiceResponse, Transform, forward_ready};
 use actix_web::web::Data;
-use actix_web::{Error, HttpMessage, ResponseError};
+use actix_web::{Error, FromRequest, HttpMessage, ResponseError};
 use config::app::AppConfig;
 use futures_util::future::{Ready, ready};
 use sqlx::{FromRow, PgPool};
@@ -13,6 +14,7 @@ use uuid::Uuid;
 
 use crate::dominio::identidade::entidades::aluno::Aluno;
 use crate::dominio::identidade::entidades::professor::Professor;
+use crate::dominio::identidade::entidades::usuario::UsuarioModelo;
 use crate::dominio::identidade::repositorios::usuarios::RepositorioDeUsuarios;
 use crate::infra::repositorios::sqlx::usuarios::RepositorioDeUsuariosSQLX;
 use crate::utils::erros::ErroDeDominio;
@@ -27,18 +29,39 @@ use crate::utils::erros::ErroDeDominio;
 /// não é conectado e a conexão se mantém como um usuário convidado.
 pub struct MiddlewareUsuarioDaRequisicao;
 
+#[derive(Debug, Clone, PartialEq)]
 pub enum UsuarioDaRequisicao {
     Convidado,
     Professor(Professor),
     Aluno(Aluno),
 }
 
+impl FromRequest for UsuarioDaRequisicao {
+    type Error = Infallible;
+    type Future = Pin<Box<dyn Future<Output = Result<Self, Self::Error>>>>;
+
+    fn from_request(
+        req: &actix_web::HttpRequest,
+        payload: &mut actix_web::dev::Payload,
+    ) -> Self::Future {
+        let usuario = req
+            .extensions()
+            .get::<UsuarioDaRequisicao>()
+            .expect(
+                "Não foi encontrado um usuário da requisição no contexto HTTP. \
+            Verifique se o middleware `MiddlewareUsuarioDaRequisicao` está \
+            corretamente configurado.",
+            )
+            .clone();
+
+        Box::pin(async move { Ok(usuario) })
+    }
+}
+
 pub struct ServicoUsuarioDaRequisicao<S> {
-    // service: Rc<S>
     service: Rc<S>,
 }
 
-// S: 'static if working with async
 impl<S, B> Transform<S, ServiceRequest> for MiddlewareUsuarioDaRequisicao
 where
     S: Service<ServiceRequest, Response = ServiceResponse<B>, Error = Error> + 'static,
@@ -74,6 +97,7 @@ where
         let service = self.service.clone();
         Box::pin(async move {
             let usuario = busque_usuario_da_sessao(&mut req).await;
+
             match usuario {
                 Err(erro) => {
                     let http_res = erro.error_response().map_into_right_body();
@@ -96,18 +120,18 @@ where
 async fn busque_usuario_da_sessao(
     req: &mut ServiceRequest,
 ) -> Result<UsuarioDaRequisicao, ErroDeDominio> {
-    let user_id = match match req
+    // ele já obtém o usuário inteiro da sessão, mas buscamos o usuário novamente
+    // direto no banco de dados para garantir que ele esteja atualizado.
+    //
+    // Se vier a se tornar um gargálo, poderiamos reaproveitar o usuário já salvo na
+    // sessão.
+    let usuario = match req
         .get_session()
-        .get::<String>(AppConfig::get().sessions_user_key)
+        .get::<UsuarioModelo>(AppConfig::get().sessions_user_key)
         .unwrap_or(None)
     {
         None => return Ok(UsuarioDaRequisicao::Convidado),
         Some(id) => id,
-    }
-    .parse::<Uuid>()
-    {
-        Err(_) => return Ok(UsuarioDaRequisicao::Convidado),
-        Ok(id) => id,
     };
 
     let db_conn = req.extract::<Data<PgPool>>().await.map_err(|err| {
@@ -120,7 +144,7 @@ async fn busque_usuario_da_sessao(
     })?;
 
     let usuario = RepositorioDeUsuariosSQLX::novo(&db_conn)
-        .encontre_usuario_modelo_pelo_id(&user_id)
+        .encontre_usuario_modelo_pelo_id(&usuario.id)
         .await;
 
     let usuario = match usuario {
