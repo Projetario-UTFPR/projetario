@@ -1,1 +1,37 @@
 @import "tailwindcss";
+
+@theme {
+    --color-gray-100: #FAFAFA;
+    --color-gray-200: #F5F5F5;
+    --color-gray-300: #E4E4E4;
+    --color-gray-400: #D4D4D4;
+    --color-gray-500: #9A9A9A;
+    --color-gray-600: #7B7B7B;
+    --color-gray-800: #4E4E4E;
+    --color-gray-900: #3B3B3B;
+    --color-gray-1000: #282828;
+
+    --color-yellow-500: #FFCC00;
+    --color-yellow-800: #E2910E;
+
+    --container-lg: calc(1268rem / 16);
+    --container-sm: calc(716rem / 16);
+}
+
+@layer components {
+    .container-box {
+        display: flex;
+        gap: calc(var(--spacing) * 6);
+
+        border-radius: var(--radius-2xl);
+        border: 1px solid color-mix(in oklab, var(--color-black) 10%, transparent);
+
+        padding: calc(var(--spacing) * 13);
+        background: var(--color-white);
+        box-shadow:
+            0 14px 30px 0 color-mix(in oklab, var(--color-black) 5%, transparent),
+            0 54px 54px 0 color-mix(in oklab, var(--color-black) 4%, transparent),
+            0 122px 73px 0 color-mix(in oklab, var(--color-black) 3%, transparent),
+            0 217px 87px 0 color-mix(in oklab, var(--color-black) 1%, transparent);
+    }
+}
