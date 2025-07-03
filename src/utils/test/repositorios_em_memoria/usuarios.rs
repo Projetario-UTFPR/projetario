@@ -1,4 +1,5 @@
 use async_trait::async_trait;
+use uuid::Uuid;
 
 use crate::dominio::identidade::entidades::aluno::Aluno;
 use crate::dominio::identidade::entidades::professor::Professor;
@@ -45,5 +46,18 @@ impl RepositorioDeUsuarios for RepositorioDeUsuariosEmMemoria {
             })
             .map(TryFrom::try_from)
             .map(Result::unwrap))
+    }
+
+    async fn encontre_usuario_modelo_pelo_id(
+        &self,
+        id: &Uuid,
+    ) -> ResultadoDominio<Option<UsuarioModelo>> {
+        Ok(self
+            .usuarios_tbl
+            .lock()
+            .unwrap()
+            .iter()
+            .find(|usuario| usuario.id.eq(id))
+            .cloned())
     }
 }

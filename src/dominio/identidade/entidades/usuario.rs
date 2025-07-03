@@ -18,7 +18,7 @@ pub struct Usuario {
     pub(super) desativado_em: Option<NaiveDateTime>,
 }
 
-#[derive(Debug, FromRow, Serialize, Deserialize)]
+#[derive(Debug, FromRow, Serialize, Deserialize, Clone)]
 /// `UsuarioModelo` é a representação completa da tabela "usuarios" do banco de dados.
 pub struct UsuarioModelo {
     pub id: Uuid,
