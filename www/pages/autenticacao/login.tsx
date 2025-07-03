@@ -1,5 +1,4 @@
 import { Link } from "@inertiajs/react";
-import clsx from "clsx";
 import Form from "@/components/form";
 import { Main } from "@/components/main";
 
