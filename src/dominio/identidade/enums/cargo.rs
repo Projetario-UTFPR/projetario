@@ -1,5 +1,7 @@
 use std::fmt::Display;
 
+use serde::{Deserialize, Serialize};
+
 /// O cargo da pessoa como um usuário na aplicação.
 ///
 /// ### Aluno
@@ -14,7 +16,7 @@ use std::fmt::Display;
 ///
 /// É destinado a coordenadores de cursos e outros funcionários que devam ter
 /// esse nível de permissão dentro da plataforma.
-#[derive(Debug, PartialEq, Eq, Clone, sqlx::Type)]
+#[derive(Debug, PartialEq, Eq, Clone, sqlx::Type, Serialize, Deserialize)]
 #[sqlx(type_name = "cargo_e", rename_all = "snake_case")]
 pub enum Cargo {
     Aluno,

@@ -3,6 +3,7 @@ use actix_web::web::{Redirect, ServiceConfig};
 
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 
+pub mod autenticacao;
 pub mod professores;
 
 pub trait Controller {
