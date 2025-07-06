@@ -79,6 +79,7 @@ pub fn get_server() -> App<
                 .build(),
         )
         .wrap(NormalizePath::trim())
+        .inertia_route("/", "index")
         .inertia_route("/dev/hello/world", "hello-world")
         .configure(ControllerAutenticacao::register)
         .service(web::scope("/professores").configure(ControllerProjetosDeExtensao::register))
