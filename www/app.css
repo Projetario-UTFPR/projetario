@@ -18,7 +18,8 @@
   --container-lg: calc(1268rem / 16);
   --container-sm: calc(716rem / 16);
 
-  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 @layer base {
@@ -28,9 +29,11 @@
 
   a,
   button,
-  [role=button] {
+  [role="button"] {
     cursor: default;
-    &:active { cursor: pointer; }
+    &:active {
+      cursor: pointer;
+    }
   }
 }
 
