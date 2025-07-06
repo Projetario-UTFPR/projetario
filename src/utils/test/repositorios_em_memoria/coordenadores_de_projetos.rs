@@ -37,4 +37,12 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
 
         Ok(())
     }
+
+    async fn buscar_projetos(
+        &self,
+        filtro: Filtro,
+        ordenadador: Ordenador,
+        paginacao: Paginacao,
+    ) -> ProjetosPaginados {
+    }
 }

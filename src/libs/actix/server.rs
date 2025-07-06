@@ -7,7 +7,7 @@ use actix_web::{App, web};
 use config::app::{AppConfig, RustEnv};
 use futures_util::FutureExt;
 use inertia_rust::actix::InertiaMiddleware;
-use inertia_rust::{InertiaProp, hashmap};
+use inertia_rust::{InertiaProp, InertiaService, hashmap};
 use inertia_sessions::file_session::FileSessionStore;
 use inertia_sessions::middlewares::garbage_collector::GarbageCollectorMiddleware;
 use inertia_sessions::middlewares::reflash_temporary_session::ReflashTemporarySessionMiddleware;
@@ -50,4 +50,8 @@ pub fn get_server() -> App<
                 .build(),
         )
         .service(web::scope("/professores").configure(ControllerProjetosDeExtensao::register))
+        .inertia_route(
+            "professores/projetos/novo-projeto-de-extensao",
+            "professores/projetos/novo-projeto-de-extensao",
+        )
 }
