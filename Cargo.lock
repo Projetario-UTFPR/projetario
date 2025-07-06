@@ -734,6 +734,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "db_seeder"
+version = "0.1.0"
+dependencies = [
+ "config",
+ "dotenvy",
+ "env_logger",
+ "log",
+ "pbkdf2",
+ "sqlx",
+ "tokio",
+]
+
+[[package]]
 name = "der"
 version = "0.7.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
