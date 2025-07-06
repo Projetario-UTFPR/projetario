@@ -1,5 +1,5 @@
 use actix_session::SessionExt;
-use actix_web::web::{Data, Json};
+use actix_web::web::{Data, Json, Redirect};
 use actix_web::{HttpRequest, Responder, web};
 use config::app::AppConfig;
 use inertia_rust::validators::InertiaValidateOrRedirect;
@@ -29,24 +29,33 @@ impl Controller for ControllerAutenticacao {
     fn register(cfg: &mut actix_web::web::ServiceConfig) {
         cfg.service(
             web::scope("/autenticacao")
-                .route("/login", web::post().to(Self::autenticar))
-                .wrap(MiddlewareEstaAutorizado::novo(
-                    AutorizacaoDaRota::SomenteConvidado,
-                ))
-                .route("/login", web::get().to(Self::login))
-                .wrap(MiddlewareEstaAutorizado::novo(
-                    AutorizacaoDaRota::SomenteConvidado,
-                )),
+                .route(
+                    "/login",
+                    web::post()
+                        .to(Self::autenticar)
+                        .wrap(MiddlewareEstaAutorizado::novo(
+                            AutorizacaoDaRota::SomenteConvidado,
+                        )),
+                )
+                .route("/login", web::get().to(Self::logar))
+                .route(
+                    "/logout",
+                    web::post()
+                        .to(Self::deslogar)
+                        .wrap(MiddlewareEstaAutorizado::novo(
+                            AutorizacaoDaRota::ProibirConvidado,
+                        )),
+                ),
         );
     }
 }
 
 impl ControllerAutenticacao {
-    pub async fn login(req: HttpRequest) -> impl Responder {
+    async fn logar(req: HttpRequest) -> impl Responder {
         Inertia::render(&req, "autenticacao/login".into()).await
     }
 
-    pub async fn autenticar(
+    async fn autenticar(
         req: HttpRequest,
         db_conn: Data<PgPool>,
         body: Json<LoginDto>,
@@ -114,6 +123,11 @@ impl ControllerAutenticacao {
             format!("Você foi autenticado com sucesso como {nome_usuario}!"),
         );
 
+        Redirect::to("/").see_other()
+    }
+
+    async fn deslogar(req: HttpRequest) -> RedirectDoApp {
+        remover_usuario_das_sessoes(&req);
         Inertia::back(&req)
     }
 }
@@ -126,4 +140,8 @@ fn colocar_usuario_nas_sessoes(req: &HttpRequest, usuario: UsuarioModelo) -> Res
             log::error!("Um erro inesperado ocorreu ao guardar o json do usuário autenticado nas sessões: {erro}");
             ErroDeDominio::interno()
         })
+}
+
+fn remover_usuario_das_sessoes(req: &HttpRequest) {
+    req.get_session().remove(AppConfig::get().sessions_user_key);
 }
