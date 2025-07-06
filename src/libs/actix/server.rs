@@ -23,6 +23,7 @@ use crate::infra::http::middlewares::usuario_da_requisicao::{
     MiddlewareUsuarioDaRequisicao,
     UsuarioDaRequisicao,
 };
+use crate::infra::http::presenters::usuario_modelo::UsuarioModeloPresenter;
 
 pub fn get_server() -> App<
     impl ServiceFactory<
@@ -52,7 +53,7 @@ pub fn get_server() -> App<
             };
 
             let autenticacao = usuario.map(|usuario| {
-                hashmap!["usuario".to_string() => usuario]
+                hashmap!["usuario".to_string() => UsuarioModeloPresenter::apresente(&usuario)]
             });
 
             let flash = req
