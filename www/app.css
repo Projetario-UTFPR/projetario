@@ -24,6 +24,13 @@
   #app {
     height: 100%;
   }
+
+  a,
+  button,
+  [role=button] {
+    cursor: default;
+    &:active { cursor: pointer; }
+  }
 }
 
 @layer components {
