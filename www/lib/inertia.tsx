@@ -1,6 +1,6 @@
 import type { PageResolver } from "@inertiajs/core";
 import type { JSX, ReactElement } from "react";
-
+import type { Autenticacao } from "@/core/types/usuario-autenticado";
 import { DefaultLayout } from "@/layouts/default";
 
 type PageComponent = ReactElement & {
@@ -29,6 +29,7 @@ export const resolvePage: PageResolver = async (name: string) => {
 
 declare module "@inertiajs/core" {
   export interface PageProps {
+    autenticacao: null | Autenticacao;
     flash: Record<string, string>;
   }
 }
