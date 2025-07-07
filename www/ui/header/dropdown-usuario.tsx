@@ -3,6 +3,7 @@ import * as Avatar from "@radix-ui/react-avatar";
 import * as Dropdown from "@radix-ui/react-dropdown-menu";
 import clsx from "clsx";
 import { type PropsWithChildren, useMemo } from "react";
+import { cargoEhMaiorOuIgual } from "@/core/utils/hierarquia-de-cargo";
 
 export function DropdownUsuario() {
   const autenticacao = usePage().props.autenticacao;
@@ -52,15 +53,22 @@ export function DropdownUsuario() {
           alignOffset={24}
           collisionPadding={24}
           className={clsx(
-            "p-[5px] rounded-3xl flex flex-col gap-[5px] bg-white border border-black/10",
-            "w-[calc(100%_-_48px)] min-w-48 drop-shadow-black/5 drop-shadow-2xl",
+            "p-2 rounded-2xl flex flex-col gap-1.5 bg-white border border-black/10",
+            "max-w-[calc(100vw_-_48px)] min-w-48 drop-shadow-black/5 drop-shadow-2xl",
           )}
         >
+          {cargoEhMaiorOuIgual(usuario.cargo, "Professor") && (
+            <>
+              <SecaoParaProfessoresSomente />
+              <hr className="text-gray-300" />
+            </>
+          )}
+
           <DropdownItem asChild>
             <Link
               href="/autenticacao/logout"
               method="post"
-              className="text-red-500 bg-red-500/5 hover:bg-red-500/10 active:bg-red-500/15"
+              className="text-red-500 bg-red-500/2 hover:bg-red-500/10 active:bg-red-500/15"
             >
               Deslogar
             </Link>
@@ -68,6 +76,31 @@ export function DropdownUsuario() {
         </Dropdown.Content>
       </Dropdown.Portal>
     </Dropdown.Root>
+  );
+}
+
+function SecaoParaProfessoresSomente() {
+  return (
+    <DropdownGroup label="Professores">
+      <DropdownItem asChild>
+        <Link href="/professores/projetos/extensao/novo">
+          Novo projeto de extensão
+        </Link>
+      </DropdownItem>
+    </DropdownGroup>
+  );
+}
+
+type DropdownGroupProps = PropsWithChildren<{
+  label: string;
+}>;
+
+function DropdownGroup({ children, label }: DropdownGroupProps) {
+  return (
+    <Dropdown.Group>
+      <DropdownLabel>{label}</DropdownLabel>
+      <div className="flex flex-col gap-1.5">{children}</div>
+    </Dropdown.Group>
   );
 }
 
@@ -82,11 +115,19 @@ function DropdownItem({ children, asChild, className }: DropdownItemProps) {
       asChild={asChild}
       className={clsx(
         "px-4 py-1 rounded-3xl outline-none transition-all duration-100",
-        "text-start hover:bg-gray-200 active:bg-gray-300",
+        "text-start hover:bg-gray-200 active:bg-gray-300 leading-snug",
         className && className,
       )}
     >
       {children}
     </Dropdown.Item>
+  );
+}
+
+function DropdownLabel({ children }: PropsWithChildren) {
+  return (
+    <Dropdown.Label className="px-4 text-sm mb-1 text-gray-600 dark:text-gray-300">
+      {children}
+    </Dropdown.Label>
   );
 }
