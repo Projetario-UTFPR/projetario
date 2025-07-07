@@ -8,7 +8,7 @@ use crate::dominio::projetos::repositorios::coordenadores_de_projetos::Repositor
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 
 pub struct CriarProjetosDeExtensaoParams<'a> {
-    pub usuario: &'a UsuarioModelo,
+    pub professor: &'a Professor,
     pub titulo: String,
     pub descricao: String,
     pub data_de_inicio: Option<NaiveDate>,
@@ -38,22 +38,11 @@ where
         params: CriarProjetosDeExtensaoParams<'_>,
     ) -> Result<Projeto, ErroDeDominio> {
         let CriarProjetosDeExtensaoParams {
-            usuario,
+            professor,
             descricao,
             titulo,
             data_de_inicio,
         } = params;
-
-        // TODO: Mover isso para a camada do controller
-        // e receber a instância de `Professor` diretamente
-        let professor = match Professor::try_from(usuario) {
-            Ok(professor) => professor,
-            Err(msg) => {
-                return Err(ErroDeDominio::nao_autorizado(
-                    "Somente um professor ou um administrador pode criar um novo projeto de extensão.",
-                ));
-            }
-        };
 
         let projeto = match data_de_inicio {
             None => Projeto::novo(titulo, descricao, TipoDeProjeto::Extensao),
@@ -63,7 +52,7 @@ where
         };
 
         self.repositorio_de_coordenadores
-            .criar_projeto_com_coordenador(&projeto, &professor)
+            .criar_projeto_com_coordenador(&projeto, professor)
             .await?;
 
         Ok(projeto)
@@ -113,6 +102,8 @@ mod test {
             ..Default::default()
         });
 
+        let professor = (&usuario_autorizado).try_into().unwrap();
+
         let titulo = "Proident ex in aliqua in officia exercitation.".to_string();
         let resposta = sut.executar(CriarProjetosDeExtensaoParams {
             data_de_inicio: None,
@@ -124,7 +115,7 @@ mod test {
                         Id commodo deserunt eu aliquip ut cillum occaecat pariatur deserunt proident. Cillum \
                         officia nulla duis velit elit.".into(),
             titulo: titulo.clone(),
-            usuario: &usuario_autorizado
+            professor: &professor
         }).await;
 
         assert_eq!(deveria_ter_sucedido, resposta.is_ok());
