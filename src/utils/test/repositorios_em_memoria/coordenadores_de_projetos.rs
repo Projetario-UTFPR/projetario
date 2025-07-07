@@ -71,7 +71,7 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
             Filtro::TipoProjeto(tipo) => {
                 busca.push(" WHERE tipo = ").push_bind(tipo);
             }
-        }
+        };
 
         match ordenador {
             Ordenador::Data(ordem) => {
@@ -80,7 +80,7 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
                     Ordering::Less => busca.push("ASC"),
                     Ordering::Greater => busca.push("DESC"),
                     Ordering::Equal => busca.push("ASC"),
-                }
+                };
             }
             Ordenador::Titulo(ordem) => {
                 busca.push(" ORDER BY titulo ");
@@ -88,9 +88,9 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
                     Ordering::Less => busca.push("ASC"),
                     Ordering::Greater => busca.push("DESC"),
                     Ordering::Equal => busca.push("ASC"),
-                }
+                };
             }
-        }
+        };
 
         let limite = (paginacao.pagina - 1) * paginacao.qtd_por_pagina as u32;
         busca
@@ -101,10 +101,10 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
 
         //let projetos = busca.build_query_as::<Projeto>().fetch_all().await?;
 
-        let projetos: Vec<Projeto> = self.projeto_tbl;
+        let projetos = self.projeto_tbl;
 
         Ok(ProjetosPaginados {
-            projetos: projetos,
+            projetos,
             qtd_por_pagina: paginacao.qtd_por_pagina,
         })
     }
