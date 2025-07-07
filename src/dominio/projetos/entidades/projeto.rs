@@ -117,19 +117,3 @@ impl Projeto {
 
     pub fn cancelar(&mut self) { self.cancelado_em = Some(Utc::now().naive_utc()); }
 }
-
-impl<'r> FromRow<'r, PgRow> for Projeto {
-    fn from_row(row: &'r PgRow) -> Result<Self, sqlx::Error> {
-        Ok(Projeto::reconstituir(
-            row.get("id"),
-            row.get("titulo"),
-            row.get("descricao"),
-            row.get("tipo"),
-            row.get("registrado_em"),
-            row.get("iniciado_em"),
-            row.get("atualizado_em"),
-            row.get("cancelado_em"),
-            row.get("concluido_em"),
-        ))
-    }
-}
