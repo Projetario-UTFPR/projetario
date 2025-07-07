@@ -12,6 +12,7 @@ export function CallToAction({ asChild, className, ...props }: ButtonProps) {
         "flex items-center gap-2",
         "transition-all duration-100 bg-yellow-500 px-6 py-3 rounded-3xl font-medium",
         "hover:brightness-95 active:brightness-90",
+        "disabled:saturate-0",
         className && className,
       )}
     />
