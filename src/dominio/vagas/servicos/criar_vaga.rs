@@ -64,8 +64,6 @@ where
             }
         };
 
-        let iniciada_em = Utc::now().date_naive();
-
         let vaga = Vaga::nova(
                 projeto,
                 coordenador,
@@ -78,7 +76,6 @@ where
                 titulo,
                 link_candidatura,
                 inscricoes_ate,
-                iniciada_em,
             )?,
             
    self.repositorio_de_vagas.criar_vaga(&vaga).await?;
