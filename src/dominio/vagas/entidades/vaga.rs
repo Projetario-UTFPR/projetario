@@ -40,37 +40,6 @@ impl Vaga {
         link_candidatura: Option<String>,
         inscricoes_ate: NaiveDateTime,
     ) -> Result<Self, ErroDeDominio> {
-        Self::nova_com_data_de_inicio(
-            projeto,
-            coordenador,
-            vice_coordenador,
-            horas_por_semana,
-            imagem,
-            quantidade,
-            link_edital,
-            conteudo,
-            titulo,
-            link_candidatura,
-            inscricoes_ate,
-            Utc::now().date_naive(),
-        )
-    }
-
-    pub fn nova_com_data_de_inicio(
-        projeto: Projeto,
-        coordenador: Professor,
-        vice_coordenador: Option<Professor>,
-        horas_por_semana: u8,
-        //cursos: Vec<String>,
-        imagem: Option<String>,
-        quantidade: u8,
-        link_edital: String,
-        conteudo: String,
-        titulo: String,
-        link_candidatura: Option<String>,
-        inscricoes_ate: NaiveDateTime,
-        iniciada_em: NaiveDate,
-    ) -> Result<Self, ErroDeDominio> {
         if horas_por_semana == 0 || horas_por_semana > 40 {
             return Err(ErroDeDominio::valor_invalido(
                 "Horas por semana devem estar entre 1 e 40.",
