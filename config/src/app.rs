@@ -28,6 +28,7 @@ pub struct AppConfig {
 
     // sessions settings
     pub sessions_flash_key: &'static str,
+    pub sessions_user_key: &'static str,
     pub sessions_errors_key: &'static str,
     pub sessions_prev_req_key: &'static str,
     pub sessios_curr_req_key: &'static str,
@@ -78,10 +79,11 @@ impl AppConfig {
             sessions_cookie_name: format_session_cookie_from_app_name(app_name),
             sessions_exp_key: "__expires_at__",
             garbage_collector_lottery: [2, 100],
-            sessions_flash_key: "__flash",
-            sessions_errors_key: "_errors",
-            sessions_prev_req_key: "_prev_req_url",
-            sessios_curr_req_key: "_curr_req_url",
+            sessions_flash_key: "__flash__",
+            sessions_user_key: "__user__",
+            sessions_errors_key: "__errors__",
+            sessions_prev_req_key: "__prev_req_url__",
+            sessios_curr_req_key: "__curr_req_url__",
         }
     }
 

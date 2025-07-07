@@ -5,9 +5,10 @@ edition.workspace = true
 
 [features]
 dockerimgb = ["openssl/vendored"]
+test-utils = ["dep:fake", "dep:rand"]
 
 [workspace]
-members = ["config", "sessions"]
+members = ["config", "db_seeder", "sessions"]
 package.version = "0.1.0"
 package.edition = "2024"
 
@@ -43,6 +44,16 @@ env_logger = "0.11.8"
 futures-util = "0.3.31"
 thiserror = "2.0.12"
 rstest = "0.25.0"
+sqlx = { version = "0.8.5", features = [
+    "runtime-tokio",
+    "tls-rustls-ring-native-roots",
+    "postgres",
+    "derive",
+    "migrate",
+    "chrono",
+    "uuid",
+] }
+pbkdf2 = { version = "0.12", features = ["simple"] }
 
 [dependencies]
 actix-files.workspace = true
@@ -62,22 +73,17 @@ log.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 futures-util.workspace = true
-sqlx = { version = "0.8.5", features = [
-    "runtime-tokio",
-    "tls-rustls-ring-native-roots",
-    "postgres",
-    "derive",
-    "migrate",
-    "chrono",
-    "uuid",
-] }
+sqlx.workspace = true
 thiserror.workspace = true
 validator = { version = "0.20", features = ["derive"] }
-uuid = { version = "1.17.0", features = ["v4"] }
+uuid = { version = "1.17.0", features = ["v4", "serde"] }
 openssl = { version = "0.10.73" }
+pbkdf2.workspace = true
+fake = { version = "4.3.0", features = ["derive", "chrono"], optional = true }
+rand = { workspace = true, optional = true }
 
 [dev-dependencies]
 pretty_assertions.workspace = true
 rstest.workspace = true
 tokio = { workspace = true, features = ["test-util"] }
-fake = { version = "4.3.0", features = ["derive", "chrono"] }
+db_seeder = { path = "db_seeder" }
