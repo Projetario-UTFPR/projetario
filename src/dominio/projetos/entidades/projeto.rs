@@ -1,4 +1,6 @@
 use chrono::{NaiveDate, NaiveDateTime, Utc};
+use sqlx::postgres::PgRow;
+use sqlx::{FromRow, Row};
 use uuid::Uuid;
 
 use crate::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
@@ -37,6 +39,30 @@ impl Projeto {
             concluido_em: None,
             iniciado_em,
             registrado_em: Utc::now().naive_utc(),
+        }
+    }
+
+    pub fn reconstituir(
+        id: Uuid,
+        titulo: String,
+        descricao: String,
+        tipo: TipoDeProjeto,
+        registrado_em: NaiveDateTime,
+        iniciado_em: NaiveDate,
+        atualizado_em: Option<NaiveDateTime>,
+        cancelado_em: Option<NaiveDateTime>,
+        concluido_em: Option<NaiveDate>,
+    ) -> Self {
+        Self {
+            id,
+            titulo,
+            descricao,
+            tipo,
+            registrado_em,
+            iniciado_em,
+            atualizado_em,
+            cancelado_em,
+            concluido_em,
         }
     }
 }
@@ -89,4 +115,20 @@ impl Projeto {
     pub fn concluir(&mut self) { self.concluido_em = Some(Utc::now().date_naive()); }
 
     pub fn cancelar(&mut self) { self.cancelado_em = Some(Utc::now().naive_utc()); }
+}
+
+impl<'r> FromRow<'r, PgRow> for Projeto {
+    fn from_row(row: &'r PgRow) -> Result<Self, sqlx::Error> {
+        Ok(Projeto::reconstituir(
+            row.get("id"),
+            row.get("titulo"),
+            row.get("descricao"),
+            row.get("tipo"),
+            row.get("registrado_em"),
+            row.get("iniciado_em"),
+            row.get("atualizado_em"),
+            row.get("cancelado_em"),
+            row.get("concluido_em"),
+        ))
+    }
 }

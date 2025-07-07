@@ -2,6 +2,7 @@ use std::cmp::Ordering;
 use std::vec;
 
 use async_trait::async_trait;
+use sqlx::{FromRow, Row};
 
 use crate::dominio::identidade::entidades::professor::Professor;
 use crate::dominio::projetos::entidades::projeto::Projeto;
@@ -20,9 +21,9 @@ pub trait RepositorioDeCoordenadoresDeProjetos {
     async fn buscar_projetos(
         &self,
         filtro: Filtro,
-        ordenadador: Ordenador,
+        ordenador: Ordenador,
         paginacao: Paginacao,
-    ) -> ProjetosPaginados;
+    ) -> Result<ProjetosPaginados, ErroDeDominio>;
 }
 
 pub enum Ordenador {
