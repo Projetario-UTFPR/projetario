@@ -19,8 +19,10 @@ impl ResponseError for ErroDeDominio {
         match self.tipo() {
             TipoErroDeDominio::Integridade => StatusCode::FORBIDDEN,
             TipoErroDeDominio::Interno => StatusCode::INTERNAL_SERVER_ERROR,
-            TipoErroDeDominio::NãoAutorizado => StatusCode::UNAUTHORIZED,
+            TipoErroDeDominio::NaoAutorizado => StatusCode::UNAUTHORIZED,
             TipoErroDeDominio::ValorInvalido => StatusCode::BAD_REQUEST,
+            TipoErroDeDominio::NaoEncontrado => StatusCode::NOT_FOUND,
+            TipoErroDeDominio::RegraDeNegocio => StatusCode::UNPROCESSABLE_ENTITY,
         }
     }
 

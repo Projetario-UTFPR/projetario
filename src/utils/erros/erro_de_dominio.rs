@@ -27,13 +27,6 @@ impl ErroDeDominio {
         }
     }
 
-    pub fn nao_autorizado<S: ToString>(msg: S) -> Self {
-        Self {
-            tipo_: TipoErroDeDominio::NãoAutorizado,
-            msg: msg.to_string(),
-        }
-    }
-
     pub fn interno() -> Self {
         Self {
             tipo_: TipoErroDeDominio::Interno,
@@ -49,6 +42,27 @@ impl ErroDeDominio {
     pub fn mensagem(&self) -> &str { &self.msg }
 
     pub fn tipo(&self) -> TipoErroDeDominio { self.tipo_.clone() }
+
+    pub fn nao_encontrado<S: ToString>(msg: S) -> Self {
+        Self {
+            tipo_: TipoErroDeDominio::NaoEncontrado,
+            msg: msg.to_string(),
+        }
+    }
+
+    pub fn nao_autorizado<S: ToString>(msg: S) -> Self {
+        Self {
+            tipo_: TipoErroDeDominio::NaoAutorizado,
+            msg: msg.to_string(),
+        }
+    }
+
+    pub fn regra_de_negocio<S: ToString>(msg: S) -> Self {
+        Self {
+            tipo_: TipoErroDeDominio::RegraDeNegocio,
+            msg: msg.to_string(),
+        }
+    }
 }
 
 impl Display for ErroDeDominio {
