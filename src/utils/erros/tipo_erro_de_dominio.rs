@@ -15,8 +15,8 @@ impl TipoErroDeDominio {
             Self::Interno => "interno",
             Self::NaoAutorizado => "não_autorizado",
             Self::ValorInvalido => "valor_inválido",
-            Self::NaoEncontrado => "nao_encontrado",   
-            Self::RegraDeNegocio => "regra_de_negocio", 
+            Self::NaoEncontrado => "nao_encontrado",
+            Self::RegraDeNegocio => "regra_de_negocio",
         }
         .into()
     }
