@@ -48,7 +48,6 @@ impl ErroDeDominio {
             tipo_: TipoErroDeDominio::NaoEncontrado,
             msg: msg.to_string(),
         }
-        
     }
 
     pub fn nao_autorizado<S: ToString>(msg: S) -> Self {
@@ -64,7 +63,6 @@ impl ErroDeDominio {
             msg: msg.to_string(),
         }
     }
-
 }
 
 impl Display for ErroDeDominio {
