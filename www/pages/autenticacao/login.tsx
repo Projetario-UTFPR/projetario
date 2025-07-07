@@ -2,6 +2,7 @@ import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import clsx from "clsx";
 import type { FormEvent } from "react";
 import Form from "@/components/form";
+import { H1 } from "@/components/h1";
 import { Main } from "@/components/main";
 
 const numbersOnlyRegex = /^[0-9]+$/;
@@ -44,7 +45,7 @@ export default function Login() {
         <title>Login</title>
       </Head>
       <Main className="max-w-sm my-20">
-        <h1 className="text-3xl font-medium mb-6">Login</h1>
+        <H1 className="mb-6">Login</H1>
 
         <section className="container-box">
           {props.autenticacao ? (
