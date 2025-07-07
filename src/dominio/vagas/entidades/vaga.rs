@@ -79,10 +79,6 @@ let iniciada_em = Utc::now().date_naive();
             ));
         }
 
-        if iniciada_em < Utc::now().date_naive() {
-            return Err(ErroDeDominio::valor_invalido(
-                "Data de início não pode ser no passado.",
-            ));
         }
         Self {
             id: Uuid::new_v4(),
