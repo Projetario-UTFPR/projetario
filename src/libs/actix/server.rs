@@ -15,10 +15,15 @@ use inertia_sessions::middlewares::garbage_collector::GarbageCollectorMiddleware
 use inertia_sessions::middlewares::reflash_temporary_session::ReflashTemporarySessionMiddleware;
 use serde_json::Map;
 
+use crate::dominio::identidade::enums::cargo::Cargo;
 use crate::dominio::identidade::traits::IntoUsuarioModelo;
 use crate::infra::http::controllers::Controller;
 use crate::infra::http::controllers::autenticacao::ControllerAutenticacao;
 use crate::infra::http::controllers::professores::projetos_de_extensao::ControllerProjetosDeExtensao;
+use crate::infra::http::middlewares::somente_com_cargo::{
+    AutorizacaoDaRota,
+    MiddlewareEstaAutorizado,
+};
 use crate::infra::http::middlewares::usuario_da_requisicao::{
     MiddlewareUsuarioDaRequisicao,
     UsuarioDaRequisicao,
@@ -82,5 +87,6 @@ pub fn get_server() -> App<
         .inertia_route("/", "index")
         .inertia_route("/dev/hello/world", "hello-world")
         .configure(ControllerAutenticacao::register)
-        .service(web::scope("/professores").configure(ControllerProjetosDeExtensao::register))
+        .service(web::scope("/professores").wrap(MiddlewareEstaAutorizado::novo(AutorizacaoDaRota::UsuarioComCargo(Cargo::Professor))).configure(ControllerProjetosDeExtensao::register))
+        .service(actix_files::Files::new("/", "./public/").prefer_utf8(true))
 }
