@@ -1,7 +1,8 @@
 import { Head, Link, useForm, usePage } from "@inertiajs/react";
-import clsx from "clsx";
 import type { FormEvent } from "react";
+import Button from "@/components/button";
 import Form from "@/components/form";
+import { H1 } from "@/components/h1";
 import { Main } from "@/components/main";
 
 const numbersOnlyRegex = /^[0-9]+$/;
@@ -44,7 +45,7 @@ export default function Login() {
         <title>Login</title>
       </Head>
       <Main className="max-w-sm my-20">
-        <h1 className="text-3xl font-medium mb-6">Login</h1>
+        <H1 className="mb-6">Login</H1>
 
         <section className="container-box">
           {props.autenticacao ? (
@@ -100,25 +101,13 @@ export default function Login() {
                 />
 
                 <div className="mt-6 flex items-center gap-3">
-                  <button
-                    type="submit"
-                    className={clsx(
-                      "transition-all duration-100 bg-yellow-500 px-6 py-3 rounded-3xl font-medium",
-                      "hover:brightness-95 active:brightness-90",
-                    )}
-                  >
+                  <Button.CallToAction type="submit">
                     Entrar
-                  </button>
+                  </Button.CallToAction>
 
-                  <Link
-                    href="/projetos"
-                    className={clsx(
-                      "transition-all duration-100 bg-gray-300 px-6 py-3 rounded-3xl font-medium",
-                      "hover:bg-gray-400 active:brightness-95",
-                    )}
-                  >
-                    Ficar como visitante
-                  </Link>
+                  <Button.Secundario asChild>
+                    <Link href="/">Ficar como visitante</Link>
+                  </Button.Secundario>
                 </div>
               </form>
 

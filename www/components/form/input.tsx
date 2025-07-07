@@ -1,18 +1,21 @@
-import clsx from "clsx";
 import Form from ".";
+import { InputLabelSpan } from "./label-span";
 
 type InputProps = {
   label: string;
-  type: "text" | "password";
+  type: "text" | "password" | "date" | "datetime-local";
   id?: string;
   name?: string;
   placeholder?: string;
   error?: string;
   onInput: (value: string) => void;
+  /** Adiciona um pequeno texto de observação em relação a esse campo de texto. */
+  observacao?: string;
   required?: boolean;
 };
 
 export function Input({
+  id,
   label,
   name,
   type = "text",
@@ -20,21 +23,26 @@ export function Input({
   error,
   onInput,
   required,
+  observacao,
 }: InputProps) {
   return (
     <label className="flex flex-col gap-2 mb-3">
-      <span className="text-base">{label}</span>
+      <InputLabelSpan required={required}>{label}</InputLabelSpan>
+
       {error && <Form.AlertaDeErro>{error}</Form.AlertaDeErro>}
+
+      {observacao && (
+        <span className="text-sm text-gray-600 dark:text-gray-300">
+          {observacao}
+        </span>
+      )}
+
       <input
+        id={id}
         type={type}
         name={name}
         placeholder={placeholder}
-        className={clsx(
-          "transition-all duration-150 rounded-3xl px-4 py-2 border border-black/20",
-          "leading-none placeholder:text-black/60",
-          "outline-none ring-yellow-500 ring-0 focus:ring-4",
-          "focus:border-yellow-500",
-        )}
+        className="text-input leading-none"
         onInput={(event) => onInput(event.currentTarget.value)}
         required={required}
       />

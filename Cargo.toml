@@ -86,3 +86,4 @@ rand = { workspace = true, optional = true }
 pretty_assertions.workspace = true
 rstest.workspace = true
 tokio = { workspace = true, features = ["test-util"] }
+db_seeder = { path = "db_seeder" }

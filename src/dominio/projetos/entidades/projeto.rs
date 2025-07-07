@@ -1,9 +1,10 @@
 use chrono::{NaiveDate, NaiveDateTime, Utc};
+use sqlx::prelude::FromRow;
 use uuid::Uuid;
 
 use crate::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, FromRow)]
 pub struct Projeto {
     id: Uuid,
     titulo: String,

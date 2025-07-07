@@ -6,6 +6,7 @@ use actix_web::dev::{Service, ServiceRequest, ServiceResponse, Transform, forwar
 use actix_web::{Error, HttpMessage, ResponseError};
 use futures_util::future::{Ready, ready};
 
+use crate::dominio::autenticacao::politicas::autorizacao::PoliticasDeAutorizacao;
 use crate::dominio::identidade::entidades::usuario;
 use crate::dominio::identidade::enums::cargo::Cargo;
 use crate::infra::http::middlewares::usuario_da_requisicao::{self, UsuarioDaRequisicao};
@@ -82,9 +83,14 @@ where
             }
             AutorizacaoDaRota::UsuarioComCargo(cargo) => match &usuario_da_req {
                 UsuarioDaRequisicao::Convidado => false,
-                UsuarioDaRequisicao::Aluno(_) => cargo.eq(&Cargo::Aluno),
-                UsuarioDaRequisicao::Professor(_) => {
-                    cargo.eq(&Cargo::Professor) || cargo.eq(&Cargo::Administrador)
+                UsuarioDaRequisicao::Aluno(_) => {
+                    PoliticasDeAutorizacao::hierarquia_do_cargo_permite(&Cargo::Aluno, cargo)
+                }
+                UsuarioDaRequisicao::Professor(professor) => {
+                    PoliticasDeAutorizacao::hierarquia_do_cargo_permite(
+                        professor.obtenha_cargo(),
+                        cargo,
+                    )
                 }
             },
         };
