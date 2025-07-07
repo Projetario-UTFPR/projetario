@@ -20,7 +20,6 @@ pub struct CriarVagaParams<'a> {
     pub titulo: String,
     pub link_candidatura: Option<String>,
     pub inscricoes_ate: NaiveDateTime,
-    pub iniciada_em: Option<NaiveDate>,
 }
 
 pub struct ServicoCriarVaga<RV>
@@ -54,7 +53,6 @@ where
             titulo,
             link_candidatura,
             inscricoes_ate,
-            iniciada_em,
         } = params;
 
         let coordenador = match Professor::try_from(usuario) {
