@@ -64,8 +64,7 @@ where
             }
         };
 
-        let vaga = match iniciada_em {
-            None => Vaga::nova(
+        let vaga = Vaga::nova(
                 projeto,
                 coordenador,
                 vice_coordenador,
@@ -77,24 +76,9 @@ where
                 titulo,
                 link_candidatura,
                 inscricoes_ate,
-            ),
-            Some(data) => Vaga::nova_com_data_de_inicio(
-                projeto,
-                coordenador,
-                vice_coordenador,
-                horas_por_semana,
-                imagem,
-                quantidade,
-                link_edital,
-                conteudo,
-                titulo,
-                link_candidatura,
-                inscricoes_ate,
-                data,
-            ),
-        };
-
-        self.repositorio_de_vagas.criar_vaga(&vaga).await?;
+            )?,
+            
+   self.repositorio_de_vagas.criar_vaga(&vaga).await?;
 
         Ok(vaga)
     }
