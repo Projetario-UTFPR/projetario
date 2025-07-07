@@ -11,7 +11,7 @@ pub struct Vaga {
     horas_por_semana: u8,
     //cursos: Vec<String>,
     imagem: Option<String>,
-    quantidade_de_vagas: u8,
+    quantidade: u8,
     link_edital: String,
     link_candidatura: Option<String>,
     titulo: String,
@@ -28,7 +28,7 @@ impl Vaga {
             projeto,
             horas_por_semana,
             imagem,
-            quantidade_de_vagas,
+            quantidade,
             link_candidatura,
             conteudo,
             titulo,
@@ -42,7 +42,7 @@ impl Vaga {
         horas_por_semana: u8,
         //cursos: Vec<String>,
         imagem: Option<String>,
-        quantidade_de_vagas: u8,
+        quantidade: u8,
         link_edital: String,
         conteudo: String,
         titulo: String,
@@ -54,7 +54,7 @@ impl Vaga {
             horas_por_semana,
             //cursos,
             imagem,
-            quantidade_de_vagas,
+            quantidade,
             link_edital,
             conteudo,
             titulo,
@@ -80,6 +80,12 @@ impl Vagas {
 
     pub fn obtenha_imagem(&self) -> Option<String> { self.imagem }
 
+    pub fn obtenha_quantidade(&self) -> u8 { self.quantidade }
+
+    pub fn obtenha_link_edital(&self) -> String { self.link_edital }
+
+    pub fn obtenha_link_candidatura(&self) -> String { self.link_candidatura }
+
     pub fn obtenha_data_de_modificacao(&self) -> Option<NaiveDateTime> { self.atualizada_em }
 
     pub fn obtenha_data_de_cancelamento(&self) -> Option<NaiveDateTime> { self.cancelada_em }
@@ -93,21 +99,21 @@ impl Vagas {
 
 // setters
 impl Vaga {
-    pub fn coloque_titulo(&mut self, titulo: String) {
-        if self.titulo == titulo {
+    pub fn coloque_conteudo(&mut self, conteudo: String) {
+        if self.conteudo == conteudo {
             return;
         }
 
-        self.titulo = titulo;
+        self.conteudo = conteudo;
         self.toque();
     }
 
-    pub fn coloque_descricao(&mut self, descricao: String) {
-        if self.descricao == descricao {
+    pub fn coloque_imagem(&mut self, imagem: String) {
+        if self.imagem == imagem {
             return;
         }
 
-        self.descricao = descricao;
+        self.imagem = imagem;
         self.toque();
     }
 
