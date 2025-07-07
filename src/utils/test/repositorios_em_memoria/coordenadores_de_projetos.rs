@@ -3,6 +3,7 @@ use std::ops::{Deref, DerefMut};
 use std::vec;
 
 use async_trait::async_trait;
+use chrono::{NaiveDate, NaiveDateTime, Utc};
 use futures_util::FutureExt;
 use sqlx::{AnyPool, Connection, Executor, FromRow, PgPool, Pool, Postgres, QueryBuilder};
 use uuid::Uuid;
@@ -101,7 +102,7 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
 
         //let projetos = busca.build_query_as::<Projeto>().fetch_all().await?;
 
-        let projetos = self.projeto_tbl;
+        let projetos = Vec::new();
 
         Ok(ProjetosPaginados {
             projetos,
