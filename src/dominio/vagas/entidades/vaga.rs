@@ -3,6 +3,7 @@ use uuid::Uuid;
 
 use crate::dominio::identidade::entidades::professor::Professor;
 use crate::dominio::projetos::entidades::projeto::Projeto;
+use crate::utils::erros::ErroDeDominio;
 
 #[derive(Debug, Clone)]
 pub struct Vaga {
@@ -10,8 +11,7 @@ pub struct Vaga {
     projeto: Projeto,
     coordenador: Professor,
     vice_coordenador: Option<Professor>,
-    pub(crate) horas_por_semana: u8,
-    pub(crate) //cursos: Vec<String>,
+    horas_por_semana: u8,
     imagem: Option<String>,
     quantidade: u8,
     link_edital: String,
@@ -138,28 +138,7 @@ impl Vaga {
         Ok(())
     }
 
-    pub fn permite_edicao_por(&self, professor: &Professor) -> bool {
-        let professor_id = professor.obtenha_usuario().obtenha_id();
-        
-      
-        if professor_id == self.coordenador.obtenha_usuario().obtenha_id() {
-            return true;
-        }
-        
-       
-        if let Some(vice) = &self.vice_coordenador {
-            if professor_id == vice.obtenha_usuario().obtenha_id() {
-                return true;
-            }
-        }
-        
-        
-        professor.obtenha_cargo() == &crate::dominio::identidade::enums::cargo::Cargo::Administrador
-    }
-
-    pub fn esta_ativa(&self) -> bool {
-        self.cancelada_em.is_none() && self.concluida_em.is_none()
-    }
+    pub fn esta_ativa(&self) -> bool { self.cancelada_em.is_none() && self.concluida_em.is_none() }
 }
 
 // getters
@@ -202,6 +181,7 @@ impl Vaga {
 
     pub fn concluida_em(&self) -> Option<NaiveDate> { self.concluida_em }
 
+    pub fn obtenha_coordenador(&self) -> &Professor { &self.coordenador }
 }
 
 // setters
@@ -212,15 +192,6 @@ impl Vaga {
         }
 
         self.conteudo = conteudo;
-        self.toque();
-    }
-
-    pub fn coloque_imagem(&mut self, imagem: Option<String>) {
-        if self.imagem.as_ref() == imagem.as_ref() {
-            return;
-        }
-
-        self.imagem = imagem;
         self.toque();
     }
 
@@ -251,76 +222,104 @@ impl Vaga {
         self.toque();
     }
 
-    pub fn definir_horas_por_semana(&mut self, horas: u8) -> Result<(), String> {
+    pub fn definir_horas_por_semana(&mut self, horas: u8) -> Result<(), ErroDeDominio> {
         if horas == 0 || horas > 40 {
-            return Err("Horas por semana devem estar entre 1 e 40".to_string());
+            return Err(ErroDeDominio::valor_invalido(
+                "Horas por semana devem estar entre 1 e 40".to_string(),
+            ));
         }
+
         self.horas_por_semana = horas;
         self.toque();
         Ok(())
     }
 
-    pub fn definir_imagem(&mut self, imagem: Option<String>) {
+    pub fn coloque_imagem(&mut self, imagem: Option<String>) {
+        if self.imagem.as_ref() == imagem.as_ref() {
+            return;
+        }
+
         self.imagem = imagem;
         self.toque();
     }
 
-    pub fn definir_quantidade(&mut self, quantidade: u8) -> Result<(), String> {
+    pub fn definir_quantidade(&mut self, quantidade: u8) -> Result<(), ErroDeDominio> {
         if quantidade == 0 {
-            return Err("Quantidade deve ser pelo menos 1".to_string());
+            return Err(ErroDeDominio::valor_invalido(
+                "Quantidade deve ser pelo menos 1",
+            ));
         }
+
         self.quantidade = quantidade;
         self.toque();
         Ok(())
     }
 
-    pub fn definir_link_edital(&mut self, link_edital: String) -> Result<(), String> {
-        if link_edital.is_empty() {
-            return Err("Link do edital não pode ser vazio".to_string());
+    pub fn definir_link_edital(&mut self, link_edital: String) {
+        if link_edital.eq(&self.link_edital) {
+            return;
         }
+
         self.link_edital = link_edital;
         self.toque();
-        Ok(())
     }
 
-    pub fn definir_conteudo(&mut self, conteudo: String) -> Result<(), String> {
+    pub fn definir_conteudo(&mut self, conteudo: String) -> Result<(), ErroDeDominio> {
         if conteudo.is_empty() {
-            return Err("Conteúdo não pode ser vazio".to_string());
+            return Err(ErroDeDominio::valor_invalido("Conteúdo não pode ser vazio"));
         }
         self.conteudo = conteudo;
         self.toque();
         Ok(())
     }
 
-    pub fn definir_titulo(&mut self, titulo: String) -> Result<(), String> {
+    pub fn definir_titulo(&mut self, titulo: String) -> Result<(), ErroDeDominio> {
         if titulo.is_empty() {
-            return Err("Título não pode ser vazio".to_string());
-        } else if titulo.len() > 100 {
-            return Err("Título não pode exceder 100 caracteres".to_string());
+            return Err(ErroDeDominio::valor_invalido("Título não pode ser vazio"));
         }
+
+        if titulo.len() > 100 {
+            return Err(ErroDeDominio::valor_invalido(
+                "Título não pode exceder 100 caracteres",
+            ));
+        }
+
         self.titulo = titulo;
         self.toque();
         Ok(())
     }
 
     pub fn definir_link_candidatura(&mut self, link_candidatura: Option<String>) {
+        if self.link_candidatura == link_candidatura {
+            return;
+        };
+
         self.link_candidatura = link_candidatura;
         self.toque();
     }
 
-    pub fn definir_inscricoes_ate(&mut self, inscricoes_ate: NaiveDateTime) -> Result<(), String> {
+    pub fn definir_inscricoes_ate(
+        &mut self,
+        inscricoes_ate: NaiveDateTime,
+    ) -> Result<(), ErroDeDominio> {
         if inscricoes_ate < Utc::now().naive_utc() {
-            return Err("Data de fechamento de inscrições não pode ser no passado".to_string());
+            return Err(ErroDeDominio::valor_invalido(
+                "Data de fechamento de inscrições não pode ser no passado",
+            ));
         }
+
         self.inscricoes_ate = inscricoes_ate;
         self.toque();
         Ok(())
     }
 
-    pub fn definir_iniciada_em(&mut self, iniciada_em: NaiveDate) -> Result<(), String> {
+    pub fn definir_iniciada_em(&mut self, iniciada_em: NaiveDate) -> Result<(), ErroDeDominio> {
         if iniciada_em < Utc::now().date_naive() {
-            return Err("Data de início não pode ser no passado".to_string());
+            return Err(ErroDeDominio::valor_invalido(
+                "Data de início não pode ser no passado",
+            ));
         }
+
         self.iniciada_em = iniciada_em;
         self.toque();
         Ok(())
