@@ -1,0 +1,23 @@
+services:
+  db:
+    container_name: projetario-db
+    mem_reservation: 256mb
+    image: postgres
+    ports:
+      - ${MAIN_DB_PORT}:5432
+    environment:
+      POSTGRES_USER: ${MAIN_DB_USER}
+      POSTGRES_PASSWORD: ${MAIN_DB_PASSWORD}
+      POSTGRES_DB: ${MAIN_DB_NAME}
+
+  app:
+    container_name: projetario-app
+    image: projetario/app:0.1.0
+    ports:
+      - 3000:80
+    volumes:
+      - .env:/app/.env
+    profiles:
+      - preview
+    depends_on:
+      - db

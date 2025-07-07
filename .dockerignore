@@ -1,0 +1,22 @@
+# build directories
+target/
+**/build/
+**/dist/
+**/bundle/
+**/hot
+node_modules/
+
+# env files
+.env
+.env.*
+
+# application directories
+storage/
+
+# IDE and config directories
+.vscode/
+.github/
+
+# others
+readme.md
+Dockerfile

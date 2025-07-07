@@ -1,1 +1,10 @@
 /target
+**/build/
+**/dist/
+**/bundle/
+node_modules/
+.env
+**/hot
+storage/
+.vscode/*
+!.vscode/sample.settings.json

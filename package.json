@@ -1,0 +1,53 @@
+{
+  "name": "projetario-www",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && vite build --ssr",
+    "lint": "npx biome check www/",
+    "lint:fix": "npx biome check --write www/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Projetario-UTFPR/projetario.git"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Projetario-UTFPR/projetario/issues"
+  },
+  "homepage": "https://github.com/Projetario-UTFPR/projetario#readme",
+  "devDependencies": {
+    "@biomejs/biome": "2.0.0",
+    "@inertiajs/core": "2.0.11",
+    "@tailwindcss/typography": "0.5.16",
+    "@tailwindcss/vite": "4.1.7",
+    "@types/node": "22.15.19",
+    "@types/react": "19.1.4",
+    "@types/react-dom": "19.1.5",
+    "@vitejs/plugin-react": "4.4.1",
+    "laravel-vite-plugin": "1.2.0",
+    "typescript": "5.8.3",
+    "vite": "6.3.5"
+  },
+  "dependencies": {
+    "@inertiajs/react": "2.0.11",
+    "@phosphor-icons/react": "2.1.10",
+    "@radix-ui/react-avatar": "1.1.10",
+    "@radix-ui/react-dropdown-menu": "2.1.15",
+    "@radix-ui/react-slot": "1.2.3",
+    "@tinymce/tinymce-react": "6.2.1",
+    "clsx": "2.1.1",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-toastify": "11.0.5",
+    "tailwindcss": "4.1.7",
+    "tinymce": "7.9.1"
+  },
+  "overrides": {
+    "@tinymce/tinymce-react": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    }
+  }
+}

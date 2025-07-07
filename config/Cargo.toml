@@ -1,0 +1,10 @@
+[package]
+name = "config"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+inertia-rust = { workspace = true }
+anyhow = { workspace = true }
+vite-rust = { workspace = true }
+base64 = { version = "0.22", features = ["std"] }

@@ -10,12 +10,23 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - run: rustup update
+            - name: "cache incremental build artifacts for speeding up clippy check"
+              uses: Swatinem/rust-cache@v2
             - run: cargo clippy --all-targets --all-features -- -D warnings
 
-    check_code_fmt:
-        name: "ensures code is formatted"
+    check_backend_code_fmt:
+        name: "ensures rust code is formatted"
         runs-on: "ubuntu-latest"
         steps:
             - uses: actions/checkout@v4
-            - run: rustup update
-            - run: cargo fmt --all -- --check
+            - run: rustup toolchain install nightly
+            - run: rustup component add --toolchain nightly rustfmt
+            - run: rustup run nightly -- rustfmt --check ./**/*.rs
+    
+    check_frontend_code_fmt:
+        name: "ensures frontend code is formatted"
+        runs-on: "ubuntu-latest"
+        steps:
+            - uses: actions/checkout@v4
+            - run: npm ci --include=dev
+            - run: npm run lint
