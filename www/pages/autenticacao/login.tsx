@@ -1,6 +1,6 @@
 import { Head, Link, useForm, usePage } from "@inertiajs/react";
-import clsx from "clsx";
 import type { FormEvent } from "react";
+import Button from "@/components/button";
 import Form from "@/components/form";
 import { H1 } from "@/components/h1";
 import { Main } from "@/components/main";
@@ -101,25 +101,13 @@ export default function Login() {
                 />
 
                 <div className="mt-6 flex items-center gap-3">
-                  <button
-                    type="submit"
-                    className={clsx(
-                      "transition-all duration-100 bg-yellow-500 px-6 py-3 rounded-3xl font-medium",
-                      "hover:brightness-95 active:brightness-90",
-                    )}
-                  >
+                  <Button.CallToAction type="submit">
                     Entrar
-                  </button>
+                  </Button.CallToAction>
 
-                  <Link
-                    href="/projetos"
-                    className={clsx(
-                      "transition-all duration-100 bg-gray-300 px-6 py-3 rounded-3xl font-medium",
-                      "hover:bg-gray-400 active:brightness-95",
-                    )}
-                  >
-                    Ficar como visitante
-                  </Link>
+                  <Button.Secundario asChild>
+                    <Link href="/">Ficar como visitante</Link>
+                  </Button.Secundario>
                 </div>
               </form>
 
