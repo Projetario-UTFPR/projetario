@@ -1,0 +1,18 @@
+name: "Roda os testes do back-end"
+
+on:
+    workflow_call: 
+
+jobs:
+    tests:
+        name: "run every rust test"
+        runs-on: "ubuntu-latest"
+        steps:
+            - uses: actions/checkout@v4
+            - run: rustup update
+            - uses: Swatinem/rust-cache@v2
+            - run: docker compose up -d
+            - run: cp .env.test .env
+            - name: "check if docker containers are running"
+              run: docker ps
+            - run: cargo test --features test-utils --release

@@ -7,3 +7,5 @@ on:
 jobs:
     linting_and_format:
         uses: "./.github/workflows/linting.yaml"
+    tests:
+        uses: "./.github/workflows/tests.yaml"
