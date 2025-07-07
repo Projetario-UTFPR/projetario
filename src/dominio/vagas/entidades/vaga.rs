@@ -120,10 +120,13 @@ impl Vaga {
         }
     }
 
-    pub fn cancelar(&mut self) -> Result<(), String> {
+    pub fn cancelar(&mut self) -> Result<(), ErroDeDominio> {
         if self.concluida_em.is_some() {
-            return Err("Não é possível cancelar uma vaga concluída".to_string());
+            return Err(ErroDeDominio::integridade(
+                "Não é possível cancelar uma vaga concluída",
+            ));
         }
+
         self.cancelada_em = Some(Utc::now().naive_utc());
         self.toque();
         Ok(())
