@@ -9,10 +9,17 @@ jobs:
         runs-on: "ubuntu-latest"
         steps:
             - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                node-version: 22
+                cache: npm
             - run: rustup update
             - uses: Swatinem/rust-cache@v2
-            - run: docker compose up -d
             - run: cp .env.test .env
+            - run: |
+                npm ci
+                npm run build
+            - run: docker compose up -d
             - name: "check if docker containers are running"
               run: docker ps
             - run: cargo test --features test-utils --release
