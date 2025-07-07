@@ -1,11 +1,15 @@
 use std::cmp::Ordering;
+use std::ops::{Deref, DerefMut};
 use std::vec;
 
 use async_trait::async_trait;
-use sqlx::{FromRow, Row};
+use futures_util::FutureExt;
+use sqlx::{AnyPool, Connection, Executor, FromRow, PgPool, Pool, Postgres};
+use uuid::Uuid;
 
 use crate::dominio::identidade::entidades::professor::Professor;
 use crate::dominio::projetos::entidades::projeto::Projeto;
+use crate::dominio::projetos::enums::tipo_de_coordenacao::TipoDeCoordenacao;
 use crate::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 
