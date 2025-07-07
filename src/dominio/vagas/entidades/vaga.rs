@@ -3,6 +3,7 @@ use uuid::Uuid;
 
 use crate::dominio::identidade::entidades::professor::Professor;
 use crate::dominio::projetos::entidades::projeto::Projeto;
+use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 
 #[derive(Debug, Clone)]
 pub struct Vaga {
@@ -38,7 +39,7 @@ impl Vaga {
         titulo: String,
         link_candidatura: Option<String>,
         inscricoes_ate: NaiveDateTime,
-    ) -> Self {
+    ) -> Result<Self, ErroDeDominio> {
         Self::nova_com_data_de_inicio(
             projeto,
             coordenador,
@@ -69,35 +70,49 @@ impl Vaga {
         link_candidatura: Option<String>,
         inscricoes_ate: NaiveDateTime,
         iniciada_em: NaiveDate,
-    ) -> Self {
+    ) -> Result<Self, ErroDeDominio> {
         if horas_por_semana == 0 || horas_por_semana > 40 {
-            panic!("Horas por semana devem estar entre 1 e 40");
+            return Err(ErroDeDominio::valor_invalido(
+                "Horas por semana devem estar entre 1 e 40.",
+            ));
         }
 
         if quantidade == 0 {
-            panic!("Quantidade deve ser pelo menos 1");
+            return Err(ErroDeDominio::valor_invalido(
+                "Quantidade deve ser pelo menos 1.",
+            ));
         }
 
         if link_edital.is_empty() {
-            panic!("Link do edital não pode ser vazio");
+            return Err(ErroDeDominio::valor_invalido(
+                "Link do edital não pode ser vazio.",
+            ));
         }
 
         if titulo.is_empty() {
-            panic!("Título não pode ser vazio");
+            return Err(ErroDeDominio::valor_invalido("Título não pode ser vazio."));
         } else if titulo.len() > 100 {
-            panic!("Título não pode exceder 100 caracteres");
+            return Err(ErroDeDominio::valor_invalido(
+                "Título não pode exceder 100 caracteres.",
+            ));
         }
 
         if conteudo.is_empty() {
-            panic!("Conteúdo não pode ser vazio");
+            return Err(ErroDeDominio::valor_invalido(
+                "Conteúdo não pode ser vazio.",
+            ));
         }
 
         if inscricoes_ate < Utc::now().naive_utc() {
-            panic!("Data de fechamento de inscrições não pode ser no passado");
+            return Err(ErroDeDominio::valor_invalido(
+                "Data de fechamento de inscrições não pode ser no passado.",
+            ));
         }
 
         if iniciada_em < Utc::now().date_naive() {
-            panic!("Data de início não pode ser no passado");
+            return Err(ErroDeDominio::valor_invalido(
+                "Data de início não pode ser no passado.",
+            ));
         }
         Self {
             id: Uuid::new_v4(),
