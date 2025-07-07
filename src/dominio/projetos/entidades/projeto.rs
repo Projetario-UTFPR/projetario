@@ -42,6 +42,7 @@ impl Projeto {
         }
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn reconstituir(
         id: Uuid,
         titulo: String,
