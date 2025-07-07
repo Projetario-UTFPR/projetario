@@ -1,9 +1,17 @@
+use std::cmp::Ordering;
+use std::ops::{Deref, DerefMut};
+use std::vec;
+
 use async_trait::async_trait;
+use futures_util::FutureExt;
+use sqlx::{AnyPool, Connection, Executor, FromRow, PgPool, Pool, Postgres, QueryBuilder};
 use uuid::Uuid;
 
 use crate::dominio::identidade::entidades::professor::Professor;
 use crate::dominio::identidade::entidades::usuario::UsuarioModelo;
 use crate::dominio::projetos::entidades::projeto::Projeto;
+use crate::dominio::projetos::enums::tipo_de_coordenacao::TipoDeCoordenacao;
+use crate::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
 use crate::dominio::projetos::repositorios::coordenadores_de_projetos::RepositorioDeCoordenadoresDeProjetos;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 use crate::utils::test::repositorios_em_memoria::TabelaThreadSafeEmMemoria;
@@ -85,11 +93,16 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
             .push(" OFFSET ")
             .push_bind(limite as i32);
 
-        let projetos = busca.build_query_as().fetch_all().await?;
+        /*let projetos = busca.build_query_as().fetch_all().await?;
 
         Ok(ProjetosPaginados {
             projetos: projetos?,
             qtd_por_pagina: paginacao.qtd_por_pagina,
-        })
+        })*/
+        let a: Projeto;
+        ProjetosPaginados {
+            projeto: a,
+            qtd_por_pagina: 5,
+        }
     }
 }
