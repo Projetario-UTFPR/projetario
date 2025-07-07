@@ -40,6 +40,7 @@ impl Vaga {
         link_candidatura: Option<String>,
         inscricoes_ate: NaiveDateTime,
     ) -> Result<Self, ErroDeDominio> {
+let iniciada_em = Utc::now().date_naive();
         if horas_por_semana == 0 || horas_por_semana > 40 {
             return Err(ErroDeDominio::valor_invalido(
                 "Horas por semana devem estar entre 1 e 40.",
