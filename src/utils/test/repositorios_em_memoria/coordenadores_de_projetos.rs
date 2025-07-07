@@ -44,5 +44,53 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
         ordenadador: Ordenador,
         paginacao: Paginacao,
     ) -> ProjetosPaginados {
+        let mut select_query =
+            QueryBuilder::<Postgres>::new(r#"SELECT id, titulo, tipo, iniciado_em FROM projetos"#);
+
+        match filtro {
+            Filtro::Titulo(titulo) => {
+                select_query
+                    .push(" WHERE titulo ILIKE '%' || ")
+                    .push_bind(titulo)
+                    .push(" || '%'");
+            }
+            Filtro::TipoProjeto(tipo) => {
+                select_query.push(" WHERE tipo = ").push_bind(tipo);
+            }
+        }
+
+        match ordenador {
+            Ordenador::Data(ordem) => {
+                select_query.push(" ORDER BY iniciado_em ");
+                match ordem {
+                    Ordering::Asc => select_query.push("ASC"),
+                    Ordering::Desc => select_query.push("DESC"),
+                }
+            }
+            Ordenador::Titulo(ordem) => {
+                select_query.push(" ORDER BY titulo ");
+                match ordem {
+                    Ordering::Asc => select_query.push("ASC"),
+                    Ordering::Desc => select_query.push("DESC"),
+                }
+            }
+        }
+
+        let offset = (paginacao.pagina - 1) * paginacao.qtd_por_pagina as u32;
+        select_query
+            .push(" LIMIT ")
+            .push_bind(paginacao.qtd_por_pagina as i32)
+            .push(" OFFSET ")
+            .push_bind(offset as i32);
+
+        let projetos = select_query
+            .build_query_as()
+            .fetch_all(self.datastore.get_db())
+            .await?;
+
+        Ok(ProjetosPaginados {
+            projetos,
+            qtd_por_pagina: paginacao.qtd_por_pagina,
+        })
     }
 }
