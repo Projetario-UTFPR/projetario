@@ -12,7 +12,13 @@ use crate::dominio::identidade::entidades::usuario::UsuarioModelo;
 use crate::dominio::projetos::entidades::projeto::Projeto;
 use crate::dominio::projetos::enums::tipo_de_coordenacao::TipoDeCoordenacao;
 use crate::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
-use crate::dominio::projetos::repositorios::coordenadores_de_projetos::RepositorioDeCoordenadoresDeProjetos;
+use crate::dominio::projetos::repositorios::coordenadores_de_projetos::{
+    Filtro,
+    Ordenador,
+    Paginacao,
+    ProjetosPaginados,
+    RepositorioDeCoordenadoresDeProjetos,
+};
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 use crate::utils::test::repositorios_em_memoria::TabelaThreadSafeEmMemoria;
 
@@ -73,7 +79,7 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
                 match ordem {
                     Ordering::Less => busca.push("ASC"),
                     Ordering::Greater => busca.push("DESC"),
-                    Ordering::Equal => 1, //gambiarra
+                    Ordering::Equal => busca.push("ASC"),
                 }
             }
             Ordenador::Titulo(ordem) => {
@@ -81,7 +87,7 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
                 match ordem {
                     Ordering::Less => busca.push("ASC"),
                     Ordering::Greater => busca.push("DESC"),
-                    Ordering::Equal => 1, //gambiarra
+                    Ordering::Equal => busca.push("ASC"),
                 }
             }
         }
@@ -93,16 +99,13 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
             .push(" OFFSET ")
             .push_bind(limite as i32);
 
-        /*let projetos = busca.build_query_as().fetch_all().await?;
+        //let projetos = busca.build_query_as::<Projeto>().fetch_all().await?;
+
+        let projetos: Vec<Projeto> = self.projeto_tbl;
 
         Ok(ProjetosPaginados {
-            projetos: projetos?,
+            projetos: projetos,
             qtd_por_pagina: paginacao.qtd_por_pagina,
-        })*/
-        let a: Projeto;
-        ProjetosPaginados {
-            projeto: a,
-            qtd_por_pagina: 5,
-        }
+        })
     }
 }
