@@ -39,13 +39,19 @@
   #editor,
   .text-input {
     transition-property: all;
-    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function) /* cubic-bezier(0.4, 0, 0.2, 1) */);
-    transition-duration: var(--tw-duration, var(--default-transition-duration) /* 150ms */);
+    transition-timing-function: var(
+      --tw-ease,
+      var(--default-transition-timing-function) /* cubic-bezier(0.4, 0, 0.2, 1) */
+    );
+    transition-duration: var(
+      --tw-duration,
+      var(--default-transition-duration) /* 150ms */
+    );
 
     border-radius: var(--radius-3xl);
     padding: calc(var(--spacing) * 2) calc(var(--spacing) * 4);
     border: 1px solid color-mix(in oklab, var(--color-black) 20%, transparent);
-    
+
     --tw-outline-style: none;
     --tw-ring-color: var(--color-yellow-500);
     outline-style: none;
@@ -62,7 +68,9 @@
     }
   }
 
-  #editor { width: 100%; }
+  #editor {
+    width: 100%;
+  }
 }
 
 @layer components {
@@ -83,7 +91,5 @@
   }
 
   /* Estilização do conteúdo do editor e de como ele será disponibilizado na página de vagas/projetos  */
-  .conteudo-editor {
-    
-  }
+  /* .conteudo-editor { } */
 }
