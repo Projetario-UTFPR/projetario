@@ -9,6 +9,7 @@ export function CallToAction({ asChild, className, ...props }: ButtonProps) {
     <Component
       {...props}
       className={clsx(
+        "flex items-center gap-2",
         "transition-all duration-100 bg-yellow-500 px-6 py-3 rounded-3xl font-medium",
         "hover:brightness-95 active:brightness-90",
         className && className,

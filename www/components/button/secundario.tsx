@@ -8,6 +8,7 @@ export function Secundario({ asChild, className, ...props }: ButtonProps) {
   return (
     <Component
       className={clsx(
+        "flex items-center gap-2",
         "transition-all duration-100 bg-gray-300 px-6 py-3 rounded-3xl font-medium",
         "hover:bg-gray-400 active:brightness-95",
         className && className,
