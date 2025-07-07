@@ -1,1 +1,56 @@
 @import "tailwindcss";
+@plugin '@tailwindcss/typography';
+
+@theme {
+  --color-gray-100: #fafafa;
+  --color-gray-200: #f5f5f5;
+  --color-gray-300: #e4e4e4;
+  --color-gray-400: #d4d4d4;
+  --color-gray-500: #9a9a9a;
+  --color-gray-600: #7b7b7b;
+  --color-gray-800: #4e4e4e;
+  --color-gray-900: #3b3b3b;
+  --color-gray-1000: #282828;
+
+  --color-yellow-500: #ffcc00;
+  --color-yellow-800: #e2910e;
+
+  --container-lg: calc(1268rem / 16);
+  --container-sm: calc(716rem / 16);
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+@layer base {
+  #app {
+    height: 100%;
+  }
+
+  a,
+  button,
+  [role="button"] {
+    cursor: default;
+    &:active {
+      cursor: pointer;
+    }
+  }
+}
+
+@layer components {
+  .container-box {
+    display: flex;
+    gap: calc(var(--spacing) * 6);
+
+    border-radius: var(--radius-2xl);
+    border: 1px solid color-mix(in oklab, var(--color-black) 10%, transparent);
+
+    padding: calc(var(--spacing) * 13);
+    background: var(--color-white);
+    box-shadow:
+      0 14px 30px 0 color-mix(in oklab, var(--color-black) 5%, transparent),
+      0 54px 54px 0 color-mix(in oklab, var(--color-black) 4%, transparent),
+      0 122px 73px 0 color-mix(in oklab, var(--color-black) 3%, transparent),
+      0 217px 87px 0 color-mix(in oklab, var(--color-black) 1%, transparent);
+  }
+}

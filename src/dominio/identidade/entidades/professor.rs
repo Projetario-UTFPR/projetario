@@ -2,8 +2,9 @@ use sqlx::prelude::FromRow;
 
 use crate::dominio::identidade::entidades::usuario::{Usuario, UsuarioModelo};
 use crate::dominio::identidade::enums::cargo::Cargo;
+use crate::dominio::identidade::traits::IntoUsuarioModelo;
 
-#[derive(Debug, FromRow)]
+#[derive(Debug, FromRow, Clone, PartialEq)]
 pub struct Professor {
     #[sqlx(flatten)]
     usuario: Usuario,
@@ -15,13 +16,13 @@ impl Professor {
         nome: String,
         email: String,
         senha_hash: String,
-        url_curriculo_lates: Option<String>,
+        url_curriculo_lattes: Option<String>,
     ) -> Self {
         Self::novo_com_cargo(
             nome,
             email,
             senha_hash,
-            url_curriculo_lates,
+            url_curriculo_lattes,
             Cargo::Professor,
         )
     }
@@ -30,10 +31,10 @@ impl Professor {
         nome: String,
         email: String,
         senha_hash: String,
-        url_curriculo_lates: Option<String>,
+        url_curriculo_lattes: Option<String>,
         cargo: Cargo,
     ) -> Self {
-        let usuario = Usuario::novo(nome, email, senha_hash, url_curriculo_lates);
+        let usuario = Usuario::novo(nome, email, senha_hash, url_curriculo_lattes);
         Self { usuario, cargo }
     }
 }
@@ -84,12 +85,30 @@ impl TryFrom<&UsuarioModelo> for Professor {
             nome: value.nome.to_owned(),
             registrado_em: value.registrado_em,
             senha_hash: value.senha_hash.to_owned(),
-            url_curriculo_lates: value.url_curriculo_lates.to_owned(),
+            url_curriculo_lattes: value.url_curriculo_lattes.to_owned(),
         };
 
         Ok(Self {
             usuario,
             cargo: value.cargo.to_owned(),
         })
+    }
+}
+
+impl IntoUsuarioModelo for Professor {
+    fn into_usuario_modelo(self) -> UsuarioModelo {
+        UsuarioModelo {
+            id: self.usuario.id,
+            nome: self.usuario.nome,
+            email: self.usuario.email,
+            senha_hash: self.usuario.senha_hash,
+            cargo: self.cargo,
+            url_curriculo_lattes: self.usuario.url_curriculo_lattes,
+            registrado_em: self.usuario.registrado_em,
+            atualizado_em: self.usuario.atualizado_em,
+            desativado_em: self.usuario.desativado_em,
+            registro_aluno: None,
+            periodo: None,
+        }
     }
 }
