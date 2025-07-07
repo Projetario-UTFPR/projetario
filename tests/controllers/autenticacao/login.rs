@@ -45,16 +45,16 @@ pub async fn um_usuario_deveria_poder_se_autenticar(
             "senha": "123456"
         }))
         .inertia()
-        .insert_header((REFERER, "/dev/hello/world"))
+        .insert_header((REFERER, "/"))
         .send_request(&app)
         .await;
 
-    assert_eq!(StatusCode::FOUND, resposta.status());
+    assert_eq!(StatusCode::SEE_OTHER, resposta.status());
 
     let local_do_redirect = extraia_valor_do_header_location(&resposta);
 
     assert_eq!(
-        "/dev/hello/world", local_do_redirect,
+        "/", local_do_redirect,
         "Deveria ter autenticado e mandado de volta para a página de origem."
     );
 
@@ -107,7 +107,7 @@ pub async fn soh_usuarios_nao_autenticados_deveriam_poder_ver_a_pagina_de_login(
         .send_request(&app)
         .await;
 
-    assert_eq!(StatusCode::FOUND, resposta_login.status());
+    assert_eq!(StatusCode::SEE_OTHER, resposta_login.status());
 
     let tentativa_de_ir_para_login = TestRequest::post()
         .uri("/autenticacao/login")
