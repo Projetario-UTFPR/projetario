@@ -1,67 +1,66 @@
 use chrono::{NaiveDate, NaiveDateTime, Utc};
 use uuid::Uuid;
 
-use crate::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
+use crate::dominio::identidade::entidades::aluno::Aluno;
+use crate::dominio::projetos::entidades::projeto::Projeto;
 
 #[derive(Debug, Clone)]
 pub struct Vaga {
     id: Uuid,
-    projeto: Uuid,
-    aluno: Uuid,
+    projeto: Projeto,
     horas_por_semana: u8,
-    publicada_em: NaiveDateTime,
-    iniciada_em: NaiveDate,
+    //cursos: Vec<String>,
+    imagem: Option<String>,
+    quantidade_de_vagas: u8,
+    link_edital: String,
+    link_candidatura: Option<String>,
+    titulo: String,
+    conteudo: String,
     atualizada_em: Option<NaiveDateTime>,
     cancelada_em: Option<NaiveDateTime>,
     concluida_em: Option<NaiveDate>,
-    tipo: TipoDeProjeto,
-    cursos: Vec<String>,
-    imagem: Option<String>,
+    iniciada_em: NaiveDate,
 }
 
 impl Vaga {
-    pub fn nova(
-        projeto: Uuid,
-        aluno: Uuid,
-        horas_por_semana: u8,
-        tipo: TipoDeProjeto,
-        cursos: Vec<String>,
-        imagem: Option<String>,
-    ) -> Self {
+    pub fn nova() -> Self {
         Self::nova_com_data_de_inicio(
             projeto,
-            aluno,
             horas_por_semana,
-            tipo,
-            cursos,
             imagem,
+            quantidade_de_vagas,
+            link_candidatura,
+            conteudo,
+            titulo,
+            link_candidatura,
             Utc::now().date_naive(),
         )
     }
 
     pub fn nova_com_data_de_inicio(
-        projeto: Uuid,
-        aluno: Uuid,
+        projeto: Projeto,
         horas_por_semana: u8,
-        tipo: TipoDeProjeto,
-        cursos: Vec<String>,
+        //cursos: Vec<String>,
         imagem: Option<String>,
+        quantidade_de_vagas: u8,
+        link_edital: String,
+        conteudo: String,
+        titulo: String,
+        link_candidatura: String,
         iniciada_em: NaiveDate,
     ) -> Self {
-        Self {
-            id: Uuid::new_v4(),
+        Self::nova_com_data_de_inicio(
             projeto,
-            aluno,
             horas_por_semana,
-            tipo,
-            cursos,
+            //cursos,
             imagem,
-            iniciada_em,
-            atualizada_em: None,
-            cancelada_em: None,
-            concluida_em: None,
-            publicada_em: Utc::now().naive_utc(),
-        }
+            quantidade_de_vagas,
+            link_edital,
+            conteudo,
+            titulo,
+            link_candidatura,
+            Utc::now().date_naive(),
+        )
     }
 }
 
@@ -77,7 +76,7 @@ impl Vagas {
 
     pub fn obtenha_tipo(&self) -> TipoDeProjeto { self.tipo }
 
-    pub fn obtenha_cursos(&self) -> Vec<String> { self.cursos }
+    //pub fn obtenha_cursos(&self) -> Vec<String> { self.cursos }
 
     pub fn obtenha_imagem(&self) -> Option<String> { self.imagem }
 
@@ -87,7 +86,34 @@ impl Vagas {
 
     pub fn obtenha_data_de_conclusao(&self) -> Option<NaiveDate> { self.concluida_em }
 
-    pub fn obtenha_data_de_publicacao(&self) -> NaiveDateTime { self.publicada_em }
+    pub fn obtenha_data_de_inicio(&self) -> NaiveDateTime { self.iniciada_em }
 
     pub fn esta_ativa(&self) -> bool { self.cancelada_em.is_none() && self.concluida_em.is_none() }
+}
+
+// setters
+impl Vaga {
+    pub fn coloque_titulo(&mut self, titulo: String) {
+        if self.titulo == titulo {
+            return;
+        }
+
+        self.titulo = titulo;
+        self.toque();
+    }
+
+    pub fn coloque_descricao(&mut self, descricao: String) {
+        if self.descricao == descricao {
+            return;
+        }
+
+        self.descricao = descricao;
+        self.toque();
+    }
+
+    pub fn toque(&mut self) { self.atualizada_em = Some(Utc::now().naive_utc()); }
+
+    pub fn concluir(&mut self) { self.concluida_em = Some(Utc::now().date_naive()); }
+
+    pub fn cancelar(&mut self) { self.cancelada_em = Some(Utc::now().naive_utc()); }
 }
