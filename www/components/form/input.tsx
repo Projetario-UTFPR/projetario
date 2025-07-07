@@ -29,13 +29,14 @@ export function Input({
     <label className="flex flex-col gap-2 mb-3">
       <InputLabelSpan required={required}>{label}</InputLabelSpan>
 
+      {error && <Form.AlertaDeErro>{error}</Form.AlertaDeErro>}
+
       {observacao && (
         <span className="text-sm text-gray-600 dark:text-gray-300">
           {observacao}
         </span>
       )}
 
-      {error && <Form.AlertaDeErro>{error}</Form.AlertaDeErro>}
       <input
         id={id}
         type={type}
