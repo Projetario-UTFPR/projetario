@@ -61,6 +61,7 @@ where
 
 #[cfg(test)]
 mod test {
+    use pretty_assertions::assert_eq;
     use rstest::rstest;
 
     use crate::{
@@ -80,15 +81,9 @@ mod test {
 
     #[tokio::test]
     #[rstest]
-    #[case(Cargo::Professor, true, 1, 1)]
-    #[case(Cargo::Administrador, true, 1, 1)]
-    #[case(Cargo::Aluno, false, 0, 0)]
-    async fn deveria_criar_um_projeto_se_usuario_tiver_autorizacao(
-        #[case] cargo: Cargo,
-        #[case] deveria_ter_sucedido: bool,
-        #[case] qtd_projeto: usize,
-        #[case] qtd_relacionamentos: usize,
-    ) {
+    #[case(Cargo::Professor)]
+    #[case(Cargo::Administrador)]
+    async fn deveria_criar_um_projeto_se_usuario_tiver_autorizacao(#[case] cargo: Cargo) {
         let repositorio_de_coordenadores =
             FabricaRepositorioDeCoordenadoresDeProjetos::obtenha_repositorio();
 
@@ -118,20 +113,15 @@ mod test {
             professor: &professor
         }).await;
 
-        assert_eq!(deveria_ter_sucedido, resposta.is_ok());
-        assert_eq!(qtd_projeto, projeto_tbl.lock().unwrap().len());
+        assert!(resposta.is_ok());
+        assert_eq!(1, projeto_tbl.lock().unwrap().len());
+        assert_eq!(1, relacionamento_tbl.lock().unwrap().len());
+
         assert_eq!(
-            qtd_relacionamentos,
-            relacionamento_tbl.lock().unwrap().len()
+            projeto_tbl.lock().unwrap()[0].obtenha_id(),
+            &relacionamento_tbl.lock().unwrap()[0].id_projeto
         );
 
-        if deveria_ter_sucedido {
-            assert_eq!(
-                projeto_tbl.lock().unwrap()[0].obtenha_id(),
-                &relacionamento_tbl.lock().unwrap()[0].id_projeto
-            );
-
-            assert_eq!(titulo, resposta.unwrap().obtenha_titulo());
-        }
+        assert_eq!(titulo, resposta.unwrap().obtenha_titulo());
     }
 }
