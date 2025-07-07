@@ -41,31 +41,6 @@ impl Projeto {
             registrado_em: Utc::now().naive_utc(),
         }
     }
-
-    #[allow(clippy::too_many_arguments)]
-    pub fn reconstituir(
-        id: Uuid,
-        titulo: String,
-        descricao: String,
-        tipo: TipoDeProjeto,
-        registrado_em: NaiveDateTime,
-        iniciado_em: NaiveDate,
-        atualizado_em: Option<NaiveDateTime>,
-        cancelado_em: Option<NaiveDateTime>,
-        concluido_em: Option<NaiveDate>,
-    ) -> Self {
-        Self {
-            id,
-            titulo,
-            descricao,
-            tipo,
-            registrado_em,
-            iniciado_em,
-            atualizado_em,
-            cancelado_em,
-            concluido_em,
-        }
-    }
 }
 
 // getters
