@@ -112,13 +112,13 @@ impl Vaga {
 
     //pub fn obtenha_cursos(&self) -> Vec<String> { self.cursos }
 
-    pub fn obtenha_imagem(&self) -> Option<String> { self.imagem }
+    pub fn obtenha_imagem(&self) -> Option<String> { self.imagem.clone() }
 
     pub fn obtenha_quantidade(&self) -> u8 { self.quantidade }
 
-    pub fn obtenha_link_edital(&self) -> String { self.link_edital }
+    pub fn obtenha_link_edital(&self) -> &String { &self.link_edital }
 
-    pub fn obtenha_link_candidatura(&self) -> Option<String> { self.link_candidatura }
+    pub fn obtenha_link_candidatura(&self) -> Option<String> { self.link_candidatura.clone() }
 
     pub fn obtenha_data_de_modificacao(&self) -> Option<NaiveDateTime> { self.atualizada_em }
 
