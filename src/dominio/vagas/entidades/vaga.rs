@@ -1,6 +1,5 @@
 use chrono::{NaiveDate, NaiveDateTime, Utc};
 use uuid::Uuid;
-
 use crate::dominio::identidade::entidades::professor::Professor;
 use crate::dominio::projetos::entidades::projeto::Projeto;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
@@ -25,7 +24,7 @@ pub struct Vaga {
     inscricoes_ate: NaiveDateTime,
     iniciada_em: NaiveDate,
 }
-
+#[allow(clippy::too_many_arguments)]
 impl Vaga {
     pub fn nova(
         projeto: Projeto,
@@ -40,7 +39,6 @@ impl Vaga {
         link_candidatura: Option<String>,
         inscricoes_ate: NaiveDateTime,
     ) -> Result<Self, ErroDeDominio> {
-
         let iniciada_em = Utc::now().date_naive();
 
         if horas_por_semana == 0 || horas_por_semana > 40 {
