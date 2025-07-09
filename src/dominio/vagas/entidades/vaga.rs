@@ -1,5 +1,6 @@
 use chrono::{NaiveDate, NaiveDateTime, Utc};
 use uuid::Uuid;
+
 use crate::dominio::identidade::entidades::professor::Professor;
 use crate::dominio::projetos::entidades::projeto::Projeto;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
