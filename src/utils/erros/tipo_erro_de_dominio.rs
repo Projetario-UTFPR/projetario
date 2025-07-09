@@ -3,7 +3,9 @@ pub enum TipoErroDeDominio {
     Interno,
     Integridade,
     ValorInvalido,
-    NãoAutorizado,
+    NaoAutorizado,
+    NaoEncontrado,
+    RegraDeNegocio,
 }
 
 impl TipoErroDeDominio {
@@ -11,8 +13,10 @@ impl TipoErroDeDominio {
         match self {
             Self::Integridade => "integridade",
             Self::Interno => "interno",
-            Self::NãoAutorizado => "não_autorizado",
+            Self::NaoAutorizado => "não_autorizado",
             Self::ValorInvalido => "valor_inválido",
+            Self::NaoEncontrado => "nao_encontrado",
+            Self::RegraDeNegocio => "regra_de_negocio",
         }
         .into()
     }
