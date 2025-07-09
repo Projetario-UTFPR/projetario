@@ -80,7 +80,7 @@ impl Vaga {
                 "Data de fechamento de inscrições não pode ser no passado.",
             ));
         }
-        Self {
+        Ok(Self {
             id: Uuid::new_v4(),
             projeto,
             coordenador,
@@ -98,7 +98,7 @@ impl Vaga {
             concluida_em: None,
             inscricoes_ate,
             iniciada_em,
-        }
+        })
     }
 }
 
@@ -145,7 +145,7 @@ impl Vaga {
     }
 
     pub fn coloque_imagem(&mut self, imagem: Option<String>) {
-        if self.imagem.as_ref() == Some(&imagem) {
+        if self.imagem.as_ref() == imagem.as_ref() {
             return;
         }
 
@@ -163,7 +163,7 @@ impl Vaga {
     }
 
     pub fn coloque_link_candidatura(&mut self, link_candidatura: Option<String>) {
-        if self.link_candidatura.as_ref() == Some(&link_candidatura) {
+        if self.link_candidatura.as_ref() == link_candidatura.as_ref() {
             return;
         }
 

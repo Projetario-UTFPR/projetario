@@ -1,10 +1,11 @@
-use chrono::NaiveDate;
+use chrono::NaiveDateTime;
 
 use crate::dominio::identidade::entidades::professor::Professor;
 use crate::dominio::identidade::entidades::usuario::{Usuario, UsuarioModelo};
 use crate::dominio::projetos::entidades::projeto::Projeto;
 use crate::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
 use crate::dominio::vagas::repositorios::vaga::RepositorioDeVagas;
+use crate::dominio::vagas::entidades::vaga::Vaga;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 
 pub struct CriarVagaParams<'a> {
