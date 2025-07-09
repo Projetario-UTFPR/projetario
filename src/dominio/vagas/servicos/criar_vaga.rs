@@ -65,20 +65,20 @@ where
         };
 
         let vaga = Vaga::nova(
-                projeto,
-                coordenador,
-                vice_coordenador,
-                horas_por_semana,
-                imagem,
-                quantidade,
-                link_edital,
-                conteudo,
-                titulo,
-                link_candidatura,
-                inscricoes_ate,
-            )?,
+            projeto,
+            coordenador,
+            vice_coordenador,
+            horas_por_semana,
+            imagem,
+            quantidade,
+            link_edital,
+            conteudo,
+            titulo,
+            link_candidatura,
+            inscricoes_ate,
+        )?;
             
-   self.repositorio_de_vagas.criar_vaga(&vaga).await?;
+        self.repositorio_de_vagas.criar_vaga(&vaga).await?;
 
         Ok(vaga)
     }
