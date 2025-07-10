@@ -1,4 +1,4 @@
-use chrono::{NaiveDate, NaiveDateTime};
+use chrono::NaiveDateTime;
 
 use crate::dominio::identidade::entidades::professor::Professor;
 use crate::dominio::identidade::entidades::usuario::{Usuario, UsuarioModelo};
@@ -8,9 +8,10 @@ use crate::dominio::vagas::entidades::vaga::Vaga;
 use crate::dominio::vagas::repositorios::vaga::RepositorioDeVagas;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 
-pub struct CriarVagaParams {
-    pub coordenador: Professor,
+pub struct CriarVagaParams<'a> {
+    pub usuario: &'a UsuarioModelo,
     pub projeto: Projeto,
+    pub coordenador: Professor,
     pub vice_coordenador: Option<Professor>,
     pub horas_por_semana: u8,
     pub imagem: Option<String>,
@@ -39,8 +40,9 @@ where
         }
     }
 
-    pub async fn executar(&self, params: CriarVagaParams) -> Result<Vaga, ErroDeDominio> {
+    pub async fn executar(&self, params: CriarVagaParams<'_>) -> Result<Vaga, ErroDeDominio> {
         let CriarVagaParams {
+            usuario,
             projeto,
             coordenador,
             vice_coordenador,
@@ -53,6 +55,15 @@ where
             link_candidatura,
             inscricoes_ate,
         } = params;
+
+        let coordenador = match Professor::try_from(usuario) {
+            Ok(professor) => professor,
+            Err(msg) => {
+                return Err(ErroDeDominio::nao_autorizado(
+                    "Somente um professor ou um administrador pode criar novas vagas.",
+                ));
+            }
+        };
 
         let vaga = Vaga::nova(
             projeto,
@@ -67,9 +78,7 @@ where
             link_candidatura,
             inscricoes_ate,
         )?;
-
         self.repositorio_de_vagas.criar_vaga(&vaga).await?;
-
         Ok(vaga)
     }
 }
