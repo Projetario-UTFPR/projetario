@@ -7,6 +7,7 @@ WORKDIR /app
 COPY Cargo.lock Cargo.toml rust-toolchain.toml ./
 COPY config/ ./config
 COPY sessions/ ./sessions/
+COPY db_seeder/ ./db_seeder/
 
 # É necessário para manter as dependências em cache. O Cargo não possui um meio de compilar
 # somente as dependências para evitar recompilar tudo a cada alteração no código fonte,
