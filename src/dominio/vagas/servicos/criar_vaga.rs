@@ -1,4 +1,5 @@
 use chrono::NaiveDateTime;
+use serde::Deserialize;
 
 use crate::dominio::identidade::entidades::professor::Professor;
 use crate::dominio::identidade::entidades::usuario::{Usuario, UsuarioModelo};
