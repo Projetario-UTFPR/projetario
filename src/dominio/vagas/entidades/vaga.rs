@@ -28,11 +28,10 @@ pub struct Vaga {
     link_candidatura: Option<String>,
     titulo: String,
     conteudo: String,
-    atualizada_em: Option<NaiveDateTime>,
-    cancelada_em: Option<NaiveDateTime>,
-    concluida_em: Option<NaiveDate>,
-    inscricoes_ate: NaiveDateTime,
     iniciada_em: NaiveDate,
+    inscricoes_ate: NaiveDateTime,
+    cancelada_em: Option<NaiveDateTime>,
+    atualizada_em: Option<NaiveDateTime>,
 }
 #[allow(clippy::too_many_arguments)]
 impl Vaga {
@@ -91,7 +90,6 @@ impl Vaga {
             link_candidatura,
             atualizada_em: None,
             cancelada_em: None,
-            concluida_em: None,
             inscricoes_ate,
             iniciada_em,
         })
@@ -120,13 +118,15 @@ impl Vaga {
 
     pub fn obtenha_data_de_cancelamento(&self) -> Option<NaiveDateTime> { self.cancelada_em }
 
-    pub fn obtenha_data_de_conclusao(&self) -> Option<NaiveDate> { self.concluida_em }
-
     pub fn obtenha_data_de_inicio(&self) -> NaiveDate { self.iniciada_em }
 
     pub fn obtenha_data_final_inscricoes(&self) -> NaiveDateTime { self.inscricoes_ate }
 
-    pub fn esta_ativa(&self) -> bool { self.cancelada_em.is_none() && self.concluida_em.is_none() }
+    pub fn foi_concluida(&self) -> bool {
+        self.cancelada_em.is_none() && self.inscricoes_ate < Utc::now().naive_utc()
+    }
+
+    pub fn esta_ativa(&self) -> bool { self.cancelada_em.is_none() && !self.foi_concluida() }
 
     pub fn obtenha_coordenador(&self) -> &Professor { &self.coordenador }
 }
@@ -218,8 +218,6 @@ impl Vaga {
     }
 
     pub fn toque(&mut self) { self.atualizada_em = Some(Utc::now().naive_utc()); }
-
-    pub fn concluir(&mut self) { self.concluida_em = Some(Utc::now().date_naive()); }
 
     pub fn cancelar(&mut self) { self.cancelada_em = Some(Utc::now().naive_utc()); }
 }
