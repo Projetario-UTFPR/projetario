@@ -5,6 +5,7 @@ use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 
 pub mod autenticacao;
 pub mod professores;
+pub mod projetos;
 
 pub trait Controller {
     fn register(cfg: &mut ServiceConfig);

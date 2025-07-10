@@ -1,4 +1,5 @@
-use chrono::{NaiveDate, NaiveDateTime};
+use chrono::NaiveDateTime;
+use serde::Deserialize;
 
 use crate::dominio::identidade::entidades::professor::Professor;
 use crate::dominio::identidade::entidades::usuario::{Usuario, UsuarioModelo};
@@ -9,8 +10,8 @@ use crate::dominio::vagas::repositorios::vaga::RepositorioDeVagas;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 
 pub struct CriarVagaParams {
-    pub coordenador: Professor,
     pub projeto: Projeto,
+    pub coordenador: Professor,
     pub vice_coordenador: Option<Professor>,
     pub horas_por_semana: u8,
     pub imagem: Option<String>,

@@ -3,7 +3,7 @@ import { InputLabelSpan } from "./label-span";
 
 type InputProps = {
   label: string;
-  type: "text" | "password" | "date" | "datetime-local";
+  type: "text" | "password" | "date" | "datetime-local" | "number";
   id?: string;
   name?: string;
   placeholder?: string;

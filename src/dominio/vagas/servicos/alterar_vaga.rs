@@ -17,7 +17,6 @@ pub struct AlterarVagaParams {
     pub titulo: Option<String>,
     pub link_candidatura: Option<Option<String>>,
     pub inscricoes_ate: Option<NaiveDateTime>,
-    pub iniciada_em: Option<NaiveDate>,
 }
 
 pub struct ServicoAlterarVaga<RV> {
@@ -36,13 +35,9 @@ where
         params: AlterarVagaParams,
         professor: &Professor,
     ) -> Result<Vaga, ErroDeDominio> {
-        let mut vaga =
-            self.repositorio
-                .buscar_por_id(vaga_id)
-                .await?
-                .ok_or(ErroDeDominio::nao_encontrado(
-                    "Vaga não encontrada".to_string(),
-                ))?;
+        let mut vaga = self.repositorio.buscar_por_id(&vaga_id).await?.ok_or(
+            ErroDeDominio::nao_encontrado("Vaga não encontrada".to_string()),
+        )?;
 
         let professor_pode_alterar_vaga = vaga
             .obtenha_coordenador()
@@ -58,7 +53,7 @@ where
         }
 
         if let Some(horas) = params.horas_por_semana {
-            vaga.definir_horas_por_semana(horas)?;
+            vaga.coloque_horas_por_semana(horas)?;
         }
 
         if let Some(imagem) = params.imagem {
@@ -66,31 +61,27 @@ where
         }
 
         if let Some(quantidade) = params.quantidade {
-            vaga.definir_quantidade(quantidade)?;
+            vaga.coloque_quantidade_de_vagas(quantidade)?;
         }
 
         if let Some(link_edital) = params.link_edital {
-            vaga.definir_link_edital(link_edital);
+            vaga.coloque_link_edital(link_edital);
         }
 
         if let Some(conteudo) = params.conteudo {
-            vaga.definir_conteudo(conteudo)?;
+            vaga.coloque_conteudo(conteudo);
         }
 
         if let Some(titulo) = params.titulo {
-            vaga.definir_titulo(titulo)?;
+            vaga.coloque_titulo(titulo);
         }
 
         if let Some(link_candidatura) = params.link_candidatura {
-            vaga.definir_link_candidatura(link_candidatura);
+            vaga.coloque_link_candidatura(link_candidatura);
         }
 
         if let Some(inscricoes_ate) = params.inscricoes_ate {
-            vaga.definir_inscricoes_ate(inscricoes_ate)?;
-        }
-
-        if let Some(iniciada_em) = params.iniciada_em {
-            vaga.definir_iniciada_em(iniciada_em)?;
+            vaga.atualize_data_de_encerramento_das_inscricoes(inscricoes_ate)?;
         }
 
         self.repositorio.atualizar_vaga(&vaga).await?;

@@ -87,6 +87,9 @@ function SecaoParaProfessoresSomente() {
           Novo projeto de extensão
         </Link>
       </DropdownItem>
+      <DropdownItem asChild>
+        <Link href="/professores/vagas/nova">Nova vaga de projeto</Link>
+      </DropdownItem>
     </DropdownGroup>
   );
 }
