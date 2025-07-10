@@ -20,6 +20,7 @@ use crate::dominio::projetos::repositorios::coordenadores_de_projetos::{
     RepositorioDeCoordenadoresDeProjetos,
     Tipo,
 };
+use crate::utils::erros::ResultadoDominio;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 pub struct RepositorioDeCoordenadoresDeProjetosSQLX<'this> {
     db_conn: &'this PgPool,
@@ -183,6 +184,29 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
         Ok(ProjetosPaginados {
             projetos,
             qtd_por_pagina: paginacao.qtd_por_pagina,
+        })
+    }
+
+    // TODO: reescrever isso aqui como um join
+    async fn buscar_coordenadores_do_projeto(
+        &self,
+        projeto: &Projeto,
+    ) -> ResultadoDominio<(Professor, Option<Professor>)> {
+        let coord = sqlx::query_as(
+            "SELECT * FROM usuario WHERE id = (\
+                SELECT id_coordenador FROM coordenador_projeto WHERE tipo = 'coordenador' AND id_projeto = $1\
+            )"
+        ).bind(projeto.obtenha_id()).fetch_one(self.db_conn);
+
+        let vice_coord = sqlx::query_as(
+            "SELECT * FROM usuario WHERE id = (\
+                SELECT id_coordenador FROM coordenador_projeto WHERE tipo = 'vice_coordenador' AND id_projeto = $1\
+            )"
+        ).bind(projeto.obtenha_id()).fetch_optional(self.db_conn);
+
+        tokio::try_join!(coord, vice_coord).map_err(|err| {
+            log::error!("{err}");
+            ErroDeDominio::interno()
         })
     }
 }

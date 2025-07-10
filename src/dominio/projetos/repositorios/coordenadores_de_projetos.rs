@@ -12,6 +12,7 @@ use crate::dominio::identidade::entidades::professor::Professor;
 use crate::dominio::projetos::entidades::projeto::Projeto;
 use crate::dominio::projetos::enums::tipo_de_coordenacao::TipoDeCoordenacao;
 use crate::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
+use crate::utils::erros::ResultadoDominio;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 
 #[derive(Deserialize)]
@@ -54,6 +55,11 @@ pub trait RepositorioDeCoordenadoresDeProjetos {
         projeto: &Projeto,
         coordenador: &Professor,
     ) -> Result<(), ErroDeDominio>;
+
+    async fn buscar_coordenadores_do_projeto(
+        &self,
+        projeto: &Projeto,
+    ) -> ResultadoDominio<(Professor, Option<Professor>)>;
 
     async fn buscar_projetos(
         &self,

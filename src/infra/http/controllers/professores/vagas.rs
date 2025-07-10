@@ -7,14 +7,17 @@ use uuid::Uuid;
 
 use crate::dominio::identidade::entidades::professor::Professor;
 use crate::dominio::identidade::entidades::usuario::UsuarioModelo;
+use crate::dominio::identidade::enums::cargo::Cargo;
 use crate::dominio::identidade::repositorios::usuarios::RepositorioDeUsuarios;
 use crate::dominio::projetos::entidades::projeto::Projeto;
+use crate::dominio::projetos::repositorios::coordenadores_de_projetos::RepositorioDeCoordenadoresDeProjetos;
 use crate::dominio::projetos::repositorios::projetos::RepositorioDeProjetos;
 use crate::dominio::vagas::servicos::criar_vaga::CriarVagaParams;
 use crate::infra::dtos::vagas::criar_vaga::CriarVagaDto;
 use crate::infra::fabricas::servicos::criar_vaga::obtenha_servico_criar_vaga;
 use crate::infra::http::controllers::{Controller, RedirectDoApp, RespostaDoApp};
 use crate::infra::http::middlewares::usuario_da_requisicao::UsuarioDaRequisicao;
+use crate::infra::repositorios::sqlx::coordenadores_de_projetos::RepositorioDeCoordenadoresDeProjetosSQLX;
 use crate::infra::repositorios::sqlx::projetos::RepositorioDeProjetosSQLX;
 use crate::infra::repositorios::sqlx::usuarios::RepositorioDeUsuariosSQLX;
 use crate::unwrap_or_redirect;
@@ -44,8 +47,12 @@ impl ControllerVagas {
         usuario: UsuarioDaRequisicao,
     ) -> RedirectDoApp {
         let body = unwrap_or_redirect!(body.validate_or_back(&req));
+
+        dbg!(&body);
+
         let criar_vaga = obtenha_servico_criar_vaga(&db_conn);
         let repositorio_de_projetos = RepositorioDeProjetosSQLX::novo(&db_conn);
+        let repositorio_de_coordenadores = RepositorioDeCoordenadoresDeProjetosSQLX::novo(&db_conn);
 
         let professor = match usuario {
             UsuarioDaRequisicao::Professor(prof) => prof,
@@ -80,20 +87,26 @@ impl ControllerVagas {
             Some(projeto) => projeto,
         };
 
-        let vice_coordenador =
-            match busque_vice_coordenador_se_existir(body.id_vice_coordenador, &db_conn).await {
-                Err(err) => {
-                    return Inertia::back_with_errors(
-                        &req,
-                        hashmap!["error" => err.mensagem().into()],
-                    );
-                }
-                Ok(coord) => coord,
-            };
+        let (coordenador, vice_coordenador) = match repositorio_de_coordenadores
+            .buscar_coordenadores_do_projeto(&projeto)
+            .await
+        {
+            Err(err) => {
+                return Inertia::back_with_errors(&req, hashmap!["erro" => err.mensagem().into()]);
+            }
+            Ok(coords) => coords,
+        };
+
+        if Cargo::Administrador.ne(professor.obtenha_cargo()) && coordenador != professor {
+            return Inertia::back_with_errors(
+                &req,
+                hashmap!["erro" => "Você não tem autorização para abrir vagas para este projeto.".into()],
+            );
+        }
 
         let params = CriarVagaParams {
             projeto,
-            coordenador: professor.clone(),
+            coordenador,
             vice_coordenador,
             horas_por_semana: body.horas_por_semana,
             imagem: body.imagem.clone(),
@@ -111,32 +124,4 @@ impl ControllerVagas {
 
         Inertia::back(&req)
     }
-}
-
-async fn busque_vice_coordenador_se_existir(
-    id_vice: Option<Uuid>,
-    db_conn: &PgPool,
-) -> ResultadoDominio<Option<Professor>> {
-    let id_vice = match id_vice {
-        None => return Ok(None),
-        Some(id) => id,
-    };
-
-    let repositorio_de_usuarios = RepositorioDeUsuariosSQLX::novo(db_conn);
-
-    let usuario = match repositorio_de_usuarios
-        .encontre_usuario_modelo_pelo_id(&id_vice)
-        .await?
-    {
-        None => return Ok(None),
-        Some(usuario) => usuario,
-    };
-
-    let professor = Professor::try_from(&usuario).map_err(|err| {
-        ErroDeDominio::valor_invalido(
-            "Não é possível associar um usuário não-professor como vice-coordenador de uma vaga.",
-        )
-    })?;
-
-    Ok(Some(professor))
 }

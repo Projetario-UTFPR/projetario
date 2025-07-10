@@ -22,6 +22,7 @@ use crate::dominio::projetos::repositorios::coordenadores_de_projetos::{
     RepositorioDeCoordenadoresDeProjetos,
     Tipo,
 };
+use crate::utils::erros::ResultadoDominio;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 use crate::utils::test::repositorios_em_memoria::TabelaThreadSafeEmMemoria;
 
@@ -119,5 +120,12 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
             projetos,
             qtd_por_pagina: paginacao.qtd_por_pagina,
         })
+    }
+
+    async fn buscar_coordenadores_do_projeto(
+        &self,
+        projeto: &Projeto,
+    ) -> ResultadoDominio<(Professor, Option<Professor>)> {
+        todo!()
     }
 }
