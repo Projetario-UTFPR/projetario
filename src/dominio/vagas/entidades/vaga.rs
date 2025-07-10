@@ -1,16 +1,24 @@
 use chrono::{NaiveDate, NaiveDateTime, Utc};
+use sqlx::prelude::FromRow;
 use uuid::Uuid;
 
 use crate::dominio::identidade::entidades::professor::Professor;
 use crate::dominio::projetos::entidades::projeto::Projeto;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, FromRow)]
 pub struct Vaga {
     id: Uuid,
+
+    #[sqlx(flatten)]
     projeto: Projeto,
+
+    #[sqlx(flatten)]
     coordenador: Professor,
+
+    #[sqlx(flatten)]
     vice_coordenador: Option<Professor>,
+
     horas_por_semana: u8,
     //cursos: Vec<String>,
     imagem: Option<String>,
@@ -130,6 +138,8 @@ impl Vaga {
     pub fn obtenha_data_final_inscricoes(&self) -> NaiveDateTime { self.inscricoes_ate }
 
     pub fn esta_ativa(&self) -> bool { self.cancelada_em.is_none() && self.concluida_em.is_none() }
+
+    pub fn obtenha_coordenador(&self) -> &Professor { &self.coordenador }
 }
 
 // setters

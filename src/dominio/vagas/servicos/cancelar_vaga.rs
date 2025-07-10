@@ -7,7 +7,7 @@ use crate::dominio::vagas::entidades::vaga::Vaga;
 use crate::dominio::vagas::repositorios::vaga::RepositorioDeVagas;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 
-pub struct ServicoCancelarVaga<RV> {
+pub struct ServicoCancelarVaga<RV: RepositorioDeVagas> {
     repositorio: RV,
 }
 
@@ -22,13 +22,15 @@ where
         vaga_id: Uuid,
         professor: &Professor,
     ) -> Result<Vaga, ErroDeDominio> {
-        let mut vaga =
-            self.repositorio
-                .buscar_por_id(vaga_id)
-                .await?
-                .ok_or(ErroDeDominio::nao_encontrado(
-                    "Vaga não encontrada".to_string(),
-                ))?;
+        let mut vaga = self.repositorio.buscar_por_id(&vaga_id).await?.ok_or(
+            ErroDeDominio::nao_encontrado("Vaga não encontrada".to_string()),
+        )?;
+
+        if !vaga.esta_ativa() {
+            return Err(ErroDeDominio::integridade(
+                "Não é possível cancelar uma vaga que não está mais ativa.",
+            ));
+        }
 
         let professor_pode_alterar_vaga = vaga
             .obtenha_coordenador()
@@ -43,7 +45,7 @@ where
             ));
         }
 
-        vaga.cancelar()?;
+        vaga.cancelar();
         self.repositorio.atualizar_vaga(&vaga).await?;
 
         Ok(vaga)
