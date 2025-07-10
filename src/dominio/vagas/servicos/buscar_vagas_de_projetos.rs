@@ -51,9 +51,8 @@ where
             qtd_por_pagina,
         };
 
-        Ok(self
-            .repositorio_de_coordenadores
+        self.repositorio_de_coordenadores
             .buscar_projetos(filtro, tipo, ordenador, paginacao)
-            .await?)
+            .await
     }
 }
