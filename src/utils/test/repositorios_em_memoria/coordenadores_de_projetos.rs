@@ -14,12 +14,12 @@ use crate::dominio::projetos::entidades::projeto::Projeto;
 use crate::dominio::projetos::enums::tipo_de_coordenacao::TipoDeCoordenacao;
 use crate::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
 use crate::dominio::projetos::repositorios::coordenadores_de_projetos::{
+    DirecaoOrdenacao,
     Filtro,
     Ordenador,
     Paginacao,
     ProjetosPaginados,
     RepositorioDeCoordenadoresDeProjetos,
-    Tipo,
     Tipo,
 };
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
