@@ -5,9 +5,9 @@ use inertia_rust::{Inertia, InertiaFacade, hashmap};
 use sqlx::PgPool;
 
 use crate::dominio::projetos::repositorios::coordenadores_de_projetos::ProjetosPaginados;
-use crate::dominio::projetos::servicos::buscar_projetos::{
-    BuscarProjetosParams,
-    ServicoBuscaProjetos,
+use crate::dominio::vagas::servicos::buscar_vagas_de_projetos::{
+    BuscarVagasDeProjetosParams,
+    ServicoBuscarVagasDeProjetos,
 };
 use crate::infra::dtos::projetos::buscar_projeto::BuscarProjetoDto;
 use crate::infra::fabricas::servicos::buscar_projetos::obtenha_servico_buscar_projetos;
@@ -43,7 +43,7 @@ impl ControllerProjetos {
         let servico = obtenha_servico_buscar_projetos(&db_conn);
 
         match servico
-            .buscar_projeto(BuscarProjetosParams {
+            .executar(BuscarVagasDeProjetosParams {
                 filtro: body.filtro,
                 tipo: body.tipo,
                 ordenador: body.ordenador,

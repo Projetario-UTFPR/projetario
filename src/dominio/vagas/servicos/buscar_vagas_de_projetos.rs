@@ -10,20 +10,20 @@ use crate::dominio::projetos::repositorios::coordenadores_de_projetos::{
 };
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 
-pub struct BuscarProjetosParams {
+pub struct BuscarVagasDeProjetosParams {
     pub filtro: Filtro,
     pub tipo: Option<Tipo>,
     pub ordenador: Ordenador,
     pub pagina: u32,
 }
 
-pub struct ServicoBuscaProjetos<RCP>
+pub struct ServicoBuscarVagasDeProjetos<RCP>
 where
     RCP: RepositorioDeCoordenadoresDeProjetos,
 {
     repositorio_de_coordenadores: RCP,
 }
-impl<RCP> ServicoBuscaProjetos<RCP>
+impl<RCP> ServicoBuscarVagasDeProjetos<RCP>
 where
     RCP: RepositorioDeCoordenadoresDeProjetos,
 {
@@ -33,11 +33,11 @@ where
         }
     }
 
-    pub async fn buscar_projeto(
+    pub async fn executar(
         &self,
-        params: BuscarProjetosParams,
+        params: BuscarVagasDeProjetosParams,
     ) -> Result<ProjetosPaginados, ErroDeDominio> {
-        let BuscarProjetosParams {
+        let BuscarVagasDeProjetosParams {
             filtro,
             tipo,
             ordenador,
