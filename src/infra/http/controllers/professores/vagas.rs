@@ -48,8 +48,6 @@ impl ControllerVagas {
     ) -> RedirectDoApp {
         let body = unwrap_or_redirect!(body.validate_or_back(&req));
 
-        dbg!(&body);
-
         let criar_vaga = obtenha_servico_criar_vaga(&db_conn);
         let repositorio_de_projetos = RepositorioDeProjetosSQLX::novo(&db_conn);
         let repositorio_de_coordenadores = RepositorioDeCoordenadoresDeProjetosSQLX::novo(&db_conn);
