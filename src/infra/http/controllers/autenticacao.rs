@@ -128,7 +128,7 @@ impl ControllerAutenticacao {
 
     async fn deslogar(req: HttpRequest) -> RedirectDoApp {
         remover_usuario_das_sessoes(&req);
-        Inertia::back(&req)
+        Redirect::to("/").see_other()
     }
 }
 
