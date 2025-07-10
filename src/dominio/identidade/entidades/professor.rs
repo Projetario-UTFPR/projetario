@@ -112,3 +112,21 @@ impl IntoUsuarioModelo for Professor {
         }
     }
 }
+
+impl Professor {
+    pub fn usuario_modelo(&self) -> UsuarioModelo {
+        UsuarioModelo {
+            id: self.usuario.id,
+            nome: self.usuario.nome.clone(),
+            email: self.usuario.email.clone(),
+            senha_hash: self.usuario.senha_hash.clone(),
+            cargo: self.cargo.clone(),
+            url_curriculo_lattes: self.usuario.url_curriculo_lattes.clone(),
+            registrado_em: self.usuario.registrado_em,
+            atualizado_em: self.usuario.atualizado_em,
+            desativado_em: self.usuario.desativado_em,
+            registro_aluno: None,
+            periodo: None,
+        }
+    }
+}
