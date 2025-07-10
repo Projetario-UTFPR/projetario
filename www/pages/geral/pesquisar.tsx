@@ -1,5 +1,5 @@
+import { MagnifyingGlassIcon } from "@phosphor-icons/react/dist/ssr/MagnifyingGlass";
 import { type FormEvent, useState } from "react";
-import { FaSearch } from "react-icons/fa";
 
 const Pesquisar = () => {
   const [filtro, setFiltro] = useState("");
@@ -30,7 +30,7 @@ const Pesquisar = () => {
             {/* Campo de busca */}
             <div className="relative flex-grow">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FaSearch className="text-gray-400" />
+                <MagnifyingGlassIcon className="text-gray-400" />
               </div>
               <input
                 type="text"
@@ -46,7 +46,7 @@ const Pesquisar = () => {
               type="submit"
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
             >
-              <FaSearch className="mr-2" />
+              <MagnifyingGlassIcon className="mr-2" />
               Pesquisar
             </button>
           </div>
