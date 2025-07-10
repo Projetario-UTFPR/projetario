@@ -20,10 +20,10 @@ pub struct Vaga {
     #[sqlx(flatten)]
     vice_coordenador: Option<Professor>,
 
-    horas_por_semana: u8,
+    horas_por_semana: i32,
     //cursos: Vec<String>,
     imagem: Option<String>,
-    quantidade: u8,
+    quantidade: i32,
     link_edital: String,
     link_candidatura: Option<String>,
     titulo: String,
@@ -80,10 +80,10 @@ impl Vaga {
             projeto,
             coordenador,
             vice_coordenador,
-            horas_por_semana,
+            horas_por_semana: horas_por_semana as i32,
             //cursos,
             imagem,
-            quantidade,
+            quantidade: quantidade as i32,
             link_edital,
             conteudo,
             titulo,
@@ -94,21 +94,62 @@ impl Vaga {
             iniciada_em,
         })
     }
+
+    #[allow(clippy::too_many_arguments)]
+    pub fn criar_de_existente(
+        id: Uuid,
+        projeto: Projeto,
+        coordenador: Professor,
+        vice_coordenador: Option<Professor>,
+        horas_por_semana: i32,
+        imagem: Option<String>,
+        quantidade: i32,
+        link_edital: String,
+        link_candidatura: Option<String>,
+        titulo: String,
+        conteudo: String,
+        iniciada_em: NaiveDate,
+        inscricoes_ate: NaiveDateTime,
+        cancelada_em: Option<NaiveDateTime>,
+        atualizada_em: Option<NaiveDateTime>,
+    ) -> Self {
+        Self {
+            atualizada_em,
+            cancelada_em,
+            conteudo,
+            coordenador,
+            horas_por_semana,
+            id,
+            imagem,
+            iniciada_em,
+            inscricoes_ate,
+            link_candidatura,
+            link_edital,
+            projeto,
+            quantidade,
+            titulo,
+            vice_coordenador,
+        }
+    }
 }
 
 // getters
 impl Vaga {
+    pub fn obtenha_titulo(&self) -> &str { &self.titulo }
+
+    pub fn obtenha_conteudo(&self) -> &str { &self.conteudo }
+
     pub fn obtenha_id(&self) -> &Uuid { &self.id }
 
     pub fn obtenha_projeto(&self) -> &Projeto { &self.projeto }
 
-    pub fn obtenha_horas_por_semana(&self) -> u8 { self.horas_por_semana }
+    pub fn obtenha_horas_por_semana(&self) -> u8 { self.horas_por_semana as u8 }
 
     //pub fn obtenha_cursos(&self) -> Vec<String> { self.cursos }
 
     pub fn obtenha_imagem(&self) -> Option<String> { self.imagem.clone() }
 
-    pub fn obtenha_quantidade(&self) -> u8 { self.quantidade }
+    pub fn obtenha_quantidade(&self) -> u8 { self.quantidade as u8 }
 
     pub fn obtenha_link_edital(&self) -> &String { &self.link_edital }
 
@@ -129,6 +170,8 @@ impl Vaga {
     pub fn esta_ativa(&self) -> bool { self.cancelada_em.is_none() && !self.foi_concluida() }
 
     pub fn obtenha_coordenador(&self) -> &Professor { &self.coordenador }
+
+    pub fn obtenha_vice_coordenador(&self) -> Option<&Professor> { self.vice_coordenador.as_ref() }
 }
 
 // setters
@@ -179,25 +222,25 @@ impl Vaga {
     }
 
     pub fn coloque_horas_por_semana(&mut self, horas: u8) -> ResultadoDominio<()> {
-        if self.horas_por_semana == horas {
+        if self.horas_por_semana == horas as i32 {
             return Ok(());
         }
 
         Self::valide_horas_por_semana(horas)?;
 
-        self.horas_por_semana = horas;
+        self.horas_por_semana = horas as i32;
         self.toque();
 
         Ok(())
     }
 
     pub fn coloque_quantidade_de_vagas(&mut self, qtd: u8) -> ResultadoDominio<()> {
-        if self.quantidade == qtd {
+        if self.quantidade == qtd as i32 {
             return Ok(());
         }
 
         Self::valide_quantidade_de_vagas(qtd);
-        self.quantidade = qtd;
+        self.quantidade = qtd as i32;
         self.toque();
 
         Ok(())
@@ -215,6 +258,10 @@ impl Vaga {
         self.inscricoes_ate = data;
         self.toque();
         Ok(())
+    }
+
+    pub fn coloque_vice_coordenador(&mut self, vice: Professor) {
+        self.vice_coordenador = Some(vice);
     }
 
     pub fn toque(&mut self) { self.atualizada_em = Some(Utc::now().naive_utc()); }
