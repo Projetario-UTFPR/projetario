@@ -24,7 +24,6 @@ export default function CriarNovaVagaDeProjeto() {
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
-    console.log(JSON.stringify(data));
 
     post("/professores/vagas/criar", {
       onSuccess() {
