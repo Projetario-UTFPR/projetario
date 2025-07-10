@@ -10,12 +10,15 @@ use uuid::Uuid;
 use crate::dominio::identidade::entidades::professor::Professor;
 use crate::dominio::projetos::entidades::projeto::Projeto;
 use crate::dominio::projetos::enums::tipo_de_coordenacao::TipoDeCoordenacao;
+use crate::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
 use crate::dominio::projetos::repositorios::coordenadores_de_projetos::{
+    DirecaoOrdenacao,
     Filtro,
     Ordenador,
     Paginacao,
     ProjetosPaginados,
     RepositorioDeCoordenadoresDeProjetos,
+    Tipo,
 };
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 pub struct RepositorioDeCoordenadoresDeProjetosSQLX<'this> {
@@ -115,6 +118,7 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
     async fn buscar_projetos(
         &self,
         filtro: Filtro,
+        tipo: Option<Tipo>,
         ordenador: Ordenador,
         paginacao: Paginacao,
     ) -> Result<ProjetosPaginados, ErroDeDominio> {
@@ -122,33 +126,40 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
             r#"SELECT id, titulo, descricao, tipo, registrado_em, iniciado_em, atualizado_em, cancelado_em, concluido_em FROM projeto"#,
         );
 
+        let mut tem_condicoes = false;
+
         match filtro {
             Filtro::Titulo(titulo) => {
-                busca
-                    .push(" WHERE titulo ILIKE '%' || ")
-                    .push_bind(titulo)
-                    .push(" || '%'");
+                busca.push(" WHERE titulo ILIKE '%' || ");
+                busca.push_bind(titulo);
+                busca.push(" || '%'");
+                tem_condicoes = true;
             }
-            Filtro::TipoProjeto(tipo) => {
-                busca.push(" WHERE tipo = ").push_bind(tipo);
+        }
+
+        if let Some(Tipo::Tipo(tipo)) = tipo {
+            if tem_condicoes {
+                busca.push(" AND tipo = ");
+            } else {
+                busca.push(" WHERE tipo = ");
+                tem_condicoes = true;
             }
+            busca.push_bind(tipo);
         }
 
         match ordenador {
             Ordenador::Data(ordem) => {
                 busca.push(" ORDER BY iniciado_em ");
                 match ordem {
-                    Ordering::Less => busca.push("ASC"),
-                    Ordering::Greater => busca.push("DESC"),
-                    Ordering::Equal => busca.push("ASC"),
+                    DirecaoOrdenacao::Asc => busca.push("ASC"),
+                    DirecaoOrdenacao::Desc => busca.push("DESC"),
                 };
             }
             Ordenador::Titulo(ordem) => {
                 busca.push(" ORDER BY titulo ");
                 match ordem {
-                    Ordering::Less => busca.push("ASC"),
-                    Ordering::Greater => busca.push("DESC"),
-                    Ordering::Equal => busca.push("ASC"),
+                    DirecaoOrdenacao::Asc => busca.push("ASC"),
+                    DirecaoOrdenacao::Desc => busca.push("DESC"),
                 };
             }
         };

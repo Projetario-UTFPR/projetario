@@ -4,6 +4,7 @@ use std::vec;
 
 use async_trait::async_trait;
 use futures_util::FutureExt;
+use serde::{Deserialize, Serialize};
 use sqlx::{AnyPool, Connection, Executor, FromRow, PgPool, Pool, Postgres, QueryBuilder};
 use uuid::Uuid;
 
@@ -13,18 +14,34 @@ use crate::dominio::projetos::enums::tipo_de_coordenacao::TipoDeCoordenacao;
 use crate::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 
-pub enum Ordenador {
-    Data(Ordering),
-    Titulo(Ordering),
+#[derive(Deserialize)]
+pub enum DirecaoOrdenacao {
+    Asc,
+    Desc,
 }
+
+#[derive(Deserialize)]
+pub enum Ordenador {
+    Data(DirecaoOrdenacao),
+    Titulo(DirecaoOrdenacao),
+}
+
+#[derive(serde::Deserialize)]
 pub enum Filtro {
     Titulo(String),
-    TipoProjeto(TipoDeProjeto),
 }
+
+#[derive(Deserialize)]
+pub enum Tipo {
+    Tipo(TipoDeProjeto),
+}
+
 pub struct Paginacao {
     pub pagina: u32,
     pub qtd_por_pagina: u8,
 }
+
+#[derive(Serialize)]
 pub struct ProjetosPaginados {
     pub projetos: Vec<Projeto>,
     pub qtd_por_pagina: u8,
@@ -41,6 +58,7 @@ pub trait RepositorioDeCoordenadoresDeProjetos {
     async fn buscar_projetos(
         &self,
         filtro: Filtro,
+        tipo: Option<Tipo>,
         ordenador: Ordenador,
         paginacao: Paginacao,
     ) -> Result<ProjetosPaginados, ErroDeDominio>;

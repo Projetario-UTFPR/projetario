@@ -4,15 +4,8 @@ use crate::dominio::identidade::entidades::professor::Professor;
 use crate::dominio::identidade::entidades::usuario::{Usuario, UsuarioModelo};
 use crate::dominio::projetos::entidades::projeto::Projeto;
 use crate::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
-use crate::dominio::projetos::repositorios::coordenadores_de_projetos::{
-    Filtro,
-    Ordenador,
-    Paginacao,
-    ProjetosPaginados,
-    RepositorioDeCoordenadoresDeProjetos,
-};
+use crate::dominio::projetos::repositorios::coordenadores_de_projetos::RepositorioDeCoordenadoresDeProjetos;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
-
 pub struct CriarProjetosDeExtensaoParams<'a> {
     pub professor: &'a Professor,
     pub titulo: String,
@@ -62,16 +55,6 @@ where
             .await?;
 
         Ok(projeto)
-    }
-
-    pub async fn buscar_projeto_em_banco_de_dados(
-        &self,
-        filtro: Filtro,
-        ordenador: Ordenador,
-        paginacao: Paginacao,
-    ) -> Result<ProjetosPaginados, ErroDeDominio> {
-        self.repositorio_de_coordenadores
-            .buscar_projetos(filtro, ordenador, paginacao)
     }
 }
 

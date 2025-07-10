@@ -19,6 +19,7 @@ use crate::dominio::projetos::repositorios::coordenadores_de_projetos::{
     Paginacao,
     ProjetosPaginados,
     RepositorioDeCoordenadoresDeProjetos,
+    Tipo,
 };
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 use crate::utils::test::repositorios_em_memoria::TabelaThreadSafeEmMemoria;
@@ -62,33 +63,40 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
         let mut busca =
             QueryBuilder::<Postgres>::new(r#"SELECT id, titulo, tipo, iniciado_em FROM projeto"#);
 
+        let mut tem_condicoes = false;
+
         match filtro {
             Filtro::Titulo(titulo) => {
-                busca
-                    .push(" WHERE titulo ILIKE '%' || ")
-                    .push_bind(titulo)
-                    .push(" || '%'");
+                busca.push(" WHERE titulo ILIKE '%' || ");
+                busca.push_bind(titulo);
+                busca.push(" || '%'");
+                tem_condicoes = true;
             }
-            Filtro::TipoProjeto(tipo) => {
-                busca.push(" WHERE tipo = ").push_bind(tipo);
+        }
+
+        if let Some(t) = tipo {
+            if tem_condicoes {
+                busca.push(" AND tipo = ");
+            } else {
+                busca.push(" WHERE tipo = ");
+                tem_condicoes = true;
             }
-        };
+            busca.push_bind(t); // Adiciona o valor do tipo
+        }
 
         match ordenador {
             Ordenador::Data(ordem) => {
                 busca.push(" ORDER BY iniciado_em ");
                 match ordem {
-                    Ordering::Less => busca.push("ASC"),
+                    Ordering::Less | Ordering::Equal => busca.push("ASC"),
                     Ordering::Greater => busca.push("DESC"),
-                    Ordering::Equal => busca.push("ASC"),
                 };
             }
             Ordenador::Titulo(ordem) => {
                 busca.push(" ORDER BY titulo ");
                 match ordem {
-                    Ordering::Less => busca.push("ASC"),
+                    Ordering::Less | Ordering::Equal => busca.push("ASC"),
                     Ordering::Greater => busca.push("DESC"),
-                    Ordering::Equal => busca.push("ASC"),
                 };
             }
         };
