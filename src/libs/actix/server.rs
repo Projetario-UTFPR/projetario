@@ -20,6 +20,7 @@ use crate::dominio::identidade::traits::IntoUsuarioModelo;
 use crate::infra::http::controllers::Controller;
 use crate::infra::http::controllers::autenticacao::ControllerAutenticacao;
 use crate::infra::http::controllers::professores::projetos_de_extensao::ControllerProjetosDeExtensao;
+use crate::infra::http::controllers::professores::vagas::ControllerVagas;
 use crate::infra::http::middlewares::somente_com_cargo::{
     AutorizacaoDaRota,
     MiddlewareEstaAutorizado,
@@ -87,6 +88,11 @@ pub fn get_server() -> App<
         .inertia_route("/", "index")
         .inertia_route("/dev/hello/world", "hello-world")
         .configure(ControllerAutenticacao::register)
-        .service(web::scope("/professores").wrap(MiddlewareEstaAutorizado::novo(AutorizacaoDaRota::UsuarioComCargo(Cargo::Professor))).configure(ControllerProjetosDeExtensao::register))
+        .service(
+            web::scope("/professores")
+                .wrap(MiddlewareEstaAutorizado::novo(AutorizacaoDaRota::UsuarioComCargo(Cargo::Professor)))
+                .configure(ControllerProjetosDeExtensao::register)
+                .configure(ControllerVagas::register)
+        )
         .service(actix_files::Files::new("/", "./public/").prefer_utf8(true))
 }
