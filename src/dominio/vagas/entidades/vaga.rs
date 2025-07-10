@@ -4,6 +4,7 @@ use uuid::Uuid;
 
 use crate::dominio::identidade::entidades::professor::Professor;
 use crate::dominio::projetos::entidades::projeto::Projeto;
+use crate::utils::erros::ResultadoDominio;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 
 #[derive(Debug, Clone, FromRow)]
@@ -50,17 +51,8 @@ impl Vaga {
     ) -> Result<Self, ErroDeDominio> {
         let iniciada_em = Utc::now().date_naive();
 
-        if horas_por_semana == 0 || horas_por_semana > 40 {
-            return Err(ErroDeDominio::valor_invalido(
-                "Horas por semana devem estar entre 1 e 40.",
-            ));
-        }
-
-        if quantidade == 0 {
-            return Err(ErroDeDominio::valor_invalido(
-                "Quantidade deve ser pelo menos 1.",
-            ));
-        }
+        Self::valide_horas_por_semana(horas_por_semana)?;
+        Self::valide_quantidade_de_vagas(quantidade)?;
 
         if link_edital.is_empty() {
             return Err(ErroDeDominio::valor_invalido(
@@ -82,11 +74,8 @@ impl Vaga {
             ));
         }
 
-        if inscricoes_ate < Utc::now().naive_utc() {
-            return Err(ErroDeDominio::valor_invalido(
-                "Data de fechamento de inscrições não pode ser no passado.",
-            ));
-        }
+        Self::valide_data_de_encerramento_das_inscricoes(&inscricoes_ate)?;
+
         Ok(Self {
             id: Uuid::new_v4(),
             projeto,
@@ -189,9 +178,82 @@ impl Vaga {
         self.toque();
     }
 
+    pub fn coloque_horas_por_semana(&mut self, horas: u8) -> ResultadoDominio<()> {
+        if self.horas_por_semana == horas {
+            return Ok(());
+        }
+
+        Self::valide_horas_por_semana(horas)?;
+
+        self.horas_por_semana = horas;
+        self.toque();
+
+        Ok(())
+    }
+
+    pub fn coloque_quantidade_de_vagas(&mut self, qtd: u8) -> ResultadoDominio<()> {
+        if self.quantidade == qtd {
+            return Ok(());
+        }
+
+        Self::valide_quantidade_de_vagas(qtd);
+        self.quantidade = qtd;
+        self.toque();
+
+        Ok(())
+    }
+
+    pub fn atualize_data_de_encerramento_das_inscricoes(
+        &mut self,
+        data: NaiveDateTime,
+    ) -> ResultadoDominio<()> {
+        if self.inscricoes_ate == data {
+            return Ok(());
+        }
+
+        Self::valide_data_de_encerramento_das_inscricoes(&data)?;
+        self.inscricoes_ate = data;
+        self.toque();
+        Ok(())
+    }
+
     pub fn toque(&mut self) { self.atualizada_em = Some(Utc::now().naive_utc()); }
 
     pub fn concluir(&mut self) { self.concluida_em = Some(Utc::now().date_naive()); }
 
     pub fn cancelar(&mut self) { self.cancelada_em = Some(Utc::now().naive_utc()); }
+}
+
+impl Vaga {
+    pub fn valide_horas_por_semana(horas: u8) -> ResultadoDominio<()> {
+        if horas == 0 || horas > 40 {
+            return Err(ErroDeDominio::valor_invalido(
+                "Horas por semana devem estar entre 1 e 40.",
+            ));
+        }
+
+        Ok(())
+    }
+
+    pub fn valide_quantidade_de_vagas(qtd: u8) -> ResultadoDominio<()> {
+        if qtd == 0 {
+            return Err(ErroDeDominio::valor_invalido(
+                "Quantidade deve ser pelo menos 1.",
+            ));
+        }
+
+        Ok(())
+    }
+
+    pub fn valide_data_de_encerramento_das_inscricoes(
+        data: &NaiveDateTime,
+    ) -> ResultadoDominio<()> {
+        if Utc::now().naive_utc().gt(data) {
+            return Err(ErroDeDominio::valor_invalido(
+                "Data de fechamento de inscrições não pode ser no passado.",
+            ));
+        }
+
+        Ok(())
+    }
 }
