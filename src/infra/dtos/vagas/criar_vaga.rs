@@ -1,11 +1,14 @@
 use chrono::NaiveDateTime;
 use serde::Deserialize;
+use uuid::Uuid;
+use validator::Validate;
 
-#[derive(Deserialize)]
+// TODO: tornar todos esses campos opcionais e utilizar o #[validate(required)]
+#[derive(Deserialize, Validate)]
 pub struct CriarVagaDto {
-    pub id_projeto: String,
-    pub id_coordenador: String,
-    pub id_vice_coordenador: Option<String>,
+    pub id_projeto: Uuid,
+    pub id_coordenador: Uuid,
+    pub id_vice_coordenador: Option<Uuid>,
     pub horas_por_semana: u8,
     pub imagem: Option<String>,
     pub quantidade: u8,

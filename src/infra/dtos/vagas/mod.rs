@@ -1,1 +1,1 @@
-pub mod criar_vagas;
+pub mod criar_vaga;
