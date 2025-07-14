@@ -16,7 +16,6 @@ impl<'this> RepositorioDeVagasSQLX<'this> {
     pub fn novo(db_conn: &'this PgPool) -> Self { Self { db_conn } }
 }
 
-// TODO: tratar todos os erros internos que podem ser erros de verdade no banco de dados
 #[async_trait::async_trait]
 impl RepositorioDeVagas for RepositorioDeVagasSQLX<'_> {
     async fn criar_vaga(&self, vaga: &Vaga) -> ResultadoDominio<()> {
