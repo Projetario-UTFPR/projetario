@@ -21,15 +21,15 @@ impl<'this> RepositorioDeVagasSQLX<'this> {
 impl RepositorioDeVagas for RepositorioDeVagasSQLX<'_> {
     async fn criar_vaga(&self, vaga: &Vaga) -> ResultadoDominio<()> {
         sqlx::query(
-            "INSERT INTO vaga (\
-                id, id_projeto, id_coordenador, id_vice_coordenador, \
-                horas_por_semana, imagem, quantidade, link_edital, \
-                link_candidatura, titulo, conteudo, iniciada_em, \
-                inscricoes_ate, cancelada_em, atualizada_em) \
+            r#"INSERT INTO vaga (
+                id, id_projeto, id_coordenador, id_vice_coordenador,
+                horas_por_semana, imagem, quantidade, link_edital,
+                link_candidatura, titulo, conteudo, iniciada_em,
+                inscricoes_ate, cancelada_em, atualizada_em)
             VALUES (
-                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, \
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
                 $13, $14, $15
-            )",
+            )"#,
         )
         .bind(vaga.obtenha_id())
         .bind(vaga.obtenha_projeto().obtenha_id())
@@ -60,112 +60,65 @@ impl RepositorioDeVagas for RepositorioDeVagasSQLX<'_> {
     }
 
     async fn buscar_por_id(&self, id: &Uuid) -> ResultadoDominio<Option<Vaga>> {
-        // TODO: transformar tudo num JOIN
-        let vaga: Option<(
-            Uuid,
-            i32,
-            String,
-            i32,
-            String,
-            Option<String>,
-            String,
-            String,
-            NaiveDate,
-            NaiveDateTime,
-            Option<NaiveDateTime>,
-            Option<NaiveDateTime>,
-            Uuid,
-            Uuid,
-            Option<Uuid>,
-        )> = query_as(
-            "
-            SELECT \
-                id, horas_por_semana, imagem, quantidade, link_edital, link_candidatura, \
-                titulo, conteudo, iniciada_em, inscricoes_ate, cancelada_em, atualizada_em,
-                id_projeto, id_coordenador, id_vice_coordenador \
-            FROM vaga WHERE id = $1
-        ",
-        )
-        .bind(id)
-        .fetch_optional(self.db_conn)
-        .await
-        .map_err(|erro| {
-            log::error!("{erro}");
-            ErroDeDominio::interno()
-        })?;
-
-        let (
-            id,
-            horas_por_semana,
-            imagem,
-            quantidade,
-            link_edital,
-            link_candidatura,
-            titulo,
-            conteudo,
-            iniciada_em,
-            inscricoes_ate,
-            cancelada_em,
-            atualizada_em,
-            id_projeto,
-            id_coord,
-            id_vice,
-        ) = match vaga {
-            None => return Ok(None),
-            Some(vaga) => vaga,
-        };
-
-        let projeto = query_as("SELECT * FROM projeto WHERE id = $1")
-            .bind(id_projeto)
-            .fetch_one(self.db_conn)
+        sqlx::query_as(&format!("{SELECT_VAGA_QUERY} WHERE v.id = $1"))
+            .bind(id)
+            .fetch_optional(self.db_conn)
             .await
             .map_err(|err| {
                 log::error!("{err}");
                 ErroDeDominio::interno()
-            })?;
-
-        let coordenador = query_as("SELECT * FROM usuario WHERE id = $1")
-            .bind(id_coord)
-            .fetch_one(self.db_conn)
-            .await
-            .map_err(|err| {
-                log::error!("{err}");
-                ErroDeDominio::interno()
-            })?;
-
-        let mut vaga = Vaga::criar_de_existente(
-            id,
-            projeto,
-            coordenador,
-            None,
-            horas_por_semana,
-            Some(imagem),
-            quantidade,
-            link_edital,
-            link_candidatura,
-            titulo,
-            conteudo,
-            iniciada_em,
-            inscricoes_ate,
-            cancelada_em,
-            atualizada_em,
-        );
-
-        let vice = match id_vice {
-            None => return Ok(Some(vaga)),
-            Some(id) => query_as("SELECT * FROM usuario WHERE id = $1").bind(id),
-        }
-        .fetch_one(self.db_conn)
-        .await
-        .map_err(|err| {
-            log::error!("{err}");
-            ErroDeDominio::interno()
-        })?;
-
-        vaga.coloque_vice_coordenador(vice);
-
-        Ok(Some(vaga))
+            })
     }
 
     async fn atualizar_vaga(&self, vaga: &Vaga) -> ResultadoDominio<()> { todo!() }
 }
+
+const SELECT_VAGA_QUERY: &str = r#"SELECT
+        v.*,
+
+        -- projeto
+        p.id as "p_id",
+        p.titulo as "p_titulo",
+        p.descricao as "p_descricao",
+        p.tipo as "p_tipo",
+        p.registrado_em as "p_registrado_em",
+        p.iniciado_em as "p_iniciado_em",
+        p.atualizado_em as "p_atualizado_em",
+        p.cancelado_em as "p_cancelado_em",
+        p.concluido_em as "p_concluido_em",
+
+        -- coordenador
+        c.id as "c_id",
+        c.nome as "c_nome",
+        c.email as "c_email",
+        c.senha_hash as "c_senha_hash",
+        c.url_curriculo_lattes as "c_url_curriculo_lattes",
+        c.atualizado_em as "c_atualizado_em",
+        c.desativado_em as "c_desativado_em",
+        c.registrado_em as "c_registrado_em",
+
+        -- vice coordenador
+        vice.id as "vice_id",
+        vice.nome as "vice_nome",
+        vice.email as "vice_email",
+        vice.senha_hash as "vice_senha_hash",
+        vice.url_curriculo_lattes as "vice_url_curriculo_lattes",
+        vice.atualizado_em as "vice_atualizado_em",
+        vice.desativado_em as "vice_desativado_em",
+        vice.registrado_em as "vice_registrado_em"
+    FROM vaga v
+    -- projeto
+    INNER JOIN projeto p ON p.id = v.id_projeto
+
+    -- coordenador
+    INNER JOIN coordenador_projeto c_rel
+        ON c_rel.id_projeto = p.id
+        AND c_rel.tipo = 'coordenador'
+    INNER JOIN usuario c ON c.id = c_rel.id_coordenador
+
+    -- vice coordenador
+    LEFT JOIN coordenador_projeto vice_rel
+        ON vice_rel.id_projeto = p.id
+        AND vice_rel.tipo = 'vice_coordenador'
+    LEFT JOIN usuario vice ON vice.id = vice_rel.id_coordenador
+    "#;
