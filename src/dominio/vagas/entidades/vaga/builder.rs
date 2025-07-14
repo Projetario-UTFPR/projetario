@@ -1,3 +1,4 @@
+use chrono::NaiveDate;
 use uuid::Uuid;
 
 use crate::dominio::identidade::entidades::professor::builder::ProfessorBuilder;
@@ -17,7 +18,7 @@ pub struct VagaBuilder {
     pub link_candidatura: Option<String>,
     pub titulo: Option<String>,
     pub conteudo: String,
-    pub iniciada_em: DbDateTime,
+    pub iniciada_em: NaiveDate,
     pub inscricoes_ate: DbDateTime,
     pub cancelada_em: Option<DbDateTime>,
     pub atualizada_em: Option<DbDateTime>,
