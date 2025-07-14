@@ -1,11 +1,18 @@
 use std::str::FromStr;
 use std::time::Duration;
 
+use chrono::{DateTime, Utc};
 use config::app::{AppConfig, RustEnv};
 use sqlx::any::AnyConnectOptions;
 use sqlx::migrate::Migrator;
 use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
 use sqlx::{ConnectOptions, Connection, Database, PgConnection, PgPool};
+
+mod nullableu8;
+
+pub use nullableu8::*;
+
+pub type DbDateTime = DateTime<Utc>;
 
 pub async fn migrate_db(pool: &PgPool) -> anyhow::Result<()> {
     sqlx::migrate!().run(pool).await;
