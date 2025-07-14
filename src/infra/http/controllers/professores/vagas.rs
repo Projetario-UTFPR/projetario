@@ -40,6 +40,7 @@ impl ControllerVagas {
             .await
             .map_err(Into::into)
     }
+
     pub async fn criar(
         req: HttpRequest,
         db_conn: Data<PgPool>,
@@ -49,63 +50,21 @@ impl ControllerVagas {
         let body = unwrap_or_redirect!(body.validate_or_back(&req));
 
         let criar_vaga = obtenha_servico_criar_vaga(&db_conn);
-        let repositorio_de_projetos = RepositorioDeProjetosSQLX::novo(&db_conn);
-        let repositorio_de_coordenadores = RepositorioDeCoordenadoresDeProjetosSQLX::novo(&db_conn);
 
         let professor = match usuario {
-            UsuarioDaRequisicao::Professor(prof) => prof,
-            _ => {
-                return Inertia::back_with_errors(
-                    &req,
-                    hashmap!["erro" => "Somente professores podem criar vagas.".into()],
-                );
-            }
-        };
-
-        let projeto = match repositorio_de_projetos
-            .encontrar_por_id(body.id_projeto.as_ref().unwrap())
-            .await
-        {
-            Err(err) => {
-                return Inertia::back_with_errors(
-                    &req,
-                    hashmap!["erro" => "Houve um problema no servidor.".into()],
-                );
-            }
-            Ok(projeto) => projeto,
-        };
-
-        let projeto = match projeto {
-            None => {
-                return Inertia::back_with_errors(
-                    &req,
-                    hashmap!["erro" => "O projeto associado não foi encontrado.".into()],
-                );
-            }
-            Some(projeto) => projeto,
-        };
-
-        let (coordenador, vice_coordenador) = match repositorio_de_coordenadores
-            .buscar_coordenadores_do_projeto(&projeto)
-            .await
-        {
-            Err(err) => {
-                return Inertia::back_with_errors(&req, hashmap!["erro" => err.mensagem().into()]);
-            }
-            Ok(coords) => coords,
-        };
-
-        if Cargo::Administrador.ne(professor.obtenha_cargo()) && coordenador != professor {
-            return Inertia::back_with_errors(
-                &req,
-                hashmap!["erro" => "Você não tem autorização para abrir vagas para este projeto.".into()],
-            );
+            UsuarioDaRequisicao::Professor(prof) => Some(prof),
+            _ => None,
         }
+        .ok_or_else(|| {
+            let errors = hashmap!["erro" => "Somente professores podem criar vagas.".into()];
+            Inertia::back_with_errors(&req, errors)
+        });
+
+        let professor = unwrap_or_redirect!(professor);
 
         let params = CriarVagaParams {
-            projeto,
-            coordenador,
-            vice_coordenador,
+            professor: &professor,
+            id_projeto: body.id_projeto.unwrap(),
             horas_por_semana: body.horas_por_semana.unwrap(),
             imagem: body.imagem.unwrap(),
             quantidade: body.quantidade.unwrap(),
