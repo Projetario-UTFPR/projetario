@@ -103,8 +103,7 @@ impl Vaga {
 impl Vaga {
     pub fn obtenha_titulo(&self) -> &str {
         self.titulo
-            .as_ref()
-            .map(|str| str.as_str())
+            .as_deref()
             .unwrap_or_else(|| self.projeto.obtenha_titulo())
     }
 
@@ -114,13 +113,13 @@ impl Vaga {
 
     pub fn obtenha_projeto(&self) -> &Projeto { &self.projeto }
 
-    pub fn obtenha_horas_por_semana(&self) -> u8 { self.horas_por_semana as u8 }
+    pub fn obtenha_horas_por_semana(&self) -> u8 { self.horas_por_semana }
 
     //pub fn obtenha_cursos(&self) -> Vec<String> { self.cursos }
 
     pub fn obtenha_imagem(&self) -> &str { &self.imagem }
 
-    pub fn obtenha_quantidade(&self) -> u8 { self.quantidade as u8 }
+    pub fn obtenha_quantidade(&self) -> u8 { self.quantidade }
 
     pub fn obtenha_link_edital(&self) -> &String { &self.link_edital }
 

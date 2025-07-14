@@ -24,10 +24,10 @@ impl<'r> FromRow<'r, PgRow> for Vaga {
             atualizada_em: row.try_get("vaga_atualizada_em")?,
             cancelada_em: row.try_get("vaga_cancelada_em")?,
             projeto: ProjetoBuilder::from_row_with_prefix(row, "p")?,
-            coordenador: ProfessorBuilder::from_row_with_prefix(row, "coord_")?.into(),
+            coordenador: ProfessorBuilder::from_row_with_prefix(row, "coord_")?,
             vice_coordenador: match vice_id {
                 None => None,
-                Some(_) => Some(ProfessorBuilder::from_row_with_prefix(row, "vice_")?.into()),
+                Some(_) => Some(ProfessorBuilder::from_row_with_prefix(row, "vice_")?),
             },
         };
 
