@@ -79,7 +79,11 @@ validator = { version = "0.20", features = ["derive"] }
 uuid = { version = "1.17.0", features = ["v4", "serde"] }
 openssl = { version = "0.10.73" }
 pbkdf2.workspace = true
-fake = { version = "4.3.0", features = ["derive", "chrono"], optional = true }
+fake = { version = "4.3.0", features = [
+    "derive",
+    "chrono",
+    "url",
+], optional = true }
 rand = { workspace = true, optional = true }
 
 [dev-dependencies]
@@ -87,3 +91,4 @@ pretty_assertions.workspace = true
 rstest.workspace = true
 tokio = { workspace = true, features = ["test-util"] }
 db_seeder = { path = "db_seeder" }
+url = "2.5.4"

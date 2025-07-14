@@ -994,6 +994,7 @@ dependencies = [
  "deunicode",
  "dummy",
  "rand 0.9.1",
+ "url",
 ]
 
 [[package]]
@@ -2307,6 +2308,7 @@ dependencies = [
  "sqlx",
  "thiserror",
  "tokio",
+ "url",
  "uuid",
  "validator",
  "vite-rust",
