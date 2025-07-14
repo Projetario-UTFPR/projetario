@@ -4,6 +4,8 @@ use crate::dominio::identidade::entidades::usuario::{Usuario, UsuarioModelo};
 use crate::dominio::identidade::enums::cargo::Cargo;
 use crate::dominio::identidade::traits::IntoUsuarioModelo;
 
+pub mod builder;
+
 #[derive(Debug, FromRow, Clone, PartialEq)]
 pub struct Professor {
     #[sqlx(flatten)]

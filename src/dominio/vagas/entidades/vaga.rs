@@ -8,7 +8,9 @@ use crate::utils::erros::ResultadoDominio;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 use crate::utils::sqlx::DbDateTime;
 
-#[derive(Debug, Clone, FromRow)]
+pub mod builder;
+
+#[derive(Debug, Clone)]
 pub struct Vaga {
     id: Uuid,
 

@@ -1,4 +1,4 @@
-use chrono::{NaiveDate, NaiveDateTime, Utc};
+use chrono::{NaiveDate, Utc};
 use serde::Serialize;
 use sqlx::postgres::PgRow;
 use sqlx::{FromRow, Row};
@@ -6,6 +6,8 @@ use uuid::Uuid;
 
 use crate::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
 use crate::utils::sqlx::DbDateTime;
+
+pub mod builder;
 
 #[derive(Serialize, Debug, Clone, FromRow)]
 pub struct Projeto {

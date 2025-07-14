@@ -1,4 +1,4 @@
-use chrono::{NaiveDateTime, Utc};
+use chrono::Utc;
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 use uuid::Uuid;
@@ -6,6 +6,8 @@ use uuid::Uuid;
 use crate::dominio::identidade::enums::cargo::Cargo;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 use crate::utils::sqlx::DbDateTime;
+
+pub mod builder;
 
 #[derive(Debug, FromRow, Clone, PartialEq)]
 pub struct Usuario {
