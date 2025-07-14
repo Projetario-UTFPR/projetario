@@ -1,7 +1,6 @@
 use std::str::FromStr;
 use std::time::Duration;
 
-use chrono::{DateTime, Utc};
 use config::app::{AppConfig, RustEnv};
 use sqlx::any::AnyConnectOptions;
 use sqlx::migrate::Migrator;
@@ -12,7 +11,9 @@ mod nullableu8;
 
 pub use nullableu8::*;
 
-pub type DbDateTime = DateTime<Utc>;
+use crate::libs::UtcDateTime;
+
+pub type DbDateTime = UtcDateTime;
 
 pub async fn migrate_db(pool: &PgPool) -> anyhow::Result<()> {
     sqlx::migrate!().run(pool).await;

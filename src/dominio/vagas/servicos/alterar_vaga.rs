@@ -1,4 +1,4 @@
-use chrono::{NaiveDate, NaiveDateTime, Utc};
+use chrono::{DateTime, NaiveDate, NaiveDateTime, Utc};
 use uuid::Uuid;
 
 use crate::dominio::identidade::entidades::professor::Professor;
@@ -10,13 +10,13 @@ use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 
 pub struct AlterarVagaParams {
     pub horas_por_semana: Option<u8>,
-    pub imagem: Option<Option<String>>,
+    pub imagem: Option<String>,
     pub quantidade: Option<u8>,
     pub link_edital: Option<String>,
     pub conteudo: Option<String>,
     pub titulo: Option<String>,
     pub link_candidatura: Option<Option<String>>,
-    pub inscricoes_ate: Option<NaiveDateTime>,
+    pub inscricoes_ate: Option<DateTime<Utc>>,
 }
 
 pub struct ServicoAlterarVaga<RV> {

@@ -1,4 +1,4 @@
-use chrono::NaiveDateTime;
+use chrono::{DateTime, NaiveDateTime, Utc};
 use serde::Deserialize;
 
 use crate::dominio::identidade::entidades::professor::Professor;
@@ -14,13 +14,13 @@ pub struct CriarVagaParams {
     pub coordenador: Professor,
     pub vice_coordenador: Option<Professor>,
     pub horas_por_semana: u8,
-    pub imagem: Option<String>,
+    pub imagem: String,
     pub quantidade: u8,
     pub link_edital: String,
     pub conteudo: String,
-    pub titulo: String,
+    pub titulo: Option<String>,
     pub link_candidatura: Option<String>,
-    pub inscricoes_ate: NaiveDateTime,
+    pub inscricoes_ate: DateTime<Utc>,
 }
 
 pub struct ServicoCriarVaga<RV>

@@ -4,6 +4,7 @@ use uuid::Uuid;
 
 use crate::dominio::identidade::entidades::usuario::UsuarioModelo;
 use crate::dominio::identidade::enums::cargo::Cargo;
+use crate::libs::UtcDateTime;
 
 #[derive(Serialize)]
 pub struct UsuarioModeloPresenter {
@@ -16,10 +17,10 @@ pub struct UsuarioModeloPresenter {
     pub cargo: Cargo,
 
     #[serde(rename = "registradoEm")]
-    pub registrado_em: NaiveDateTime,
+    pub registrado_em: UtcDateTime,
 
     #[serde(rename = "atualizadoEm")]
-    pub atualizado_em: Option<NaiveDateTime>,
+    pub atualizado_em: Option<UtcDateTime>,
 
     #[serde(rename = "registroAluno")]
     pub registro_aluno: Option<String>,
