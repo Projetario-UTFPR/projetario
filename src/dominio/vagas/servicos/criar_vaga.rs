@@ -72,6 +72,12 @@ where
             .ok_or_else(|| ErroDeDominio::nao_encontrado("O projeto informado não foi encontrado."))
             .map(|projeto| projeto.desestruture())?;
 
+        if !projeto.esta_ativo() {
+            return Err(ErroDeDominio::integridade(
+                "Não é permitido abrir vagas para um projeto desativado.",
+            ));
+        }
+
         if Cargo::Administrador.ne(professor.obtenha_cargo()) && coordenador.ne(professor) {
             return Err(ErroDeDominio::nao_autorizado(
                 "Você não tem autorização para abrir vagas para este projeto.",
