@@ -10,7 +10,7 @@ use projetario::infra::crypto::comparador_e_hasher_de_senhas::ComparadorEHasherD
 use projetario::libs::actix::server::get_server;
 use projetario::utils::test::fabricas_de_entidades::usuario_modelo::{
     FabricaUsuarioModelo,
-    UsuarioModeloConstrutor,
+    UsuarioModeloParcial,
 };
 use rstest::rstest;
 use serde_json::json;
@@ -127,7 +127,7 @@ pub async fn soh_usuarios_nao_autenticados_deveriam_poder_ver_a_pagina_de_login(
 }
 
 async fn inserir_usuario_no_db(db_conn: &PgPool) {
-    let mut usuario = UsuarioModeloConstrutor::aluno();
+    let mut usuario = UsuarioModeloParcial::aluno();
     usuario.registro_aluno = Some("a256020".into());
     usuario.periodo = Some(2);
     usuario.senha_hash = Some(
