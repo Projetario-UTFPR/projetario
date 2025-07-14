@@ -103,3 +103,90 @@ where
         Ok(vaga)
     }
 }
+
+#[cfg(test)]
+mod test {
+    use std::result;
+
+    use chrono::Utc;
+    use rstest::fixture;
+    use uuid::Uuid;
+
+    use crate::{dominio::{identidade::{entidades::{professor::Professor, usuario::UsuarioModelo}, traits::IntoUsuarioModelo}, vagas::servicos::criar_vaga::{CriarVagaParams, ServicoCriarVaga}}, utils::{sqlx::db_date_time_now, test::{fabricas_de_entidades::usuario_modelo::{FabricaUsuarioModelo, UsuarioModeloParcial}, repositorios_em_memoria::{coordenadores_de_projetos::RepositorioDeCoordenadoresDeProjetosEmMemoria, fabricas::{fabrica_repositorio_de_coordenadores_de_projetos::{self, FabricaRepositorioDeCoordenadoresDeProjetos}, fabrica_repositorio_de_usuarios::FabricaRepositorioDeUsuarios, fabrica_repositorio_de_vagas::FabricaRepositorioDeVagas}, usuarios::RepositorioDeUsuariosEmMemoria, vagas::RepositorioDeVagasEmMemoria}}}};
+
+    #[tokio::test]
+    async fn nao_deveria_criar_vaga_para_um_projeto_inexistente() {
+        let ServicoERepos {
+            sut,
+            repo_de_usuarios,
+            ..
+        } = obtehna_servico_e_repos();
+        let professor =
+            Professor::novo("John Doe".into(), "john@gmail.com".into(), "".into(), None);
+        repo_de_usuarios
+            .usuarios_tbl
+            .lock()
+            .unwrap()
+            .push(professor.clone().into_usuario_modelo());
+
+        let resultado = sut
+            .executar(CriarVagaParams {
+                conteudo: "Foo".into(),
+                horas_por_semana: 20,
+                id_projeto: Uuid::new_v4(),
+                imagem: "aa".into(),
+                inscricoes_ate: db_date_time_now(),
+                link_candidatura: None,
+                link_edital: "".into(),
+                professor: &professor,
+                quantidade: 2,
+                titulo: None,
+            })
+            .await;
+
+        assert!(resultado.is_err());
+    }
+
+    #[tokio::test]
+    async fn nao_deveria_criar_vagas_pra_um_projeto_desativado() { todo!() }
+
+    #[tokio::test]
+    async fn somente_o_coordenador_ou_um_administrador_devem_poder_abrir_vagas_para_um_projeto() {
+        todo!()
+    }
+
+    #[tokio::test]
+    async fn deveria_criar_vaga_para_um_projeto_regular() { todo!() }
+
+    fn obtehna_servico_e_repos() -> ServicoERepos {
+        let mut repo_de_projetos =
+            FabricaRepositorioDeCoordenadoresDeProjetos::obtenha_repositorio();
+        let mut repo_de_usuarios = FabricaRepositorioDeUsuarios::obtenha_repositorio();
+        repo_de_projetos.usuarios_tbl = repo_de_projetos.usuarios_tbl.clone();
+        let mut repo_de_vagas = FabricaRepositorioDeVagas::obtenha_repositorio();
+
+        {
+            let mut tbl = repo_de_usuarios.usuarios_tbl.lock().unwrap();
+            tbl.push(FabricaUsuarioModelo::obtenha_entidade(
+                UsuarioModeloParcial::default(),
+            ));
+        }
+
+        ServicoERepos {
+            sut: ServicoCriarVaga::novo(repo_de_vagas.clone(), repo_de_projetos.clone()),
+            repo_de_proj_e_coords: repo_de_projetos,
+            repo_de_usuarios,
+            repo_de_vagas,
+        }
+    }
+
+    struct ServicoERepos {
+        pub sut: ServicoCriarVaga<
+            RepositorioDeVagasEmMemoria,
+            RepositorioDeCoordenadoresDeProjetosEmMemoria,
+        >,
+        pub repo_de_vagas: RepositorioDeVagasEmMemoria,
+        pub repo_de_proj_e_coords: RepositorioDeCoordenadoresDeProjetosEmMemoria,
+        pub repo_de_usuarios: RepositorioDeUsuariosEmMemoria,
+    }
+}

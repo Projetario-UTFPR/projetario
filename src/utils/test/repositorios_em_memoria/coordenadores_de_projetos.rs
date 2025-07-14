@@ -32,6 +32,7 @@ pub struct ProjetoCoordenadorTupla {
     pub id_projeto: Uuid,
 }
 
+#[derive(Clone)]
 pub struct RepositorioDeCoordenadoresDeProjetosEmMemoria {
     pub usuarios_tbl: TabelaThreadSafeEmMemoria<UsuarioModelo>,
     pub projeto_tbl: TabelaThreadSafeEmMemoria<Projeto>,

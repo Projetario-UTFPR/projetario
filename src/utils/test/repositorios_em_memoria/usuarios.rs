@@ -9,6 +9,7 @@ use crate::dominio::identidade::repositorios::usuarios::RepositorioDeUsuarios;
 use crate::utils::erros::ResultadoDominio;
 use crate::utils::test::repositorios_em_memoria::TabelaThreadSafeEmMemoria;
 
+#[derive(Clone)]
 pub struct RepositorioDeUsuariosEmMemoria {
     pub usuarios_tbl: TabelaThreadSafeEmMemoria<UsuarioModelo>,
 }
