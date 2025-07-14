@@ -6,6 +6,7 @@ use crate::dominio::identidade::entidades::professor::Professor;
 use crate::dominio::projetos::entidades::projeto::Projeto;
 use crate::utils::erros::ResultadoDominio;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
+use crate::utils::sqlx::DbDateTime;
 
 #[derive(Debug, Clone, FromRow)]
 pub struct Vaga {
@@ -28,10 +29,10 @@ pub struct Vaga {
     link_candidatura: Option<String>,
     titulo: String,
     conteudo: String,
-    iniciada_em: NaiveDate,
-    inscricoes_ate: NaiveDateTime,
-    cancelada_em: Option<NaiveDateTime>,
-    atualizada_em: Option<NaiveDateTime>,
+    iniciada_em: DbDateTime,
+    inscricoes_ate: DbDateTime,
+    cancelada_em: Option<DbDateTime>,
+    atualizada_em: Option<DbDateTime>,
 }
 #[allow(clippy::too_many_arguments)]
 impl Vaga {

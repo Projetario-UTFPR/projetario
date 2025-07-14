@@ -5,6 +5,7 @@ use uuid::Uuid;
 
 use crate::dominio::identidade::enums::cargo::Cargo;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
+use crate::utils::sqlx::DbDateTime;
 
 #[derive(Debug, FromRow, Clone, PartialEq)]
 pub struct Usuario {
@@ -13,13 +14,13 @@ pub struct Usuario {
     pub(super) email: String,
     pub(super) senha_hash: String,
     pub(super) url_curriculo_lattes: Option<String>,
-    pub(super) registrado_em: NaiveDateTime,
-    pub(super) atualizado_em: Option<NaiveDateTime>,
-    pub(super) desativado_em: Option<NaiveDateTime>,
+    pub(super) registrado_em: DbDateTime,
+    pub(super) atualizado_em: Option<DbDateTime>,
+    pub(super) desativado_em: Option<DbDateTime>,
 }
 
-#[derive(Debug, FromRow, Serialize, Deserialize, Clone)]
 /// `UsuarioModelo` é a representação completa da tabela "usuarios" do banco de dados.
+#[derive(Debug, FromRow, Serialize, Deserialize, Clone)]
 pub struct UsuarioModelo {
     pub id: Uuid,
     pub nome: String,
@@ -27,9 +28,9 @@ pub struct UsuarioModelo {
     pub senha_hash: String,
     pub url_curriculo_lattes: Option<String>,
     pub cargo: Cargo,
-    pub registrado_em: NaiveDateTime,
-    pub atualizado_em: Option<NaiveDateTime>,
-    pub desativado_em: Option<NaiveDateTime>,
+    pub registrado_em: DbDateTime,
+    pub atualizado_em: Option<DbDateTime>,
+    pub desativado_em: Option<DbDateTime>,
     pub registro_aluno: Option<String>,
     pub periodo: Option<i16>,
 }
@@ -49,13 +50,13 @@ impl Usuario {
             url_curriculo_lattes,
             atualizado_em: None,
             desativado_em: None,
-            registrado_em: Utc::now().naive_utc(),
+            registrado_em: Utc::now(),
         }
     }
 
     /// Desativa um usuario permanentemente na plataforma, tornando impossível
     /// identificar-se como esta na plataforma.
-    pub fn desativar(&mut self) { self.desativado_em = Some(Utc::now().naive_utc()); }
+    pub fn desativar(&mut self) { self.desativado_em = Some(Utc::now()); }
 }
 
 // getters
@@ -78,9 +79,9 @@ impl Usuario {
         self.url_curriculo_lattes.as_deref()
     }
 
-    pub fn obtenha_data_de_registro(&self) -> NaiveDateTime { self.registrado_em }
+    pub fn obtenha_data_de_registro(&self) -> DbDateTime { self.registrado_em }
 
-    pub fn obtenha_data_de_modificacao(&self) -> Option<NaiveDateTime> { self.atualizado_em }
+    pub fn obtenha_data_de_modificacao(&self) -> Option<DbDateTime> { self.atualizado_em }
 
     pub fn esta_ativo(&self) -> bool { self.desativado_em.is_none() }
 }
@@ -142,5 +143,5 @@ impl Usuario {
     }
 
     /// Marca a estrutura como modificada permanentemente.
-    pub(super) fn toque(&mut self) { self.atualizado_em = Some(Utc::now().naive_utc()); }
+    pub(super) fn toque(&mut self) { self.atualizado_em = Some(Utc::now()); }
 }
