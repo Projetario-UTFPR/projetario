@@ -8,6 +8,7 @@ use sqlx::{AnyPool, Connection, Executor, PgPool, Pool, Postgres, QueryBuilder, 
 use uuid::Uuid;
 
 use crate::dominio::identidade::entidades::professor::Professor;
+use crate::dominio::projetos::agregados::projeto_com_coordenadores::ProjetoComCoordenadores;
 use crate::dominio::projetos::entidades::projeto::Projeto;
 use crate::dominio::projetos::enums::tipo_de_coordenacao::TipoDeCoordenacao;
 use crate::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
@@ -187,26 +188,57 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
         })
     }
 
-    // TODO: reescrever isso aqui como um join
-    async fn buscar_coordenadores_do_projeto(
+    async fn buscar_projeto_e_coordenadores_por_id(
         &self,
-        projeto: &Projeto,
-    ) -> ResultadoDominio<(Professor, Option<Professor>)> {
-        let coord = sqlx::query_as(
-            "SELECT * FROM usuario WHERE id = (\
-                SELECT id_coordenador FROM coordenador_projeto WHERE tipo = 'coordenador' AND id_projeto = $1\
-            )"
-        ).bind(projeto.obtenha_id()).fetch_one(self.db_conn);
-
-        let vice_coord = sqlx::query_as(
-            "SELECT * FROM usuario WHERE id = (\
-                SELECT id_coordenador FROM coordenador_projeto WHERE tipo = 'vice_coordenador' AND id_projeto = $1\
-            )"
-        ).bind(projeto.obtenha_id()).fetch_optional(self.db_conn);
-
-        tokio::try_join!(coord, vice_coord).map_err(|err| {
-            log::error!("{err}");
-            ErroDeDominio::interno()
-        })
+        id_projeto: &Uuid,
+    ) -> ResultadoDominio<Option<ProjetoComCoordenadores>> {
+        sqlx::query_as(&format!("{SELECT_PROJETO_QUERY} WHERE p.id = $1"))
+            .bind(id_projeto)
+            .fetch_optional(self.db_conn)
+            .await
+            .map_err(|err| {
+                log::error!("{err}");
+                ErroDeDominio::interno()
+            })
     }
 }
+
+/// Veja a implementação de `FromRow` em src/libs/sqlx/from_row.rs
+const SELECT_PROJETO_QUERY: &str = r#"SELECT
+        -- projeto
+        p.*,
+
+        -- coordenador
+        c.id as "c_id",
+        c.nome as "c_nome",
+        c.email as "c_email",
+        c.senha_hash as "c_senha_hash",
+        c.url_curriculo_lattes as "c_url_curriculo_lattes",
+        c.atualizado_em as "c_atualizado_em",
+        c.desativado_em as "c_desativado_em",
+        c.registrado_em as "c_registrado_em",
+
+        -- vice coordenador
+        vice.id as "vice_id",
+        vice.nome as "vice_nome",
+        vice.email as "vice_email",
+        vice.senha_hash as "vice_senha_hash",
+        vice.url_curriculo_lattes as "vice_url_curriculo_lattes",
+        vice.atualizado_em as "vice_atualizado_em",
+        vice.desativado_em as "vice_desativado_em",
+        vice.registrado_em as "vice_registrado_em"
+
+    FROM projeto p
+
+    -- coordenador
+    INNER JOIN coordenador_projeto c_rel
+        ON c_rel.id_projeto = p.id
+        AND c_rel.tipo = 'coordenador'
+    INNER JOIN usuario c ON c.id = c_rel.id_coordenador
+
+    -- vice coordenador
+    LEFT JOIN coordenador_projeto vice_rel
+        ON vice_rel.id_projeto = p.id
+        AND vice_rel.tipo = 'vice_coordenador'
+    LEFT JOIN usuario vice ON vice.id = vice_rel.id_coordenador
+    "#;

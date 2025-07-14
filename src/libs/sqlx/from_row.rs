@@ -3,6 +3,9 @@ use sqlx::{FromRow, Row};
 use uuid::Uuid;
 
 use crate::dominio::identidade::entidades::professor::builder::ProfessorBuilder;
+use crate::dominio::identidade::entidades::usuario::builder::UsuarioBuilder;
+use crate::dominio::projetos::agregados::projeto_com_coordenadores::ProjetoComCoordenadores;
+use crate::dominio::projetos::agregados::projeto_com_coordenadores::builder::ProjetoComCoordenadoresBuilder;
 use crate::dominio::projetos::entidades::projeto::builder::ProjetoBuilder;
 use crate::dominio::vagas::entidades::vaga::Vaga;
 use crate::dominio::vagas::entidades::vaga::builder::VagaBuilder;
@@ -28,6 +31,32 @@ impl<'r> FromRow<'r, PgRow> for Vaga {
             vice_coordenador: match vice_id {
                 None => None,
                 Some(_) => Some(ProfessorBuilder::from_row_with_prefix(row, "vice_")?),
+            },
+        };
+
+        Ok(builder.into())
+    }
+}
+
+impl<'r> FromRow<'r, PgRow> for ProjetoComCoordenadores {
+    fn from_row(row: &'r PgRow) -> Result<Self, sqlx::Error> {
+        let vice_coordenador_id: Option<Uuid> = row.try_get("vice_id")?;
+        let builder = ProjetoComCoordenadoresBuilder {
+            projeto: ProjetoBuilder {
+                id: row.try_get("id")?,
+                titulo: row.try_get("titulo")?,
+                descricao: row.try_get("descricao")?,
+                tipo: row.try_get("tipo")?,
+                registrado_em: row.try_get("registrado_em")?,
+                iniciado_em: row.try_get("iniciado_em")?,
+                atualizado_em: row.try_get("atualizado_em")?,
+                cancelado_em: row.try_get("cancelado_em")?,
+                concluido_em: row.try_get("concluido_em")?,
+            },
+            coordenador: ProfessorBuilder::from_row_with_prefix(row, "coorde")?,
+            vice_coordenador: match vice_coordenador_id {
+                None => None,
+                Some(_) => Some(ProfessorBuilder::from_row_with_prefix(row, "vice")?),
             },
         };
 

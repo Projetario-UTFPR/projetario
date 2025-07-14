@@ -9,6 +9,7 @@ use sqlx::{AnyPool, Connection, Executor, FromRow, PgPool, Pool, Postgres, Query
 use uuid::Uuid;
 
 use crate::dominio::identidade::entidades::professor::Professor;
+use crate::dominio::projetos::agregados::projeto_com_coordenadores::ProjetoComCoordenadores;
 use crate::dominio::projetos::entidades::projeto::Projeto;
 use crate::dominio::projetos::enums::tipo_de_coordenacao::TipoDeCoordenacao;
 use crate::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
@@ -56,11 +57,12 @@ pub trait RepositorioDeCoordenadoresDeProjetos {
         coordenador: &Professor,
     ) -> Result<(), ErroDeDominio>;
 
-    async fn buscar_coordenadores_do_projeto(
+    async fn buscar_projeto_e_coordenadores_por_id(
         &self,
-        projeto: &Projeto,
-    ) -> ResultadoDominio<(Professor, Option<Professor>)>;
+        id_projeto: &Uuid,
+    ) -> ResultadoDominio<Option<ProjetoComCoordenadores>>;
 
+    // TODO: averiguar se esse método é necessário e removê-lo se não for o caso
     async fn buscar_projetos(
         &self,
         filtro: Filtro,
