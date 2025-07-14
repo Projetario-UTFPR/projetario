@@ -63,7 +63,7 @@ impl ControllerVagas {
         };
 
         let projeto = match repositorio_de_projetos
-            .encontrar_por_id(&body.id_projeto)
+            .encontrar_por_id(body.id_projeto.as_ref().unwrap())
             .await
         {
             Err(err) => {
@@ -106,14 +106,14 @@ impl ControllerVagas {
             projeto,
             coordenador,
             vice_coordenador,
-            horas_por_semana: body.horas_por_semana,
-            imagem: body.imagem.clone(),
-            quantidade: body.quantidade,
-            link_edital: body.link_edital.clone(),
-            conteudo: body.conteudo.clone(),
-            titulo: body.titulo.clone(),
-            link_candidatura: body.link_candidatura.clone(),
-            inscricoes_ate: body.inscricoes_ate,
+            horas_por_semana: body.horas_por_semana.unwrap(),
+            imagem: body.imagem.unwrap(),
+            quantidade: body.quantidade.unwrap(),
+            link_edital: body.link_edital.unwrap(),
+            conteudo: body.conteudo.unwrap(),
+            titulo: body.titulo,
+            link_candidatura: body.link_candidatura,
+            inscricoes_ate: body.inscricoes_ate.unwrap(),
         };
 
         if let Err(erro) = criar_vaga.executar(params).await {
