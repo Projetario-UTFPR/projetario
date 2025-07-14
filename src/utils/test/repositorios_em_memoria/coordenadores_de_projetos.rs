@@ -132,7 +132,7 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
         let projeto = self
             .projeto_tbl
             .lock()
-            .unwrap()
+            .expect("Projeto não encontrado no ambiente de testes.")
             .iter()
             .find(|projeto| projeto.obtenha_id().eq(id_projeto))
             .cloned();
@@ -156,12 +156,12 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
             Some(id) => self
                 .usuarios_tbl
                 .lock()
-                .unwrap()
+                .expect("Coordenador não encontrado no ambiente de testes.")
                 .iter()
                 .find(|usuario| usuario.id.eq(&id))
                 .cloned(),
         }
-        .map(|coord| Professor::try_from(&coord).unwrap())
+        .map(|coord| Professor::try_from(&coord).expect("Um não-professor foi inserido na tabela de relacionamento projeto-coordenador de testes."))
         .unwrap();
 
         Ok(Some(ProjetoComCoordenadores::novo(

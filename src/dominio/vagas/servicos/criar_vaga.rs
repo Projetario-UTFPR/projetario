@@ -105,14 +105,15 @@ where
 }
 
 #[cfg(test)]
+#[cfg(feature = "test-utils")]
 mod test {
-    use std::result;
-
-    use chrono::Utc;
-    use rstest::fixture;
+    use chrono::{Duration, Utc};
+    use fake::{faker::{self, lorem}, Fake, Faker};
+    use rstest::{fixture, rstest};
+    use url::Url;
     use uuid::Uuid;
 
-    use crate::{dominio::{identidade::{entidades::{professor::Professor, usuario::UsuarioModelo}, traits::IntoUsuarioModelo}, vagas::servicos::criar_vaga::{CriarVagaParams, ServicoCriarVaga}}, utils::{sqlx::db_date_time_now, test::{fabricas_de_entidades::usuario_modelo::{FabricaUsuarioModelo, UsuarioModeloParcial}, repositorios_em_memoria::{coordenadores_de_projetos::RepositorioDeCoordenadoresDeProjetosEmMemoria, fabricas::{fabrica_repositorio_de_coordenadores_de_projetos::{self, FabricaRepositorioDeCoordenadoresDeProjetos}, fabrica_repositorio_de_usuarios::FabricaRepositorioDeUsuarios, fabrica_repositorio_de_vagas::FabricaRepositorioDeVagas}, usuarios::RepositorioDeUsuariosEmMemoria, vagas::RepositorioDeVagasEmMemoria}}}};
+    use crate::{dominio::{identidade::{entidades::{professor::Professor, usuario::UsuarioModelo}, enums::cargo::Cargo, traits::IntoUsuarioModelo}, projetos::{entidades::projeto::Projeto, enums::tipo_de_projeto::TipoDeProjeto}, vagas::servicos::criar_vaga::{CriarVagaParams, ServicoCriarVaga}}, utils::{sqlx::{db_date_time_now, DbDateTime}, test::{fabricas_de_entidades::usuario_modelo::{FabricaUsuarioModelo, UsuarioModeloParcial}, repositorios_em_memoria::{coordenadores_de_projetos::{ProjetoCoordenadorTupla, RepositorioDeCoordenadoresDeProjetosEmMemoria}, fabricas::{fabrica_repositorio_de_coordenadores_de_projetos::{self, FabricaRepositorioDeCoordenadoresDeProjetos}, fabrica_repositorio_de_usuarios::FabricaRepositorioDeUsuarios, fabrica_repositorio_de_vagas::FabricaRepositorioDeVagas}, usuarios::RepositorioDeUsuariosEmMemoria, vagas::RepositorioDeVagasEmMemoria}}}};
 
     #[tokio::test]
     async fn nao_deveria_criar_vaga_para_um_projeto_inexistente() {
@@ -121,8 +122,7 @@ mod test {
             repo_de_usuarios,
             ..
         } = obtehna_servico_e_repos();
-        let professor =
-            Professor::novo("John Doe".into(), "john@gmail.com".into(), "".into(), None);
+        let professor = Professor::novo("John Doe".into(), "john@proj.com".into(), "".into(), None);
         repo_de_usuarios
             .usuarios_tbl
             .lock()
@@ -135,9 +135,9 @@ mod test {
                 horas_por_semana: 20,
                 id_projeto: Uuid::new_v4(),
                 imagem: "aa".into(),
-                inscricoes_ate: db_date_time_now(),
+                inscricoes_ate: obtenha_data_no_futuro(),
                 link_candidatura: None,
-                link_edital: "".into(),
+                link_edital: obtenha_url_aleatorio(),
                 professor: &professor,
                 quantidade: 2,
                 titulo: None,
@@ -148,15 +148,189 @@ mod test {
     }
 
     #[tokio::test]
-    async fn nao_deveria_criar_vagas_pra_um_projeto_desativado() { todo!() }
+    async fn nao_deveria_criar_vagas_pra_um_projeto_desativado() {
+        let ServicoERepos {
+            sut,
+            repo_de_vagas,
+            repo_de_proj_e_coords,
+            repo_de_usuarios,
+        } = obtehna_servico_e_repos();
 
+        let coord = Professor::novo("Joaquim".into(), "joaquim@proj.com".into(), "".into(), None);
+        let mut projeto = Projeto::novo("Foo".into(), "Foo Desc".into(), TipoDeProjeto::Extensao);
+        projeto.cancelar();
+
+        repo_de_proj_e_coords
+            .projeto_coordenador_tbl
+            .lock()
+            .unwrap()
+            .push(ProjetoCoordenadorTupla {
+                id_professor: *coord.obtenha_usuario().obtenha_id(),
+                id_projeto: *projeto.obtenha_id(),
+            });
+
+        repo_de_proj_e_coords
+            .projeto_tbl
+            .lock()
+            .unwrap()
+            .push(projeto.clone());
+
+        repo_de_proj_e_coords
+            .usuarios_tbl
+            .lock()
+            .unwrap()
+            .push(coord.clone().into_usuario_modelo());
+
+        let resultado = sut
+            .executar(CriarVagaParams {
+                professor: &coord,
+                id_projeto: *projeto.obtenha_id(),
+                horas_por_semana: 20,
+                imagem: "".into(),
+                quantidade: 1,
+                link_edital: obtenha_url_aleatorio(),
+                conteudo: "".into(),
+                titulo: None,
+                link_candidatura: None,
+                inscricoes_ate: obtenha_data_no_futuro(),
+            })
+            .await;
+
+        assert!(resultado.is_err());
+        assert!(resultado.unwrap_err().mensagem().contains("desativado"));
+    }
+
+    #[rstest]
+    #[case(Cargo::Administrador, true)]
+    #[case(Cargo::Professor, false)]
     #[tokio::test]
-    async fn somente_o_coordenador_ou_um_administrador_devem_poder_abrir_vagas_para_um_projeto() {
-        todo!()
+    async fn somente_o_coordenador_ou_um_administrador_devem_poder_abrir_vagas_para_um_projeto(
+        #[case] cargo: Cargo,
+        #[case] deveria_permitir: bool,
+    ) {
+        let ServicoERepos {
+            sut,
+            repo_de_proj_e_coords,
+            repo_de_usuarios,
+            repo_de_vagas,
+        } = obtehna_servico_e_repos();
+
+        let coord = FabricaUsuarioModelo::obtenha_entidade(UsuarioModeloParcial::default());
+
+        let projeto = Projeto::novo("Projeto".into(), "Desc".into(), TipoDeProjeto::Extensao);
+
+        repo_de_proj_e_coords
+            .projeto_tbl
+            .lock()
+            .unwrap()
+            .push(projeto.clone());
+
+        repo_de_proj_e_coords
+            .projeto_coordenador_tbl
+            .lock()
+            .unwrap()
+            .push(ProjetoCoordenadorTupla {
+                id_professor: coord.id,
+                id_projeto: *projeto.obtenha_id(),
+            });
+
+        let usuario = FabricaUsuarioModelo::obtenha_entidade(UsuarioModeloParcial {
+            cargo: Some(cargo),
+            ..Default::default()
+        });
+
+        {
+            let mut tbl = repo_de_usuarios.usuarios_tbl.lock().unwrap();
+
+            tbl.push(coord);
+            tbl.push(usuario.clone());
+        }
+
+        let resultado = sut
+            .executar(CriarVagaParams {
+                professor: &Professor::try_from(&usuario).unwrap(),
+                id_projeto: *projeto.obtenha_id(),
+                horas_por_semana: 20,
+                imagem: "".into(),
+                quantidade: 2,
+                link_edital: obtenha_url_aleatorio(),
+                conteudo: lorem::pt_br::Paragraphs(1..4)
+                    .fake::<Vec<String>>()
+                    .join("\n"),
+                titulo: None,
+                link_candidatura: None,
+                inscricoes_ate: obtenha_data_no_futuro(),
+            })
+            .await;
+
+        dbg!(&resultado);
+        assert_eq!(deveria_permitir, resultado.is_ok());
     }
 
     #[tokio::test]
-    async fn deveria_criar_vaga_para_um_projeto_regular() { todo!() }
+    async fn deveria_criar_vaga_para_um_projeto_regular() {
+        let ServicoERepos {
+            sut,
+            repo_de_proj_e_coords,
+            repo_de_usuarios,
+            repo_de_vagas,
+        } = obtehna_servico_e_repos();
+
+        let projeto = Projeto::novo(
+            faker::job::pt_br::Title().fake(),
+            faker::job::pt_br::Field().fake(),
+            TipoDeProjeto::Extensao,
+        );
+
+        let coordenador = FabricaUsuarioModelo::obtenha_entidade(UsuarioModeloParcial::default());
+        let administrador = FabricaUsuarioModelo::obtenha_entidade(UsuarioModeloParcial {
+            cargo: Some(Cargo::Administrador),
+            ..Default::default()
+        });
+
+        {
+            let mut tbl = repo_de_usuarios.usuarios_tbl.lock().unwrap();
+
+            tbl.push(coordenador.clone());
+            tbl.push(administrador.clone());
+        }
+
+        repo_de_proj_e_coords
+            .projeto_coordenador_tbl
+            .lock()
+            .unwrap()
+            .push(ProjetoCoordenadorTupla {
+                id_professor: coordenador.id,
+                id_projeto: *projeto.obtenha_id(),
+            });
+
+        repo_de_proj_e_coords
+            .projeto_tbl
+            .lock()
+            .unwrap()
+            .push(projeto.clone());
+
+        for professor in [&coordenador, &administrador] {
+            let resultado = sut
+                .executar(CriarVagaParams {
+                    professor: &Professor::try_from(professor).unwrap(),
+                    id_projeto: *projeto.obtenha_id(),
+                    horas_por_semana: 20,
+                    imagem: Faker.fake::<Url>().into(),
+                    quantidade: 10,
+                    link_edital: obtenha_url_aleatorio(),
+                    conteudo: lorem::pt_br::Paragraphs(1..3)
+                        .fake::<Vec<String>>()
+                        .join("\n"),
+                    titulo: None,
+                    link_candidatura: None,
+                    inscricoes_ate: obtenha_data_no_futuro(),
+                })
+                .await;
+
+            assert!(resultado.is_ok())
+        }
+    }
 
     fn obtehna_servico_e_repos() -> ServicoERepos {
         let mut repo_de_projetos =
@@ -165,12 +339,7 @@ mod test {
         repo_de_projetos.usuarios_tbl = repo_de_projetos.usuarios_tbl.clone();
         let mut repo_de_vagas = FabricaRepositorioDeVagas::obtenha_repositorio();
 
-        {
-            let mut tbl = repo_de_usuarios.usuarios_tbl.lock().unwrap();
-            tbl.push(FabricaUsuarioModelo::obtenha_entidade(
-                UsuarioModeloParcial::default(),
-            ));
-        }
+        repo_de_projetos.usuarios_tbl = repo_de_usuarios.usuarios_tbl.clone();
 
         ServicoERepos {
             sut: ServicoCriarVaga::novo(repo_de_vagas.clone(), repo_de_projetos.clone()),
@@ -189,4 +358,8 @@ mod test {
         pub repo_de_proj_e_coords: RepositorioDeCoordenadoresDeProjetosEmMemoria,
         pub repo_de_usuarios: RepositorioDeUsuariosEmMemoria,
     }
+
+    fn obtenha_url_aleatorio() -> String { Faker.fake::<Url>().to_string() }
+
+    fn obtenha_data_no_futuro() -> DbDateTime { db_date_time_now() + Duration::days(5) }
 }
