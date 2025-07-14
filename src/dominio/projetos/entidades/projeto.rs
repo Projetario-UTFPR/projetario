@@ -5,7 +5,7 @@ use sqlx::{FromRow, Row};
 use uuid::Uuid;
 
 use crate::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
-use crate::utils::sqlx::DbDateTime;
+use crate::utils::sqlx::{DbDateTime, db_date_time_now};
 
 pub mod builder;
 
@@ -42,7 +42,7 @@ impl Projeto {
             cancelado_em: None,
             concluido_em: None,
             iniciado_em,
-            registrado_em: Utc::now(),
+            registrado_em: db_date_time_now(),
         }
     }
 }
@@ -90,9 +90,9 @@ impl Projeto {
         self.toque();
     }
 
-    pub fn toque(&mut self) { self.atualizado_em = Some(Utc::now()); }
+    pub fn toque(&mut self) { self.atualizado_em = Some(db_date_time_now()); }
 
     pub fn concluir(&mut self) { self.concluido_em = Some(Utc::now().date_naive()); }
 
-    pub fn cancelar(&mut self) { self.cancelado_em = Some(Utc::now()); }
+    pub fn cancelar(&mut self) { self.cancelado_em = Some(db_date_time_now()); }
 }

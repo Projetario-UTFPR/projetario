@@ -1,11 +1,10 @@
-use chrono::Utc;
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 use uuid::Uuid;
 
 use crate::dominio::identidade::enums::cargo::Cargo;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
-use crate::utils::sqlx::DbDateTime;
+use crate::utils::sqlx::{DbDateTime, db_date_time_now};
 
 pub mod builder;
 
@@ -52,13 +51,13 @@ impl Usuario {
             url_curriculo_lattes,
             atualizado_em: None,
             desativado_em: None,
-            registrado_em: Utc::now(),
+            registrado_em: db_date_time_now(),
         }
     }
 
     /// Desativa um usuario permanentemente na plataforma, tornando impossível
     /// identificar-se como esta na plataforma.
-    pub fn desativar(&mut self) { self.desativado_em = Some(Utc::now()); }
+    pub fn desativar(&mut self) { self.desativado_em = Some(db_date_time_now()); }
 }
 
 // getters
@@ -145,5 +144,5 @@ impl Usuario {
     }
 
     /// Marca a estrutura como modificada permanentemente.
-    pub(super) fn toque(&mut self) { self.atualizado_em = Some(Utc::now()); }
+    pub(super) fn toque(&mut self) { self.atualizado_em = Some(db_date_time_now()); }
 }

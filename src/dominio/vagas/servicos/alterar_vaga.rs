@@ -7,6 +7,7 @@ use crate::dominio::identidade::enums::cargo::Cargo;
 use crate::dominio::vagas::entidades::vaga::Vaga;
 use crate::dominio::vagas::repositorios::vaga::RepositorioDeVagas;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
+use crate::utils::sqlx::DbDateTime;
 
 pub struct AlterarVagaParams {
     pub horas_por_semana: Option<u8>,
@@ -16,7 +17,7 @@ pub struct AlterarVagaParams {
     pub conteudo: Option<String>,
     pub titulo: Option<String>,
     pub link_candidatura: Option<Option<String>>,
-    pub inscricoes_ate: Option<DateTime<Utc>>,
+    pub inscricoes_ate: Option<DbDateTime>,
 }
 
 pub struct ServicoAlterarVaga<RV> {

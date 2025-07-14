@@ -8,6 +8,7 @@ use crate::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
 use crate::dominio::vagas::entidades::vaga::Vaga;
 use crate::dominio::vagas::repositorios::vaga::RepositorioDeVagas;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
+use crate::utils::sqlx::DbDateTime;
 
 pub struct CriarVagaParams {
     pub projeto: Projeto,
@@ -20,7 +21,7 @@ pub struct CriarVagaParams {
     pub conteudo: String,
     pub titulo: Option<String>,
     pub link_candidatura: Option<String>,
-    pub inscricoes_ate: DateTime<Utc>,
+    pub inscricoes_ate: DbDateTime,
 }
 
 pub struct ServicoCriarVaga<RV>

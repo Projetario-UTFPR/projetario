@@ -10,7 +10,7 @@ use crate::dominio::identidade::entidades::usuario::builder::UsuarioBuilder;
 use crate::dominio::projetos::entidades::projeto::Projeto;
 use crate::utils::erros::ResultadoDominio;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
-use crate::utils::sqlx::DbDateTime;
+use crate::utils::sqlx::{DbDateTime, db_date_time_now};
 
 pub mod builder;
 
@@ -134,7 +134,7 @@ impl Vaga {
     pub fn obtenha_data_final_inscricoes(&self) -> DbDateTime { self.inscricoes_ate }
 
     pub fn foi_concluida(&self) -> bool {
-        self.cancelada_em.is_none() && self.inscricoes_ate < Utc::now()
+        self.cancelada_em.is_none() && self.inscricoes_ate < db_date_time_now()
     }
 
     pub fn esta_ativa(&self) -> bool { self.cancelada_em.is_none() && !self.foi_concluida() }
@@ -243,9 +243,9 @@ impl Vaga {
         self.vice_coordenador = Some(vice);
     }
 
-    pub fn toque(&mut self) { self.atualizada_em = Some(Utc::now()); }
+    pub fn toque(&mut self) { self.atualizada_em = Some(db_date_time_now()); }
 
-    pub fn cancelar(&mut self) { self.cancelada_em = Some(Utc::now()); }
+    pub fn cancelar(&mut self) { self.cancelada_em = Some(db_date_time_now()); }
 }
 
 impl Vaga {
@@ -270,7 +270,7 @@ impl Vaga {
     }
 
     pub fn valide_data_de_encerramento_das_inscricoes(data: &DbDateTime) -> ResultadoDominio<()> {
-        if Utc::now().gt(data) {
+        if db_date_time_now().gt(data) {
             return Err(ErroDeDominio::valor_invalido(
                 "Data de fechamento de inscrições não pode ser no passado.",
             ));
