@@ -72,7 +72,7 @@ mod test {
         },
         utils::test::{
             fabricas_de_entidades::usuario_modelo::{
-                FabricaUsuarioModelo, UsuarioModeloConstrutor,
+                FabricaUsuarioModelo, UsuarioModeloParcial,
             },
             repositorios_em_memoria::fabricas::fabrica_repositorio_de_coordenadores_de_projetos::FabricaRepositorioDeCoordenadoresDeProjetos,
         },
@@ -91,7 +91,7 @@ mod test {
 
         let sut = ServicoCriarProjetoDeExtensao::novo(repositorio_de_coordenadores);
 
-        let usuario_autorizado = FabricaUsuarioModelo::obtenha_entidade(UsuarioModeloConstrutor {
+        let usuario_autorizado = FabricaUsuarioModelo::obtenha_entidade(UsuarioModeloParcial {
             cargo: Some(cargo),
             ..Default::default()
         });

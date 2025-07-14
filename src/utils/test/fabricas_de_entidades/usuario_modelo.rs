@@ -9,25 +9,26 @@ use uuid::Uuid;
 
 use crate::dominio::identidade::entidades::usuario::UsuarioModelo;
 use crate::dominio::identidade::enums::cargo::Cargo;
+use crate::utils::sqlx::DbDateTime;
 
 pub struct FabricaUsuarioModelo;
 
 #[derive(Default)]
-pub struct UsuarioModeloConstrutor {
+pub struct UsuarioModeloParcial {
     pub id: Option<Uuid>,
     pub nome: Option<String>,
     pub email: Option<String>,
     pub senha_hash: Option<String>,
     pub url_curriculo_lattes: Option<String>,
     pub cargo: Option<Cargo>,
-    pub registrado_em: Option<NaiveDateTime>,
-    pub atualizado_em: Option<NaiveDateTime>,
-    pub desativado_em: Option<NaiveDateTime>,
+    pub registrado_em: Option<DbDateTime>,
+    pub atualizado_em: Option<DbDateTime>,
+    pub desativado_em: Option<DbDateTime>,
     pub registro_aluno: Option<String>,
     pub periodo: Option<i16>,
 }
 
-impl UsuarioModeloConstrutor {
+impl UsuarioModeloParcial {
     pub fn aluno() -> Self {
         Self {
             cargo: Some(Cargo::Aluno),
@@ -41,7 +42,7 @@ impl UsuarioModeloConstrutor {
 
 impl FabricaUsuarioModelo {
     /// Por padrão, cria um usuario professor
-    pub fn obtenha_entidade(parcial: UsuarioModeloConstrutor) -> UsuarioModelo {
+    pub fn obtenha_entidade(parcial: UsuarioModeloParcial) -> UsuarioModelo {
         UsuarioModelo {
             id: parcial.id.unwrap_or(Uuid::new_v4()),
             cargo: parcial.cargo.unwrap_or(Cargo::Professor),
