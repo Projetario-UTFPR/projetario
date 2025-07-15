@@ -29,7 +29,7 @@ impl Controller for ControllerVagas {
         cfg.service(
             web::scope("/vagas")
                 .route("/nova", web::get().to(Self::nova))
-                .route("criar", web::post().to(Self::criar)),
+                .route("/criar", web::post().to(Self::criar)),
         );
     }
 }
@@ -72,7 +72,7 @@ impl ControllerVagas {
             conteudo: body.conteudo.unwrap(),
             titulo: body.titulo,
             link_candidatura: body.link_candidatura,
-            inscricoes_ate: body.inscricoes_ate.unwrap(),
+            inscricoes_ate: body.inscricoes_ate.unwrap().naive_utc(),
         };
 
         if let Err(erro) = criar_vaga.executar(params).await {

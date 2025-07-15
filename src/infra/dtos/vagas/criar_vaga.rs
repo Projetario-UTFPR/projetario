@@ -3,6 +3,7 @@ use serde::Deserialize;
 use uuid::Uuid;
 use validator::Validate;
 
+use crate::libs::UtcDateTime;
 use crate::utils::sqlx::DbDateTime;
 
 #[derive(Deserialize, Validate, Debug)]
@@ -42,5 +43,5 @@ pub struct CriarVagaDto {
     pub link_candidatura: Option<String>,
 
     #[validate(required(message = "A data limite para inscrições é um campo obrigatório."))]
-    pub inscricoes_ate: Option<DbDateTime>,
+    pub inscricoes_ate: Option<UtcDateTime>,
 }
