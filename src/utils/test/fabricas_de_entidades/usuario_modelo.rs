@@ -2,16 +2,46 @@ use chrono::NaiveDateTime;
 use fake::faker::chrono::pt_br::DateTime;
 use fake::faker::internet::pt_br::{FreeEmail, Password};
 use fake::faker::name::pt_br::Name;
-use fake::faker::number;
+use fake::faker::{self, number};
 use fake::{Fake, Faker};
 use rand::Rng;
 use uuid::Uuid;
 
-use crate::dominio::identidade::entidades::usuario::UsuarioModelo;
+use crate::dominio::identidade::entidades::usuario::builder::UsuarioBuilder;
+use crate::dominio::identidade::entidades::usuario::{Usuario, UsuarioModelo};
 use crate::dominio::identidade::enums::cargo::Cargo;
-use crate::utils::sqlx::DbDateTime;
+use crate::utils::sqlx::{DbDateTime, db_date_time_now};
 
-pub struct FabricaUsuarioModelo;
+#[derive(Default)]
+pub struct UsuarioParcial {
+    pub id: Option<Uuid>,
+    pub nome: Option<String>,
+    pub email: Option<String>,
+    pub senha_hash: Option<String>,
+    pub url_curriculo_lattes: Option<String>,
+    pub registrado_em: Option<DbDateTime>,
+    pub atualizado_em: Option<DbDateTime>,
+    pub desativado_em: Option<DbDateTime>,
+}
+
+impl UsuarioParcial {
+    pub fn into_builder(self) -> UsuarioBuilder {
+        UsuarioBuilder {
+            atualizado_em: self.atualizado_em,
+            desativado_em: self.desativado_em,
+            email: self.email.unwrap_or_else(|| FreeEmail().fake()),
+            id: self.id.unwrap_or_else(Uuid::new_v4),
+            nome: self
+                .nome
+                .unwrap_or_else(|| faker::name::pt_br::Name().fake()),
+            registrado_em: self.registrado_em.unwrap_or_else(db_date_time_now),
+            senha_hash: self.senha_hash.unwrap_or_else(|| Password(2..15).fake()),
+            url_curriculo_lattes: self.url_curriculo_lattes,
+        }
+    }
+
+    pub fn into_entidade(self) -> Usuario { self.into_builder().into() }
+}
 
 #[derive(Default)]
 pub struct UsuarioModeloParcial {
@@ -38,25 +68,20 @@ impl UsuarioModeloParcial {
             ..Default::default()
         }
     }
-}
 
-impl FabricaUsuarioModelo {
-    /// Por padrão, cria um usuario professor
-    pub fn obtenha_entidade(parcial: UsuarioModeloParcial) -> UsuarioModelo {
+    pub fn into_entidade(self) -> UsuarioModelo {
         UsuarioModelo {
-            id: parcial.id.unwrap_or(Uuid::new_v4()),
-            cargo: parcial.cargo.unwrap_or(Cargo::Professor),
-            email: parcial.email.unwrap_or_else(|| FreeEmail().fake()),
-            nome: parcial.nome.unwrap_or_else(|| Name().fake()),
-            periodo: parcial.periodo,
-            registro_aluno: parcial.registro_aluno,
-            senha_hash: parcial
-                .senha_hash
-                .unwrap_or_else(|| Password(10..15).fake()),
-            url_curriculo_lattes: parcial.url_curriculo_lattes,
-            registrado_em: parcial.registrado_em.unwrap_or_else(|| DateTime().fake()),
-            atualizado_em: parcial.atualizado_em,
-            desativado_em: parcial.desativado_em,
+            id: self.id.unwrap_or(Uuid::new_v4()),
+            cargo: self.cargo.unwrap_or(Cargo::Professor),
+            email: self.email.unwrap_or_else(|| FreeEmail().fake()),
+            nome: self.nome.unwrap_or_else(|| Name().fake()),
+            periodo: self.periodo,
+            registro_aluno: self.registro_aluno,
+            senha_hash: self.senha_hash.unwrap_or_else(|| Password(10..15).fake()),
+            url_curriculo_lattes: self.url_curriculo_lattes,
+            registrado_em: self.registrado_em.unwrap_or_else(db_date_time_now),
+            atualizado_em: self.atualizado_em,
+            desativado_em: self.desativado_em,
         }
     }
 }

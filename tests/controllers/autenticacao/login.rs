@@ -8,10 +8,7 @@ use pretty_assertions::assert_eq;
 use projetario::dominio::autenticacao::HasherDeSenha;
 use projetario::infra::crypto::comparador_e_hasher_de_senhas::ComparadorEHasherDeSenhaCrypto;
 use projetario::libs::actix::server::get_server;
-use projetario::utils::test::fabricas_de_entidades::usuario_modelo::{
-    FabricaUsuarioModelo,
-    UsuarioModeloParcial,
-};
+use projetario::utils::test::fabricas_de_entidades::usuario_modelo::UsuarioModeloParcial;
 use rstest::rstest;
 use serde_json::json;
 use sqlx::PgPool;
@@ -136,7 +133,7 @@ async fn inserir_usuario_no_db(db_conn: &PgPool) {
             .unwrap(),
     );
 
-    let usuario = FabricaUsuarioModelo::obtenha_entidade(usuario);
+    let usuario = usuario.into_entidade();
 
     sqlx::query(
         "INSERT INTO \"usuario\" ( \

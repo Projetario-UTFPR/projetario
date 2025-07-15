@@ -105,10 +105,7 @@ mod test {
         TipoDeLogin,
     };
     use crate::utils::test::comparador_e_hasher_de_senhas::ComparadorEHasherDeSenhaFake;
-    use crate::utils::test::fabricas_de_entidades::usuario_modelo::{
-        FabricaUsuarioModelo,
-        UsuarioModeloParcial,
-    };
+    use crate::utils::test::fabricas_de_entidades::usuario_modelo::UsuarioModeloParcial;
     use crate::utils::test::repositorios_em_memoria::fabricas::fabrica_repositorio_de_usuarios::FabricaRepositorioDeUsuarios;
     use crate::utils::test::repositorios_em_memoria::usuarios::RepositorioDeUsuariosEmMemoria;
 
@@ -124,23 +121,25 @@ mod test {
             email: Some("professor@utfpr.edu.br".into()),
             senha_hash: Some(comparador.aplique_hash("123456").unwrap()),
             ..Default::default()
-        };
+        }
+        .into_entidade();
 
         repositorio_usuarios
             .usuarios_tbl
             .lock()
             .unwrap()
-            .push(FabricaUsuarioModelo::obtenha_entidade(professor));
+            .push(professor);
 
         let mut aluno = UsuarioModeloParcial::aluno();
         aluno.registro_aluno = Some("a2600554".into());
         aluno.senha_hash = Some(comparador.aplique_hash("123456").unwrap());
+        let aluno = aluno.into_entidade();
 
         repositorio_usuarios
             .usuarios_tbl
             .lock()
             .unwrap()
-            .push(FabricaUsuarioModelo::obtenha_entidade(aluno));
+            .push(aluno);
 
         ServicoAutenticarUsuario::novo(comparador, repositorio_usuarios)
     }
