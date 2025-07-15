@@ -108,12 +108,26 @@ where
 #[cfg(feature = "test-utils")]
 mod test {
     use chrono::{Duration, Utc};
-    use fake::{faker::{self, lorem}, Fake, Faker};
+    use fake::faker::{self, lorem};
+    use fake::{Fake, Faker};
     use rstest::{fixture, rstest};
     use url::Url;
     use uuid::Uuid;
 
-    use crate::{dominio::{identidade::{entidades::{professor::Professor, usuario::UsuarioModelo}, enums::cargo::Cargo, traits::IntoUsuarioModelo}, projetos::{entidades::projeto::Projeto, enums::tipo_de_projeto::TipoDeProjeto}, vagas::servicos::criar_vaga::{CriarVagaParams, ServicoCriarVaga}}, utils::{sqlx::{db_date_time_now, DbDateTime}, test::{fabricas_de_entidades::usuario_modelo::{FabricaUsuarioModelo, UsuarioModeloParcial}, repositorios_em_memoria::{coordenadores_de_projetos::{ProjetoCoordenadorTupla, RepositorioDeCoordenadoresDeProjetosEmMemoria}, fabricas::{fabrica_repositorio_de_coordenadores_de_projetos::{self, FabricaRepositorioDeCoordenadoresDeProjetos}, fabrica_repositorio_de_usuarios::FabricaRepositorioDeUsuarios, fabrica_repositorio_de_vagas::FabricaRepositorioDeVagas}, usuarios::RepositorioDeUsuariosEmMemoria, vagas::RepositorioDeVagasEmMemoria}}}};
+    use crate::dominio::identidade::entidades::professor::Professor;
+    use crate::dominio::identidade::enums::cargo::Cargo;
+    use crate::dominio::identidade::traits::IntoUsuarioModelo;
+    use crate::dominio::projetos::entidades::projeto::Projeto;
+    use crate::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
+    use crate::dominio::vagas::servicos::criar_vaga::{CriarVagaParams, ServicoCriarVaga};
+    use crate::utils::sqlx::{db_date_time_now, DbDateTime};
+    use crate::utils::test::fabricas_de_entidades::usuario_modelo::UsuarioModeloParcial;
+    use crate::utils::test::repositorios_em_memoria::coordenadores_de_projetos::{ProjetoCoordenadorTupla, RepositorioDeCoordenadoresDeProjetosEmMemoria};
+    use crate::utils::test::repositorios_em_memoria::fabricas::fabrica_repositorio_de_coordenadores_de_projetos::FabricaRepositorioDeCoordenadoresDeProjetos;
+    use crate::utils::test::repositorios_em_memoria::fabricas::fabrica_repositorio_de_usuarios::FabricaRepositorioDeUsuarios;
+    use crate::utils::test::repositorios_em_memoria::fabricas::fabrica_repositorio_de_vagas::FabricaRepositorioDeVagas;
+    use crate::utils::test::repositorios_em_memoria::usuarios::RepositorioDeUsuariosEmMemoria;
+    use crate::utils::test::repositorios_em_memoria::vagas::RepositorioDeVagasEmMemoria;
 
     #[tokio::test]
     async fn nao_deveria_criar_vaga_para_um_projeto_inexistente() {
@@ -215,7 +229,7 @@ mod test {
             repo_de_vagas,
         } = obtehna_servico_e_repos();
 
-        let coord = FabricaUsuarioModelo::obtenha_entidade(UsuarioModeloParcial::default());
+        let coord = UsuarioModeloParcial::default().into_entidade();
 
         let projeto = Projeto::novo("Projeto".into(), "Desc".into(), TipoDeProjeto::Extensao);
 
@@ -234,10 +248,11 @@ mod test {
                 id_projeto: *projeto.obtenha_id(),
             });
 
-        let usuario = FabricaUsuarioModelo::obtenha_entidade(UsuarioModeloParcial {
+        let usuario = UsuarioModeloParcial {
             cargo: Some(cargo),
             ..Default::default()
-        });
+        }
+        .into_entidade();
 
         {
             let mut tbl = repo_de_usuarios.usuarios_tbl.lock().unwrap();
@@ -282,11 +297,12 @@ mod test {
             TipoDeProjeto::Extensao,
         );
 
-        let coordenador = FabricaUsuarioModelo::obtenha_entidade(UsuarioModeloParcial::default());
-        let administrador = FabricaUsuarioModelo::obtenha_entidade(UsuarioModeloParcial {
+        let coordenador = UsuarioModeloParcial::default().into_entidade();
+        let administrador = UsuarioModeloParcial {
             cargo: Some(Cargo::Administrador),
             ..Default::default()
-        });
+        }
+        .into_entidade();
 
         {
             let mut tbl = repo_de_usuarios.usuarios_tbl.lock().unwrap();
