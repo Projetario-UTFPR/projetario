@@ -125,7 +125,17 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
         paginacao: Paginacao,
     ) -> Result<ProjetosPaginados, ErroDeDominio> {
         let mut busca = QueryBuilder::<Postgres>::new(
-            r#"SELECT id, titulo, descricao, tipo, registrado_em, iniciado_em, atualizado_em, cancelado_em, concluido_em FROM projeto"#,
+            r#"SELECT
+                id,
+                titulo,
+                descricao,
+                tipo,
+                registrado_em,
+                iniciado_em,
+                atualizado_em,
+                cancelado_em,
+                concluido_em
+            FROM projeto"#,
         );
 
         let mut tem_condicoes = false;
@@ -209,19 +219,21 @@ const SELECT_PROJETO_QUERY: &str = r#"SELECT
         p.*,
 
         -- coordenador
-        c.id as "c_id",
-        c.nome as "c_nome",
-        c.email as "c_email",
-        c.senha_hash as "c_senha_hash",
-        c.url_curriculo_lattes as "c_url_curriculo_lattes",
-        c.atualizado_em as "c_atualizado_em",
-        c.desativado_em as "c_desativado_em",
-        c.registrado_em as "c_registrado_em",
+        c.id as "coorde_id",
+        c.nome as "coorde_nome",
+        c.email as "coorde_email",
+        c.senha_hash as "coorde_senha_hash",
+        c.cargo as "coorde_cargo",
+        c.url_curriculo_lattes as "coorde_url_curriculo_lattes",
+        c.atualizado_em as "coorde_atualizado_em",
+        c.desativado_em as "coorde_desativado_em",
+        c.registrado_em as "coorde_registrado_em",
 
         -- vice coordenador
         vice.id as "vice_id",
         vice.nome as "vice_nome",
         vice.email as "vice_email",
+        vice.cargo as "vice_cargo",
         vice.senha_hash as "vice_senha_hash",
         vice.url_curriculo_lattes as "vice_url_curriculo_lattes",
         vice.atualizado_em as "vice_atualizado_em",

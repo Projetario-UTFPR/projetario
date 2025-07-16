@@ -53,10 +53,10 @@ impl<'r> FromRow<'r, PgRow> for ProjetoComCoordenadores {
                 cancelado_em: row.try_get("cancelado_em")?,
                 concluido_em: row.try_get("concluido_em")?,
             },
-            coordenador: ProfessorBuilder::from_row_with_prefix(row, "coorde")?,
+            coordenador: ProfessorBuilder::from_row_with_prefix(row, "coorde_")?,
             vice_coordenador: match vice_coordenador_id {
                 None => None,
-                Some(_) => Some(ProfessorBuilder::from_row_with_prefix(row, "vice")?),
+                Some(_) => Some(ProfessorBuilder::from_row_with_prefix(row, "vice_")?),
             },
         };
 
