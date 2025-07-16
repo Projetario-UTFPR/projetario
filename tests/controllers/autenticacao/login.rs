@@ -160,7 +160,7 @@ async fn inserir_usuario_no_db(db_conn: &PgPool) {
     .bind(usuario.atualizado_em)
     .bind(usuario.desativado_em)
     .bind(usuario.registro_aluno)
-    .bind(usuario.periodo)
+    .bind(usuario.periodo.to_optional::<i16>())
     .execute(db_conn)
     .await
     .expect("Não foi possível inserir o aluno mockado no banco de dados");

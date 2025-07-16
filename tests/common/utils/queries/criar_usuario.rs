@@ -25,8 +25,8 @@ pub async fn salvar_usuario(db_conn: &PgPool, usuario: &UsuarioModelo) {
     .bind(usuario.atualizado_em)
     .bind(usuario.desativado_em)
     .bind(&usuario.registro_aluno)
-    .bind(usuario.periodo)
+    .bind(usuario.periodo.to_optional::<i16>())
     .execute(db_conn)
     .await
-    .expect("Não foi possível inserir o usuário no banco de dados para os testes.");
+    .expect("Não foi possível inserir o usuário no banco de dados para os testes");
 }

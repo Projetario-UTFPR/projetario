@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use crate::dominio::identidade::enums::cargo::Cargo;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
-use crate::utils::sqlx::{DbDateTime, db_date_time_now};
+use crate::utils::sqlx::{DbDateTime, NullableU8, db_date_time_now};
 
 pub mod builder;
 
@@ -33,7 +33,8 @@ pub struct UsuarioModelo {
     pub atualizado_em: Option<DbDateTime>,
     pub desativado_em: Option<DbDateTime>,
     pub registro_aluno: Option<String>,
-    pub periodo: Option<i16>,
+    #[sqlx(try_from = "Option<i16>")]
+    pub periodo: NullableU8,
 }
 
 impl Usuario {

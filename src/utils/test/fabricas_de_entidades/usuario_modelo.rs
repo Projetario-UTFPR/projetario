@@ -55,7 +55,7 @@ pub struct UsuarioModeloParcial {
     pub atualizado_em: Option<DbDateTime>,
     pub desativado_em: Option<DbDateTime>,
     pub registro_aluno: Option<String>,
-    pub periodo: Option<i16>,
+    pub periodo: Option<u8>,
 }
 
 impl UsuarioModeloParcial {
@@ -75,7 +75,7 @@ impl UsuarioModeloParcial {
             cargo: self.cargo.unwrap_or(Cargo::Professor),
             email: self.email.unwrap_or_else(|| FreeEmail().fake()),
             nome: self.nome.unwrap_or_else(|| Name().fake()),
-            periodo: self.periodo,
+            periodo: self.periodo.into(),
             registro_aluno: self.registro_aluno,
             senha_hash: self.senha_hash.unwrap_or_else(|| Password(10..15).fake()),
             url_curriculo_lattes: self.url_curriculo_lattes,

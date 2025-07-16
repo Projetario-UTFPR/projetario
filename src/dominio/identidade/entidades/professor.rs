@@ -3,6 +3,7 @@ use sqlx::prelude::FromRow;
 use crate::dominio::identidade::entidades::usuario::{Usuario, UsuarioModelo};
 use crate::dominio::identidade::enums::cargo::Cargo;
 use crate::dominio::identidade::traits::IntoUsuarioModelo;
+use crate::utils::sqlx::NullableU8;
 
 pub mod builder;
 
@@ -110,7 +111,7 @@ impl IntoUsuarioModelo for Professor {
             atualizado_em: self.usuario.atualizado_em,
             desativado_em: self.usuario.desativado_em,
             registro_aluno: None,
-            periodo: None,
+            periodo: NullableU8::none(),
         }
     }
 }
@@ -128,7 +129,7 @@ impl Professor {
             atualizado_em: self.usuario.atualizado_em,
             desativado_em: self.usuario.desativado_em,
             registro_aluno: None,
-            periodo: None,
+            periodo: NullableU8::none(),
         }
     }
 }

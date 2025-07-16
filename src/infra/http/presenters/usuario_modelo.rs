@@ -24,7 +24,7 @@ pub struct UsuarioModeloPresenter {
 
     #[serde(rename = "registroAluno")]
     pub registro_aluno: Option<String>,
-    pub periodo: Option<i16>,
+    pub periodo: Option<u8>,
 }
 
 impl UsuarioModeloPresenter {
@@ -35,7 +35,7 @@ impl UsuarioModeloPresenter {
             email: usuario.email.clone(),
             id: usuario.id,
             nome: usuario.nome.to_owned(),
-            periodo: usuario.periodo,
+            periodo: usuario.periodo.to_optional(),
             registrado_em: usuario.registrado_em,
             registro_aluno: usuario.registro_aluno.clone(),
             url_curriculo_lattes: usuario.url_curriculo_lattes.clone(),
