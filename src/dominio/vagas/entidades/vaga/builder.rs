@@ -2,15 +2,15 @@ use chrono::NaiveDate;
 use uuid::Uuid;
 
 use crate::dominio::identidade::entidades::professor::builder::ProfessorBuilder;
+use crate::dominio::projetos::agregados::projeto_com_coordenadores::ProjetoComCoordenadores;
+use crate::dominio::projetos::agregados::projeto_com_coordenadores::builder::ProjetoComCoordenadoresBuilder;
 use crate::dominio::projetos::entidades::projeto::builder::ProjetoBuilder;
 use crate::dominio::vagas::entidades::vaga::Vaga;
 use crate::utils::sqlx::DbDateTime;
 
 pub struct VagaBuilder {
     pub id: Uuid,
-    pub projeto: ProjetoBuilder,
-    pub coordenador: ProfessorBuilder,
-    pub vice_coordenador: Option<ProfessorBuilder>,
+    pub projeto_e_coordenadores: ProjetoComCoordenadoresBuilder,
     pub horas_por_semana: u8,
     pub imagem: String,
     pub quantidade: u8,
@@ -30,7 +30,7 @@ impl From<VagaBuilder> for Vaga {
             atualizada_em: value.atualizada_em,
             cancelada_em: value.cancelada_em,
             conteudo: value.conteudo,
-            coordenador: value.coordenador.into(),
+            projeto_e_coordenadores: value.projeto_e_coordenadores.into(),
             horas_por_semana: value.horas_por_semana,
             id: value.id,
             imagem: value.imagem,
@@ -38,10 +38,8 @@ impl From<VagaBuilder> for Vaga {
             inscricoes_ate: value.inscricoes_ate,
             link_candidatura: value.link_candidatura,
             link_edital: value.link_edital,
-            projeto: value.projeto.into(),
             quantidade: value.quantidade,
             titulo: value.titulo,
-            vice_coordenador: value.vice_coordenador.map(|vice| vice.into()),
         }
     }
 }

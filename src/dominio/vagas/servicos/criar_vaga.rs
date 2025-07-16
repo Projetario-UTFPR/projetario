@@ -5,6 +5,7 @@ use uuid::Uuid;
 use crate::dominio::identidade::entidades::professor::Professor;
 use crate::dominio::identidade::entidades::usuario::{Usuario, UsuarioModelo};
 use crate::dominio::identidade::enums::cargo::Cargo;
+use crate::dominio::projetos::agregados::projeto_com_coordenadores::ProjetoComCoordenadores;
 use crate::dominio::projetos::entidades::projeto::Projeto;
 use crate::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
 use crate::dominio::projetos::repositorios::coordenadores_de_projetos::RepositorioDeCoordenadoresDeProjetos;
@@ -66,28 +67,27 @@ where
         let projeto_com_coords = self
             .repositorio_de_projetos_e_coords
             .buscar_projeto_e_coordenadores_por_id(&id_projeto)
-            .await?;
+            .await?
+            .ok_or_else(|| {
+                ErroDeDominio::nao_encontrado("O projeto informado não foi encontrado.")
+            })?;
 
-        let (projeto, coordenador, vice_coordenador) = projeto_com_coords
-            .ok_or_else(|| ErroDeDominio::nao_encontrado("O projeto informado não foi encontrado."))
-            .map(|projeto| projeto.desestruture())?;
-
-        if !projeto.esta_ativo() {
+        if !projeto_com_coords.obtenha_projeto().esta_ativo() {
             return Err(ErroDeDominio::integridade(
                 "Não é permitido abrir vagas para um projeto desativado.",
             ));
         }
 
-        if Cargo::Administrador.ne(professor.obtenha_cargo()) && coordenador.ne(professor) {
+        if Cargo::Administrador.ne(professor.obtenha_cargo())
+            && projeto_com_coords.obtenha_coordenador().ne(professor)
+        {
             return Err(ErroDeDominio::nao_autorizado(
                 "Você não tem autorização para abrir vagas para este projeto.",
             ));
         }
 
         let vaga = Vaga::nova(
-            projeto,
-            coordenador,
-            vice_coordenador,
+            projeto_com_coords,
             horas_por_semana,
             imagem,
             quantidade,

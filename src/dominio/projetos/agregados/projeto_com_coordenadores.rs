@@ -3,7 +3,7 @@ use crate::dominio::projetos::entidades::projeto::Projeto;
 
 pub mod builder;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ProjetoComCoordenadores {
     projeto: Projeto,
     coordenador: Professor,

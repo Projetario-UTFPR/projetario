@@ -7,6 +7,7 @@ use uuid::Uuid;
 use crate::dominio::identidade::entidades::professor::Professor;
 use crate::dominio::identidade::entidades::professor::builder::ProfessorBuilder;
 use crate::dominio::identidade::entidades::usuario::builder::UsuarioBuilder;
+use crate::dominio::projetos::agregados::projeto_com_coordenadores::ProjetoComCoordenadores;
 use crate::dominio::projetos::entidades::projeto::Projeto;
 use crate::utils::erros::ResultadoDominio;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
@@ -17,10 +18,7 @@ pub mod builder;
 #[derive(Debug, Clone)]
 pub struct Vaga {
     id: Uuid,
-    projeto: Projeto,
-    coordenador: Professor,
-    vice_coordenador: Option<Professor>,
-    //cursos: Vec<String>,
+    projeto_e_coordenadores: ProjetoComCoordenadores,
     horas_por_semana: u8,
     imagem: String,
     quantidade: u8,
@@ -39,9 +37,7 @@ pub struct Vaga {
 #[allow(clippy::too_many_arguments)]
 impl Vaga {
     pub fn nova(
-        projeto: Projeto,
-        coordenador: Professor,
-        vice_coordenador: Option<Professor>,
+        projeto_e_coordenadores: ProjetoComCoordenadores,
         horas_por_semana: u8,
         imagem: String,
         quantidade_de_vagas: u8,
@@ -80,11 +76,8 @@ impl Vaga {
 
         Ok(Self {
             id: Uuid::new_v4(),
-            projeto,
-            coordenador,
-            vice_coordenador,
+            projeto_e_coordenadores,
             horas_por_semana,
-            //cursos,
             imagem,
             quantidade: quantidade_de_vagas,
             link_edital,
@@ -104,18 +97,16 @@ impl Vaga {
     pub fn obtenha_titulo(&self) -> &str {
         self.titulo
             .as_deref()
-            .unwrap_or_else(|| self.projeto.obtenha_titulo())
+            .unwrap_or_else(|| self.obtenha_projeto().obtenha_titulo())
     }
 
     pub fn obtenha_conteudo(&self) -> &str { &self.conteudo }
 
     pub fn obtenha_id(&self) -> &Uuid { &self.id }
 
-    pub fn obtenha_projeto(&self) -> &Projeto { &self.projeto }
+    pub fn obtenha_projeto(&self) -> &Projeto { self.projeto_e_coordenadores.obtenha_projeto() }
 
     pub fn obtenha_horas_por_semana(&self) -> u8 { self.horas_por_semana }
-
-    //pub fn obtenha_cursos(&self) -> Vec<String> { self.cursos }
 
     pub fn obtenha_imagem(&self) -> &str { &self.imagem }
 
@@ -139,9 +130,13 @@ impl Vaga {
 
     pub fn esta_ativa(&self) -> bool { self.cancelada_em.is_none() && !self.foi_concluida() }
 
-    pub fn obtenha_coordenador(&self) -> &Professor { &self.coordenador }
+    pub fn obtenha_coordenador(&self) -> &Professor {
+        self.projeto_e_coordenadores.obtenha_coordenador()
+    }
 
-    pub fn obtenha_vice_coordenador(&self) -> Option<&Professor> { self.vice_coordenador.as_ref() }
+    pub fn obtenha_vice_coordenador(&self) -> Option<&Professor> {
+        self.projeto_e_coordenadores.obtenha_vice_coordenador()
+    }
 }
 
 // setters
@@ -237,10 +232,6 @@ impl Vaga {
         self.inscricoes_ate = data;
         self.toque();
         Ok(())
-    }
-
-    pub fn coloque_vice_coordenador(&mut self, vice: Professor) {
-        self.vice_coordenador = Some(vice);
     }
 
     pub fn toque(&mut self) { self.atualizada_em = Some(db_date_time_now()); }
