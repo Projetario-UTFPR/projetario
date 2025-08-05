@@ -4,6 +4,7 @@ use uuid::Uuid;
 
 use crate::dominio::identidade::entidades::usuario::UsuarioModelo;
 use crate::dominio::identidade::enums::cargo::Cargo;
+use crate::utils::sqlx::DbDateTime;
 
 #[derive(Serialize)]
 pub struct UsuarioModeloPresenter {
@@ -16,14 +17,14 @@ pub struct UsuarioModeloPresenter {
     pub cargo: Cargo,
 
     #[serde(rename = "registradoEm")]
-    pub registrado_em: NaiveDateTime,
+    pub registrado_em: DbDateTime,
 
     #[serde(rename = "atualizadoEm")]
-    pub atualizado_em: Option<NaiveDateTime>,
+    pub atualizado_em: Option<DbDateTime>,
 
     #[serde(rename = "registroAluno")]
     pub registro_aluno: Option<String>,
-    pub periodo: Option<i16>,
+    pub periodo: Option<u8>,
 }
 
 impl UsuarioModeloPresenter {
@@ -34,7 +35,7 @@ impl UsuarioModeloPresenter {
             email: usuario.email.clone(),
             id: usuario.id,
             nome: usuario.nome.to_owned(),
-            periodo: usuario.periodo,
+            periodo: usuario.periodo.to_optional(),
             registrado_em: usuario.registrado_em,
             registro_aluno: usuario.registro_aluno.clone(),
             url_curriculo_lattes: usuario.url_curriculo_lattes.clone(),

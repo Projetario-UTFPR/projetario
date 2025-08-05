@@ -14,6 +14,7 @@ impl FabricaRepositorioDeCoordenadoresDeProjetos {
         RepositorioDeCoordenadoresDeProjetosEmMemoria {
             projeto_tbl: Arc::new(Mutex::new(Vec::new())),
             projeto_coordenador_tbl: Arc::new(Mutex::new(Vec::new())),
+            usuarios_tbl: Arc::new(Mutex::new(Vec::new())),
         }
     }
 

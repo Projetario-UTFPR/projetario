@@ -1,11 +1,22 @@
 use std::str::FromStr;
 use std::time::Duration;
 
+use chrono::{NaiveDateTime, Utc};
 use config::app::{AppConfig, RustEnv};
 use sqlx::any::AnyConnectOptions;
 use sqlx::migrate::Migrator;
 use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
 use sqlx::{ConnectOptions, Connection, Database, PgConnection, PgPool};
+
+mod nullableu8;
+
+pub use nullableu8::*;
+
+use crate::libs::UtcDateTime;
+
+pub type DbDateTime = NaiveDateTime;
+
+pub fn db_date_time_now() -> DbDateTime { Utc::now().naive_utc() }
 
 pub async fn migrate_db(pool: &PgPool) -> anyhow::Result<()> {
     sqlx::migrate!().run(pool).await;

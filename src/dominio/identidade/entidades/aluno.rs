@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 use sqlx::prelude::FromRow;
 use uuid::Uuid;
 
@@ -5,6 +7,9 @@ use crate::dominio::identidade::entidades::usuario::{Usuario, UsuarioModelo};
 use crate::dominio::identidade::enums::cargo::Cargo;
 use crate::dominio::identidade::traits::IntoUsuarioModelo;
 use crate::utils::erros::ErroDeDominio;
+use crate::utils::sqlx::NullableU8;
+
+pub mod builder;
 
 #[derive(Debug, FromRow, Clone, PartialEq)]
 pub struct Aluno {
@@ -13,7 +18,8 @@ pub struct Aluno {
     registro_aluno: String,
     // o tipo `u8` seria preferível, mas não pode ser obtido de uma resposta do postgres,
     // cujo menor número é o i16.
-    periodo: i16,
+    #[sqlx(try_from = "i16")]
+    periodo: u8,
 }
 
 impl Aluno {
@@ -22,7 +28,7 @@ impl Aluno {
         email: String,
         senha_hash: String,
         url_curriculo_lattes: Option<String>,
-        periodo: i16,
+        periodo: u8,
         registro_aluno: String,
     ) -> Self {
         let usuario = Usuario::novo(nome, email, senha_hash, url_curriculo_lattes);
@@ -39,11 +45,11 @@ impl Aluno {
 
     pub fn obtenha_usuario_mutavel(&mut self) -> &mut Usuario { self.as_mut() }
 
-    pub fn obtenha_registro_de_aluno(&mut self) -> &str { &self.registro_aluno }
+    pub fn obtenha_registro_de_aluno(&self) -> &str { &self.registro_aluno }
 
-    pub fn obtenha_periodo(&self) -> i16 { self.periodo }
+    pub fn obtenha_periodo(&self) -> u8 { self.periodo }
 
-    pub fn coloque_periodo(&mut self, periodo: i16) {
+    pub fn coloque_periodo(&mut self, periodo: u8) {
         self.periodo = periodo;
         self.usuario.toque();
     }
@@ -70,7 +76,7 @@ impl IntoUsuarioModelo for Aluno {
             atualizado_em: self.usuario.atualizado_em,
             desativado_em: self.usuario.desativado_em,
             registro_aluno: Some(self.registro_aluno),
-            periodo: Some(self.periodo),
+            periodo: NullableU8::some(self.periodo),
         }
     }
 }
@@ -79,7 +85,9 @@ impl TryFrom<&UsuarioModelo> for Aluno {
     type Error = ErroDeDominio;
 
     fn try_from(value: &UsuarioModelo) -> Result<Self, Self::Error> {
-        if value.cargo != Cargo::Aluno || value.registro_aluno.is_none() || value.periodo.is_none()
+        if value.cargo != Cargo::Aluno
+            || value.registro_aluno.is_none()
+            || value.periodo.as_ref().is_none()
         {
             return Err(ErroDeDominio::valor_invalido(
                 "O usuário encontrado não é um aluno válido.",
@@ -100,7 +108,7 @@ impl TryFrom<&UsuarioModelo> for Aluno {
         Ok(Aluno {
             usuario,
             registro_aluno: value.registro_aluno.to_owned().unwrap(),
-            periodo: value.periodo.unwrap(),
+            periodo: value.periodo.deref().unwrap(),
         })
     }
 }

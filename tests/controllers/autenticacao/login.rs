@@ -8,10 +8,7 @@ use pretty_assertions::assert_eq;
 use projetario::dominio::autenticacao::HasherDeSenha;
 use projetario::infra::crypto::comparador_e_hasher_de_senhas::ComparadorEHasherDeSenhaCrypto;
 use projetario::libs::actix::server::get_server;
-use projetario::utils::test::fabricas_de_entidades::usuario_modelo::{
-    FabricaUsuarioModelo,
-    UsuarioModeloConstrutor,
-};
+use projetario::utils::test::fabricas_de_entidades::usuario_modelo::UsuarioModeloParcial;
 use rstest::rstest;
 use serde_json::json;
 use sqlx::PgPool;
@@ -127,7 +124,7 @@ pub async fn soh_usuarios_nao_autenticados_deveriam_poder_ver_a_pagina_de_login(
 }
 
 async fn inserir_usuario_no_db(db_conn: &PgPool) {
-    let mut usuario = UsuarioModeloConstrutor::aluno();
+    let mut usuario = UsuarioModeloParcial::aluno();
     usuario.registro_aluno = Some("a256020".into());
     usuario.periodo = Some(2);
     usuario.senha_hash = Some(
@@ -136,7 +133,7 @@ async fn inserir_usuario_no_db(db_conn: &PgPool) {
             .unwrap(),
     );
 
-    let usuario = FabricaUsuarioModelo::obtenha_entidade(usuario);
+    let usuario = usuario.into_entidade();
 
     sqlx::query(
         "INSERT INTO \"usuario\" ( \
@@ -163,7 +160,7 @@ async fn inserir_usuario_no_db(db_conn: &PgPool) {
     .bind(usuario.atualizado_em)
     .bind(usuario.desativado_em)
     .bind(usuario.registro_aluno)
-    .bind(usuario.periodo)
+    .bind(usuario.periodo.to_optional::<i16>())
     .execute(db_conn)
     .await
     .expect("Não foi possível inserir o aluno mockado no banco de dados");

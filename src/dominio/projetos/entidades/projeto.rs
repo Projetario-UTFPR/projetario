@@ -1,10 +1,13 @@
-use chrono::{NaiveDate, NaiveDateTime, Utc};
+use chrono::{NaiveDate, Utc};
 use serde::Serialize;
 use sqlx::postgres::PgRow;
 use sqlx::{FromRow, Row};
 use uuid::Uuid;
 
 use crate::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
+use crate::utils::sqlx::{DbDateTime, db_date_time_now};
+
+pub mod builder;
 
 #[derive(Serialize, Debug, Clone, FromRow)]
 pub struct Projeto {
@@ -12,10 +15,10 @@ pub struct Projeto {
     titulo: String,
     descricao: String,
     tipo: TipoDeProjeto,
-    registrado_em: NaiveDateTime,
+    registrado_em: DbDateTime,
     iniciado_em: NaiveDate,
-    atualizado_em: Option<NaiveDateTime>,
-    cancelado_em: Option<NaiveDateTime>,
+    atualizado_em: Option<DbDateTime>,
+    cancelado_em: Option<DbDateTime>,
     concluido_em: Option<NaiveDate>,
 }
 
@@ -39,7 +42,7 @@ impl Projeto {
             cancelado_em: None,
             concluido_em: None,
             iniciado_em,
-            registrado_em: Utc::now().naive_utc(),
+            registrado_em: db_date_time_now(),
         }
     }
 }
@@ -54,15 +57,15 @@ impl Projeto {
 
     pub fn obtenha_tipo(&self) -> TipoDeProjeto { self.tipo }
 
-    pub fn obtenha_data_de_registro(&self) -> NaiveDateTime { self.registrado_em }
+    pub fn obtenha_data_de_registro(&self) -> DbDateTime { self.registrado_em }
 
     pub fn obtenha_data_de_inicio(&self) -> NaiveDate { self.iniciado_em }
 
-    pub fn obtenha_data_de_cancelamento(&self) -> Option<NaiveDateTime> { self.cancelado_em }
+    pub fn obtenha_data_de_cancelamento(&self) -> Option<DbDateTime> { self.cancelado_em }
 
     pub fn obtenha_data_de_conclusao(&self) -> Option<NaiveDate> { self.concluido_em }
 
-    pub fn obtenha_data_de_modificacao(&self) -> Option<NaiveDateTime> { self.atualizado_em }
+    pub fn obtenha_data_de_modificacao(&self) -> Option<DbDateTime> { self.atualizado_em }
 
     pub fn esta_ativo(&self) -> bool { self.cancelado_em.is_none() && self.concluido_em.is_none() }
 }
@@ -87,9 +90,9 @@ impl Projeto {
         self.toque();
     }
 
-    pub fn toque(&mut self) { self.atualizado_em = Some(Utc::now().naive_utc()); }
+    pub fn toque(&mut self) { self.atualizado_em = Some(db_date_time_now()); }
 
     pub fn concluir(&mut self) { self.concluido_em = Some(Utc::now().date_naive()); }
 
-    pub fn cancelar(&mut self) { self.cancelado_em = Some(Utc::now().naive_utc()); }
+    pub fn cancelar(&mut self) { self.cancelado_em = Some(db_date_time_now()); }
 }
