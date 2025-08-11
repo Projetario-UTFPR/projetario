@@ -3,16 +3,16 @@ use pbkdf2::password_hash::rand_core::OsRng;
 use pbkdf2::password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString};
 
 use crate::dominio::autenticacao::{
-    ComparadorDeHashDeSenha, ComparadorEHasherDeSenha, HasherDeSenha,
+    ComparadorDeHashDeSenha,
+    ComparadorEHasherDeSenha,
+    HasherDeSenha,
 };
 use crate::utils::erros::{ErroDeDominio, ResultadoDominio};
 
 pub struct ComparadorEHasherDeSenhaCrypto;
 
 impl ComparadorEHasherDeSenhaCrypto {
-    pub fn novo() -> Self {
-        Self
-    }
+    pub fn novo() -> Self { Self }
 }
 
 impl HasherDeSenha for ComparadorEHasherDeSenhaCrypto {
