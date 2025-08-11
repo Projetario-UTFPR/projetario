@@ -7,4 +7,4 @@ edition.workspace = true
 inertia-rust = { workspace = true }
 anyhow = { workspace = true }
 vite-rust = { workspace = true }
-base64 = { version = "0.22", features = ["std"] }
+base64.workspace = true
