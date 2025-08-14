@@ -12,13 +12,14 @@ use crate::dominio::projetos::servicos::criar_projeto_de_extensao::{
 };
 use crate::infra::dtos::projetos::criar_projeto::CriarProjetoDto;
 use crate::infra::fabricas::servicos::criar_projeto_de_extensao::obtenha_servico_criar_projeto_de_extensao;
-use crate::infra::http::controllers::{Controller, RedirectDoApp, RespostaDoApp};
+use crate::infra::http::RouterRegistrable;
+use crate::infra::http::controllers::{RedirectDoApp, RespostaDoApp};
 use crate::infra::http::middlewares::usuario_da_requisicao::UsuarioDaRequisicao;
 use crate::unwrap_or_redirect;
 
 pub struct ControllerProjetosDeExtensao;
 
-impl Controller for ControllerProjetosDeExtensao {
+impl RouterRegistrable for ControllerProjetosDeExtensao {
     fn register(cfg: &mut actix_web::web::ServiceConfig) {
         cfg.service(
             web::scope("/projetos/extensao")

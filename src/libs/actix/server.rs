@@ -5,7 +5,7 @@ use actix_web::body::{BoxBody, EitherBody};
 use actix_web::cookie::{Key, SameSite};
 use actix_web::dev::{ServiceFactory, ServiceRequest, ServiceResponse};
 use actix_web::middleware::NormalizePath;
-use actix_web::{App, HttpMessage, web};
+use actix_web::{App, HttpMessage};
 use config::app::{AppConfig, RustEnv};
 use futures_util::FutureExt;
 use inertia_rust::actix::InertiaMiddleware;
@@ -15,21 +15,14 @@ use inertia_sessions::middlewares::garbage_collector::GarbageCollectorMiddleware
 use inertia_sessions::middlewares::reflash_temporary_session::ReflashTemporarySessionMiddleware;
 use serde_json::Map;
 
-use crate::dominio::identidade::enums::cargo::Cargo;
 use crate::dominio::identidade::traits::IntoUsuarioModelo;
-use crate::infra::http::controllers::Controller;
-use crate::infra::http::controllers::autenticacao::ControllerAutenticacao;
-use crate::infra::http::controllers::professores::projetos_de_extensao::ControllerProjetosDeExtensao;
-use crate::infra::http::controllers::professores::vagas::ControllerVagas;
-use crate::infra::http::middlewares::somente_com_cargo::{
-    AutorizacaoDaRota,
-    MiddlewareEstaAutorizado,
-};
+use crate::infra::http::RouterRegistrable;
 use crate::infra::http::middlewares::usuario_da_requisicao::{
     MiddlewareUsuarioDaRequisicao,
     UsuarioDaRequisicao,
 };
 use crate::infra::http::presenters::usuario_modelo::UsuarioModeloPresenter;
+use crate::infra::http::routers::web::WebRouter;
 
 pub fn get_server() -> App<
     impl ServiceFactory<
@@ -87,12 +80,6 @@ pub fn get_server() -> App<
         .wrap(NormalizePath::trim())
         .inertia_route("/", "index")
         .inertia_route("/dev/hello/world", "hello-world")
-        .configure(ControllerAutenticacao::register)
-        .service(
-            web::scope("/professores")
-                .wrap(MiddlewareEstaAutorizado::novo(AutorizacaoDaRota::UsuarioComCargo(Cargo::Professor)))
-                .configure(ControllerProjetosDeExtensao::register)
-                .configure(ControllerVagas::register)
-        )
+        .configure(WebRouter::register)
         .service(actix_files::Files::new("/", "./public/").prefer_utf8(true))
 }

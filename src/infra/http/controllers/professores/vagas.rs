@@ -15,7 +15,8 @@ use crate::dominio::projetos::repositorios::projetos::RepositorioDeProjetos;
 use crate::dominio::vagas::servicos::criar_vaga::CriarVagaParams;
 use crate::infra::dtos::vagas::criar_vaga::CriarVagaDto;
 use crate::infra::fabricas::servicos::criar_vaga::obtenha_servico_criar_vaga;
-use crate::infra::http::controllers::{Controller, RedirectDoApp, RespostaDoApp};
+use crate::infra::http::RouterRegistrable;
+use crate::infra::http::controllers::{RedirectDoApp, RespostaDoApp};
 use crate::infra::http::middlewares::usuario_da_requisicao::UsuarioDaRequisicao;
 use crate::infra::repositorios::sqlx::coordenadores_de_projetos::RepositorioDeCoordenadoresDeProjetosSQLX;
 use crate::infra::repositorios::sqlx::projetos::RepositorioDeProjetosSQLX;
@@ -24,7 +25,7 @@ use crate::unwrap_or_redirect;
 use crate::utils::erros::{ErroDeDominio, ResultadoDominio, TipoErroDeDominio};
 
 pub struct ControllerVagas;
-impl Controller for ControllerVagas {
+impl RouterRegistrable for ControllerVagas {
     fn register(cfg: &mut web::ServiceConfig) {
         cfg.service(
             web::scope("/vagas")

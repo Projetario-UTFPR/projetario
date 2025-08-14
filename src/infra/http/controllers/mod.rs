@@ -7,9 +7,5 @@ pub mod autenticacao;
 pub mod professores;
 pub mod projetos;
 
-pub trait Controller {
-    fn register(cfg: &mut ServiceConfig);
-}
-
 pub type RespostaDoApp<T = HttpResponse> = Result<T, ErroDeDominio>;
 pub type RedirectDoApp = Redirect;

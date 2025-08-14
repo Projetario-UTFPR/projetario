@@ -11,11 +11,12 @@ use crate::dominio::vagas::servicos::buscar_vagas_de_projetos::{
 };
 use crate::infra::dtos::projetos::buscar_projeto::BuscarProjetoDto;
 use crate::infra::fabricas::servicos::buscar_projetos::obtenha_servico_buscar_projetos;
-use crate::infra::http::controllers::{Controller, RedirectDoApp, RespostaDoApp};
+use crate::infra::http::RouterRegistrable;
+use crate::infra::http::controllers::{RedirectDoApp, RespostaDoApp};
 
 pub struct ControllerProjetos;
 
-impl Controller for ControllerProjetos {
+impl RouterRegistrable for ControllerProjetos {
     fn register(cfg: &mut actix_web::web::ServiceConfig) {
         cfg.service(web::scope("/projetos").route("/pesquisar", web::get().to(Self::pesquisar)));
     }
