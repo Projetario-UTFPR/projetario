@@ -1,6 +1,3 @@
-use std::cmp::Ordering;
-use std::ops::{Deref, DerefMut};
-
 use async_trait::async_trait;
 use comum::erros::ResultadoDominio;
 use comum::erros::erro_de_dominio::ErroDeDominio;
@@ -16,9 +13,7 @@ use dominio::projetos::repositorios::coordenadores_de_projetos::{
     ProjetosPaginados,
     RepositorioDeCoordenadoresDeProjetos,
 };
-use futures_util::FutureExt;
-use sqlx::postgres::{PgPoolCopyExt, PgRow};
-use sqlx::{AnyPool, Connection, Executor, PgPool, Pool, Postgres, QueryBuilder, Row};
+use sqlx::{PgPool, Postgres, QueryBuilder};
 use uuid::Uuid;
 pub struct RepositorioDeCoordenadoresDeProjetosSQLX<'this> {
     db_conn: &'this PgPool,
@@ -145,7 +140,7 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
                     busca.push(" || '%'");
                     tem_condicoes = true;
                 }
-                FiltroDeProjeto::Coordenacao(id_do_coordenador) => {
+                FiltroDeProjeto::Coordenacao(_id_do_coordenador) => {
                     // TODO: implementar essa parte
                     todo!()
                 }
@@ -157,7 +152,7 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
                 busca.push(" AND tipo = ");
             } else {
                 busca.push(" WHERE tipo = ");
-                tem_condicoes = true;
+                // tem_condicoes = true;
             }
 
             busca.push_bind(tipo);

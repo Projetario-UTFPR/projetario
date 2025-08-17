@@ -1,4 +1,3 @@
-use chrono::NaiveDateTime;
 use comum::sqlx::DbDateTime;
 use dominio::identidade::entidades::usuario::UsuarioModelo;
 use dominio::identidade::enums::cargo::Cargo;

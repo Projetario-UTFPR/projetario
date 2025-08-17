@@ -8,7 +8,7 @@ use inertia_rust::Inertia;
 use inertia_rust::test::{InertiaTestRequest, IntoAssertableInertia};
 use pretty_assertions::assert_eq;
 use projetario::infra::crypto::comparador_e_hasher_de_senhas::ComparadorEHasherDeSenhaCrypto;
-use projetario::libs::actix::server::get_server;
+use projetario::server::get_server;
 use rstest::rstest;
 use serde_json::json;
 use sqlx::PgPool;

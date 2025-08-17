@@ -14,8 +14,7 @@ use dominio::identidade::entidades::professor::Professor;
 use dominio::identidade::entidades::usuario::UsuarioModelo;
 use dominio::identidade::repositorios::usuarios::RepositorioDeUsuarios;
 use futures_util::future::{Ready, ready};
-use sqlx::{FromRow, PgPool};
-use uuid::Uuid;
+use sqlx::PgPool;
 
 use crate::infra::repositorios::sqlx::usuarios::RepositorioDeUsuariosSQLX;
 
@@ -42,7 +41,7 @@ impl FromRequest for UsuarioDaRequisicao {
 
     fn from_request(
         req: &actix_web::HttpRequest,
-        payload: &mut actix_web::dev::Payload,
+        _payload: &mut actix_web::dev::Payload,
     ) -> Self::Future {
         let usuario = req
             .extensions()

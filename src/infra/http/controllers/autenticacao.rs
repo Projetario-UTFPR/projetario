@@ -17,7 +17,7 @@ use sqlx::PgPool;
 use crate::infra::dtos::autenticacao::LoginDto;
 use crate::infra::fabricas::servicos::autenticacao::obtenha_servico_autenticar_usuario;
 use crate::infra::http::RouterRegistrable;
-use crate::infra::http::controllers::{RedirectDoApp, RespostaDoApp};
+use crate::infra::http::controllers::RedirectDoApp;
 use crate::infra::http::middlewares::somente_com_cargo::{
     AutorizacaoDaRota,
     MiddlewareEstaAutorizado,

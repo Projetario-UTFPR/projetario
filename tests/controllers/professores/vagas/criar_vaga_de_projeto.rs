@@ -9,7 +9,7 @@ use dominio::test::fabricas_de_entidades::projeto::ProjetoParcial;
 use inertia_rust::Inertia;
 use inertia_rust::test::{InertiaTestRequest, IntoAssertableInertia};
 use pretty_assertions::assert_eq;
-use projetario::libs::actix::server::get_server;
+use projetario::server::get_server;
 use rstest::rstest;
 use serde_json::{Value, json};
 

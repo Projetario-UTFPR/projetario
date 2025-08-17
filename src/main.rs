@@ -5,7 +5,7 @@ use config::app::{AppConfig, RustEnv};
 use config::inertia::get_inertia;
 use config::vite::get_vite;
 use env_logger::Target;
-use projetario::libs::actix::server::get_server;
+use projetario::server::get_server;
 use projetario::utils::resolve_uri;
 
 #[actix_web::main]

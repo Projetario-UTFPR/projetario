@@ -1,10 +1,7 @@
-use chrono::{NaiveDate, NaiveDateTime};
 use comum::erros::{ErroDeDominio, ResultadoDominio};
-use dominio::identidade::entidades::professor::Professor;
-use dominio::projetos::entidades::projeto::Projeto;
 use dominio::vagas::entidades::vaga::Vaga;
 use dominio::vagas::repositorios::vaga::RepositorioDeVagas;
-use sqlx::{PgPool, query, query_as};
+use sqlx::PgPool;
 use uuid::Uuid;
 
 pub struct RepositorioDeVagasSQLX<'this> {
@@ -68,7 +65,7 @@ impl RepositorioDeVagas for RepositorioDeVagasSQLX<'_> {
             })
     }
 
-    async fn atualizar_vaga(&self, vaga: &Vaga) -> ResultadoDominio<()> { todo!() }
+    async fn atualizar_vaga(&self, _vaga: &Vaga) -> ResultadoDominio<()> { todo!() }
 }
 
 const SELECT_VAGA_QUERY: &str = r#"SELECT

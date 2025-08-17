@@ -1,5 +1,4 @@
 use dominio::autenticacao::servicos::autenticar_usuario::ServicoAutenticarUsuario;
-use dominio::identidade::repositorios::usuarios::RepositorioDeUsuarios;
 use sqlx::PgPool;
 
 use crate::infra::crypto::comparador_e_hasher_de_senhas::ComparadorEHasherDeSenhaCrypto;

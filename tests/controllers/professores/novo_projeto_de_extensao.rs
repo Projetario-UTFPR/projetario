@@ -7,7 +7,7 @@ use dominio::projetos::entidades::projeto::Projeto;
 use inertia_rust::Inertia;
 use inertia_rust::test::{InertiaTestRequest, IntoAssertableInertia};
 use pretty_assertions::assert_eq;
-use projetario::libs::actix::server::get_server;
+use projetario::server::get_server;
 use rstest::rstest;
 use serde_json::json;
 use sqlx::query_as;

@@ -48,7 +48,6 @@ impl ComparadorEHasherDeSenha for ComparadorEHasherDeSenhaCrypto {}
 #[cfg(test)]
 mod test {
     use dominio::autenticacao::{ComparadorDeHashDeSenha, HasherDeSenha};
-    use pretty_assertions::assert_eq;
 
     use crate::infra::crypto::comparador_e_hasher_de_senhas::ComparadorEHasherDeSenhaCrypto;
 

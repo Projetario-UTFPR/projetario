@@ -1,11 +1,6 @@
 use actix_web::web::{Data, Json};
 use actix_web::{HttpRequest, web};
-use dominio::identidade::entidades::professor::Professor;
-use dominio::identidade::traits::IntoUsuarioModelo;
-use dominio::projetos::servicos::criar_projeto_de_extensao::{
-    CriarProjetosDeExtensaoParams,
-    ServicoCriarProjetoDeExtensao,
-};
+use dominio::projetos::servicos::criar_projeto_de_extensao::CriarProjetosDeExtensaoParams;
 use inertia_rust::validators::InertiaValidateOrRedirect;
 use inertia_rust::{Inertia, InertiaFacade, hashmap};
 use sqlx::PgPool;

@@ -1,5 +1,3 @@
-use chrono::NaiveDateTime;
-use comum::sqlx::DbDateTime;
 use serde::Deserialize;
 use uuid::Uuid;
 use validator::Validate;

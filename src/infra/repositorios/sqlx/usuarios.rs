@@ -4,7 +4,7 @@ use dominio::identidade::entidades::aluno::Aluno;
 use dominio::identidade::entidades::professor::Professor;
 use dominio::identidade::entidades::usuario::UsuarioModelo;
 use dominio::identidade::repositorios::usuarios::RepositorioDeUsuarios;
-use sqlx::{Execute, PgPool, query_as};
+use sqlx::{PgPool, query_as};
 use uuid::Uuid;
 
 pub struct RepositorioDeUsuariosSQLX<'this> {

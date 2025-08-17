@@ -1,4 +1,3 @@
-use dominio::vagas::repositorios::vaga::RepositorioDeVagas;
 use dominio::vagas::servicos::criar_vaga::ServicoCriarVaga;
 use sqlx::PgPool;
 
