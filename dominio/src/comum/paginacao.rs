@@ -1,5 +1,8 @@
 mod entidade_paginada;
+mod paginacao_melhorada;
+
 pub use entidade_paginada::*;
+pub use paginacao_melhorada::*;
 
 pub const POR_PAGINA_PADRAO: u8 = 12;
 
@@ -7,8 +10,9 @@ pub const POR_PAGINA_PADRAO: u8 = 12;
 /// para processar buscas.
 ///
 /// Não se trata de um DTO, tampouco um presenter.
+#[derive(Clone)]
 pub struct Paginacao {
-    pub pagina: u32,
+    pub pagina: u64,
     pub qtd_por_pagina: u8,
 }
 
@@ -17,21 +21,21 @@ impl Default for Paginacao {
 }
 
 impl Paginacao {
-    pub fn nova(pagina: u32, qtd_por_pagina: u8) -> Self {
+    pub fn nova(pagina: u64, qtd_por_pagina: u8) -> Self {
         Self {
             pagina,
             qtd_por_pagina,
         }
     }
 
-    pub fn nova_por_opcionais(pagina: Option<u32>, qtd_por_pagina: Option<u8>) -> Self {
+    pub fn nova_por_opcionais(pagina: Option<u64>, qtd_por_pagina: Option<u8>) -> Self {
         Self {
             pagina: pagina.unwrap_or(1),
             qtd_por_pagina: qtd_por_pagina.unwrap_or(POR_PAGINA_PADRAO),
         }
     }
 
-    pub fn com_pagina(mut self, pagina: u32) -> Self {
+    pub fn com_pagina(mut self, pagina: u64) -> Self {
         self.pagina = pagina;
         self
     }
