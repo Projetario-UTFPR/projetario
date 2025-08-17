@@ -19,7 +19,7 @@ use crate::common::utils::headers::extraia_cookie_da_sessao;
 
 #[rstest]
 #[case("reginaldo@utfpr.com", "12345", "Reginaldo Ré")] // um Professor
-#[case("cremoso@utfpr.com", "12345", "Paulo Sabo")] // um Administrador
+#[case("sabo@utfpr.com", "12345", "Paulo Sabo")] // um Administrador
 #[awt]
 #[tokio::test]
 pub async fn um_professor_deveria_poder_criar_um_projeto_de_extensao(
@@ -68,6 +68,7 @@ pub async fn um_professor_deveria_poder_criar_um_projeto_de_extensao(
         .await
         .into_assertable_inertia();
 
+    dbg!(&pagina.get_props());
     assert!(pagina.get_props()["errors"].as_object().unwrap().is_empty());
     // endregion: --- Garante que não houve erros
 
