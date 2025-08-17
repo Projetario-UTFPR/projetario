@@ -146,6 +146,10 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
                     busca.push(" || '%'");
                     tem_condicoes = true;
                 }
+                FiltroDeProjeto::Coordenacao(id_do_coordenador) => {
+                    // TODO: implementar essa parte
+                    todo!()
+                }
             }
         }
 

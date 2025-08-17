@@ -19,4 +19,6 @@ impl Default for OrdenacaoDeProjeto {
 pub enum FiltroDeProjeto {
     /// Filtrar projetos que incluem o título
     Titulo(String),
+    /// Filtrar projetos por coordenador ou vice-coordenador
+    Coordenacao(Uuid),
 }

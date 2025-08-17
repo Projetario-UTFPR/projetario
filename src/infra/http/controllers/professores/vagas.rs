@@ -5,15 +5,19 @@ use inertia_rust::{Inertia, InertiaFacade, hashmap};
 use sqlx::PgPool;
 use uuid::Uuid;
 
+use crate::comum::paginacao::Paginacao;
 use crate::dominio::identidade::entidades::professor::Professor;
 use crate::dominio::identidade::entidades::usuario::UsuarioModelo;
 use crate::dominio::identidade::enums::cargo::Cargo;
 use crate::dominio::identidade::repositorios::usuarios::RepositorioDeUsuarios;
 use crate::dominio::projetos::entidades::projeto::Projeto;
+use crate::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
 use crate::dominio::projetos::repositorios::coordenadores_de_projetos::RepositorioDeCoordenadoresDeProjetos;
 use crate::dominio::projetos::repositorios::projetos::RepositorioDeProjetos;
+use crate::dominio::vagas::servicos::buscar_vagas_de_projetos::BuscarVagasDeProjetosParams;
 use crate::dominio::vagas::servicos::criar_vaga::CriarVagaParams;
 use crate::infra::dtos::vagas::criar_vaga::CriarVagaDto;
+use crate::infra::fabricas::servicos::buscar_projetos::obtenha_servico_buscar_projetos;
 use crate::infra::fabricas::servicos::criar_vaga::obtenha_servico_criar_vaga;
 use crate::infra::http::RouterRegistrable;
 use crate::infra::http::controllers::{RedirectDoApp, RespostaDoApp};
@@ -36,7 +40,18 @@ impl RouterRegistrable for ControllerVagas {
 }
 
 impl ControllerVagas {
-    pub async fn nova(req: HttpRequest) -> RespostaDoApp {
+    pub async fn nova(req: HttpRequest, db_conn: Data<PgPool>) -> RespostaDoApp {
+        // TODO: filtrar projetos por professor
+        // TODO: retornar os projetos como uma propriedade deferred pra tratar os erros
+        let projetos_deste_professor = obtenha_servico_buscar_projetos(&db_conn)
+            .executar(BuscarVagasDeProjetosParams {
+                filtro: None,
+                ordenador: None,
+                paginacao: Paginacao::default(),
+                tipo: None,
+            })
+            .await;
+
         Inertia::render(&req, "professores/vagas/nova".into())
             .await
             .map_err(Into::into)
