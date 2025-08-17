@@ -1,50 +1,109 @@
-use sqlx::{PgPool, query};
+use dominio::identidade::entidades::aluno::Aluno;
+use dominio::identidade::entidades::professor::Professor;
+use dominio::identidade::entidades::usuario::UsuarioModelo;
+use dominio::identidade::enums::cargo::Cargo;
+use dominio::test::fabricas_de_entidades::usuario_modelo::UsuarioModeloParcial;
+use sqlx::PgPool;
 
 use crate::senhas::aplicar_hash;
 
-pub async fn inserir_usuarios(db_pool: &PgPool) {
-    let criar_professor = query(
-        "INSERT INTO usuario \
-        (nome, email, senha_hash, cargo) \
-        SELECT 'Reginaldo Ré', 'reginaldo@utfpr.com', $1, 'professor' \
-        WHERE NOT EXISTS ( SELECT 1 FROM usuario WHERE email = 'reginaldo@utfpr.com' )",
-    )
-    .bind(aplicar_hash("12345"))
-    .execute(db_pool);
+#[allow(dead_code)]
+pub struct UsuariosCriados {
+    pub admin: Professor,
+    pub professor: Professor,
+    pub aluno: Aluno,
+}
 
-    let criar_administrador = query(
-        "INSERT INTO usuario \
-        (nome, email, senha_hash, cargo) \
-        SELECT 'Paulo Sabo', 'cremoso@utfpr.com', $1, 'administrador' \
-        WHERE NOT EXISTS ( SELECT 1 FROM usuario WHERE email = 'cremoso@utfpr.com' )",
-    )
-    .bind(aplicar_hash("12345"))
-    .execute(db_pool);
-
-    let criar_aluno = query(
-        "INSERT INTO usuario \
-        (nome, email, senha_hash, cargo, registro_aluno, periodo) \
-        SELECT 'Pedro Alberto', 'pedroalberto@alunos.utfpr.com', $1, 'aluno', 'a2250331', 2 \
-        WHERE NOT EXISTS ( SELECT 1 FROM usuario WHERE registro_aluno = 'a2250331' )",
-    )
-    .bind(aplicar_hash("12345"))
-    .execute(db_pool);
-
-    if let Err(err) = tokio::try_join!(criar_professor, criar_administrador, criar_aluno) {
-        panic!("{err}");
-    };
-
-    log::info!(
-        "Adicionado o professor Reginaldo Ré com as credenciais: reginaldo@utfpr.com, 12345"
+pub async fn inserir_usuarios(db_pool: &PgPool) -> UsuariosCriados {
+    let administrador = salvar(
+        db_pool,
+        UsuarioModeloParcial {
+            nome: Some("Paulo Sabo".into()),
+            email: Some("sabo@utfpr.com".into()),
+            senha_hash: Some("12345".into()),
+            cargo: Some(Cargo::Administrador),
+            ..Default::default()
+        },
     );
 
-    log::info!(
-        "Adicionado o administrador Paulo Sabo com as credenciais: cremoso@utfpr.com, 12345"
+    let professor = salvar(
+        db_pool,
+        UsuarioModeloParcial {
+            nome: Some("Reginaldo Ré".into()),
+            email: Some("reginaldo@utfpr.com".into()),
+            senha_hash: Some("12345".into()),
+            cargo: Some(Cargo::Professor),
+            ..Default::default()
+        },
     );
 
-    log::info!(
-        "Adicionado o aluno Pedro Alberto com as credenciais: pedroalberto@alunos.utfpr.com, 12345"
+    let aluno = salvar(
+        db_pool,
+        UsuarioModeloParcial {
+            nome: Some("Pedro Alberto".into()),
+            email: Some("pedroalberto@alunos.utfpr.com".into()),
+            senha_hash: Some("12345".into()),
+            cargo: Some(Cargo::Aluno),
+            registro_aluno: Some("a2250331".into()),
+            periodo: Some(2),
+            ..Default::default()
+        },
     );
+
+    let (prof, admin, aluno): (UsuarioModelo, UsuarioModelo, UsuarioModelo) =
+        tokio::join!(professor, administrador, aluno);
+
+    UsuariosCriados {
+        admin: Professor::try_from(&admin).unwrap(),
+        professor: Professor::try_from(&prof).unwrap(),
+        aluno: Aluno::try_from(&aluno).unwrap(),
+    }
+}
+
+async fn salvar(db_pool: &PgPool, usuario: UsuarioModeloParcial) -> UsuarioModelo {
+    let usuario = usuario.into_entidade();
+
+    sqlx::query(concat!(
+        "INSERT INTO usuario ",
+        "(nome, email, senha_hash, cargo, registro_aluno, periodo) ",
+        "SELECT $1, $2, $3, $4, $5, $6 ",
+        "WHERE NOT EXISTS ( SELECT 1 FROM usuario WHERE email = $2 )",
+    ))
+    .bind(usuario.nome.clone())
+    .bind(usuario.email.clone())
+    .bind(aplicar_hash(usuario.senha_hash.as_str()))
+    .bind(usuario.cargo.clone())
+    .bind(usuario.registro_aluno.clone())
+    .bind(usuario.periodo.to_optional::<i32>())
+    .execute(db_pool)
+    .await
+    .expect("Não foi possível inserir o usuário no banco de dados");
+
+    let usuario_mais_atual: UsuarioModelo =
+        sqlx::query_as("SELECT * FROM usuario WHERE email = $1")
+            .bind(usuario.email.clone())
+            .fetch_one(db_pool)
+            .await
+            .expect("O usuário não foi inserido corretamente");
+
+    match usuario.cargo {
+        Cargo::Aluno => log::info!(
+            "Adicionado o aluno {} com as credenciais: {}, {}, {}",
+            usuario.nome,
+            usuario.email,
+            usuario.senha_hash,
+            usuario.registro_aluno.as_ref().unwrap()
+        ),
+        _ => log::info!(
+            "Adicionado o {} {} com as credenciais: {}, {}",
+            usuario.cargo,
+            usuario.nome,
+            usuario.email,
+            usuario.senha_hash
+        ),
+    }
+
+    usuario_mais_atual
 }
 
 // id                  UUID            NOT NULL    DEFAULT gen_random_uuid(),

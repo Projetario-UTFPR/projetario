@@ -5,14 +5,16 @@ edition.workspace = true
 
 [features]
 dockerimgb = ["openssl/vendored"]
-test-utils = ["dep:fake", "dep:rand"]
+test-utils = ["dominio/test-utils"]
 
 [workspace]
-members = ["config", "db_seeder", "sessions"]
+members = ["comum", "config", "db_seeder", "dominio", "sessions"]
 package.version = "0.1.0"
 package.edition = "2024"
 
 [workspace.dependencies]
+comum.path = "comum"
+dominio.path = "dominio"
 inertia-sessions.path = "sessions"
 config.path = "config"
 actix-files = "0.6.6"
@@ -55,41 +57,36 @@ sqlx = { version = "0.8.5", features = [
 ] }
 pbkdf2 = { version = "0.12", features = ["simple"] }
 base64 = { version = "0.22", features = ["std"] }
+uuid = { version = "1.17.0", features = ["v4", "serde"] }
+url = "2.5.4"
 
 [dependencies]
+dominio.workspace = true
+comum.workspace = true
+config.workspace = true
+inertia-sessions.workspace = true
+vite-rust.workspace = true
 actix-files.workspace = true
 actix-session.workspace = true
-tokio.workspace = true
-vite-rust.workspace = true
-inertia-sessions.workspace = true
-config.workspace = true
 inertia-rust.workspace = true
-anyhow.workspace = true
 async-trait.workspace = true
-actix-web.workspace = true
-chrono.workspace = true
-dotenvy.workspace = true
 env_logger.workspace = true
+actix-web.workspace = true
+uuid.workspace = true
+chrono.workspace = true
+anyhow.workspace = true
+dotenvy.workspace = true
 log.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 futures-util.workspace = true
 sqlx.workspace = true
-thiserror.workspace = true
 validator = { version = "0.20", features = ["derive"] }
-uuid = { version = "1.17.0", features = ["v4", "serde"] }
 openssl = { version = "0.10.73", optional = true }
 pbkdf2.workspace = true
-fake = { version = "4.3.0", features = [
-    "derive",
-    "chrono",
-    "url",
-], optional = true }
-rand = { workspace = true, optional = true }
 
 [dev-dependencies]
 pretty_assertions.workspace = true
 rstest.workspace = true
 tokio = { workspace = true, features = ["test-util"] }
 db_seeder = { path = "db_seeder" }
-url = "2.5.4"

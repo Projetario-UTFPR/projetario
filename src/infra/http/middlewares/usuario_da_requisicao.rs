@@ -7,17 +7,16 @@ use actix_web::body::EitherBody;
 use actix_web::dev::{Service, ServiceRequest, ServiceResponse, Transform, forward_ready};
 use actix_web::web::Data;
 use actix_web::{Error, FromRequest, HttpMessage, ResponseError};
+use comum::erros::ErroDeDominio;
 use config::app::AppConfig;
+use dominio::identidade::entidades::aluno::Aluno;
+use dominio::identidade::entidades::professor::Professor;
+use dominio::identidade::entidades::usuario::UsuarioModelo;
+use dominio::identidade::repositorios::usuarios::RepositorioDeUsuarios;
 use futures_util::future::{Ready, ready};
-use sqlx::{FromRow, PgPool};
-use uuid::Uuid;
+use sqlx::PgPool;
 
-use crate::dominio::identidade::entidades::aluno::Aluno;
-use crate::dominio::identidade::entidades::professor::Professor;
-use crate::dominio::identidade::entidades::usuario::UsuarioModelo;
-use crate::dominio::identidade::repositorios::usuarios::RepositorioDeUsuarios;
 use crate::infra::repositorios::sqlx::usuarios::RepositorioDeUsuariosSQLX;
-use crate::utils::erros::ErroDeDominio;
 
 /// # Middleware de Usuário da Requisição
 /// Esse middleware é responsável por tentar extrair um possível usuário da requisição HTTP e,
@@ -42,7 +41,7 @@ impl FromRequest for UsuarioDaRequisicao {
 
     fn from_request(
         req: &actix_web::HttpRequest,
-        payload: &mut actix_web::dev::Payload,
+        _payload: &mut actix_web::dev::Payload,
     ) -> Self::Future {
         let usuario = req
             .extensions()

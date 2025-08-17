@@ -1,13 +1,8 @@
+use comum::erros::{ErroDeDominio, ResultadoDominio};
+use dominio::autenticacao::{ComparadorDeHashDeSenha, ComparadorEHasherDeSenha, HasherDeSenha};
 use pbkdf2::Pbkdf2;
 use pbkdf2::password_hash::rand_core::OsRng;
 use pbkdf2::password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString};
-
-use crate::dominio::autenticacao::{
-    ComparadorDeHashDeSenha,
-    ComparadorEHasherDeSenha,
-    HasherDeSenha,
-};
-use crate::utils::erros::{ErroDeDominio, ResultadoDominio};
 
 pub struct ComparadorEHasherDeSenhaCrypto;
 
@@ -52,9 +47,8 @@ impl ComparadorEHasherDeSenha for ComparadorEHasherDeSenhaCrypto {}
 
 #[cfg(test)]
 mod test {
-    use pretty_assertions::assert_eq;
+    use dominio::autenticacao::{ComparadorDeHashDeSenha, HasherDeSenha};
 
-    use crate::dominio::autenticacao::{ComparadorDeHashDeSenha, HasherDeSenha};
     use crate::infra::crypto::comparador_e_hasher_de_senhas::ComparadorEHasherDeSenhaCrypto;
 
     #[test]

@@ -1,6 +1,6 @@
+use dominio::vagas::servicos::buscar_vagas_de_projetos::ServicoBuscarVagasDeProjetos;
 use sqlx::PgPool;
 
-use crate::dominio::vagas::servicos::buscar_vagas_de_projetos::ServicoBuscarVagasDeProjetos;
 use crate::infra::repositorios::sqlx::coordenadores_de_projetos::RepositorioDeCoordenadoresDeProjetosSQLX;
 
 pub fn obtenha_servico_buscar_projetos(

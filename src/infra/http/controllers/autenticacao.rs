@@ -1,28 +1,28 @@
 use actix_session::SessionExt;
 use actix_web::web::{Data, Json, Redirect};
 use actix_web::{HttpRequest, Responder, web};
+use comum::erros::{ErroDeDominio, ResultadoDominio};
 use config::app::AppConfig;
+use dominio::autenticacao::servicos::autenticar_usuario::{
+    AutenticarUsuarioParams,
+    AutenticarUsuarioResult,
+    TipoDeLogin,
+};
+use dominio::identidade::entidades::usuario::UsuarioModelo;
 use inertia_rust::validators::InertiaValidateOrRedirect;
 use inertia_rust::{Inertia, InertiaFacade, hashmap};
 use inertia_sessions::helpers::flash_silently;
 use sqlx::PgPool;
 
-use crate::dominio::autenticacao::servicos::autenticar_usuario::{
-    AutenticarUsuarioParams,
-    AutenticarUsuarioResult,
-    TipoDeLogin,
-};
-use crate::dominio::identidade::entidades::usuario::UsuarioModelo;
 use crate::infra::dtos::autenticacao::LoginDto;
 use crate::infra::fabricas::servicos::autenticacao::obtenha_servico_autenticar_usuario;
 use crate::infra::http::RouterRegistrable;
-use crate::infra::http::controllers::{RedirectDoApp, RespostaDoApp};
+use crate::infra::http::controllers::RedirectDoApp;
 use crate::infra::http::middlewares::somente_com_cargo::{
     AutorizacaoDaRota,
     MiddlewareEstaAutorizado,
 };
 use crate::unwrap_or_redirect;
-use crate::utils::erros::{ErroDeDominio, ResultadoDominio};
 
 pub struct ControllerAutenticacao;
 

@@ -6,8 +6,10 @@ use dotenvy::dotenv;
 use sqlx::PgPool;
 use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
 
+use crate::projetos::inserir_projetos;
 use crate::usuarios::inserir_usuarios;
 
+mod projetos;
 mod senhas;
 mod usuarios;
 
@@ -34,7 +36,8 @@ async fn main() {
         .expect("Não foi possível rodar as migrations do banco de dados durante o seed.");
 
     log::info!("Iniciando o seeding no banco de dados");
-    inserir_usuarios(&db_pool).await;
+    let usuarios = inserir_usuarios(&db_pool).await;
+    inserir_projetos(&db_pool, &usuarios).await;
 }
 
 async fn conectar_no_db(db_url: &str) -> PgPool {

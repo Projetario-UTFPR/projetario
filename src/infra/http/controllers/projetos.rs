@@ -1,18 +1,15 @@
 use actix_web::web::{Data, Json};
 use actix_web::{Either, HttpRequest, Responder, web};
+use dominio::comum::paginacao::Paginacao;
+use dominio::vagas::servicos::buscar_vagas_de_projetos::BuscarVagasDeProjetosParams;
 use inertia_rust::validators::InertiaValidateOrRedirect;
 use inertia_rust::{Inertia, InertiaFacade, hashmap};
 use sqlx::PgPool;
 
-use crate::dominio::projetos::repositorios::coordenadores_de_projetos::ProjetosPaginados;
-use crate::dominio::vagas::servicos::buscar_vagas_de_projetos::{
-    BuscarVagasDeProjetosParams,
-    ServicoBuscarVagasDeProjetos,
-};
 use crate::infra::dtos::projetos::buscar_projeto::BuscarProjetoDto;
 use crate::infra::fabricas::servicos::buscar_projetos::obtenha_servico_buscar_projetos;
 use crate::infra::http::RouterRegistrable;
-use crate::infra::http::controllers::{RedirectDoApp, RespostaDoApp};
+use crate::infra::http::controllers::RespostaDoApp;
 
 pub struct ControllerProjetos;
 
@@ -48,7 +45,7 @@ impl ControllerProjetos {
                 filtro: body.filtro,
                 tipo: body.tipo,
                 ordenador: body.ordenador,
-                pagina: body.pagina_atual,
+                paginacao: Paginacao::nova_por_opcionais(body.pagina, body.qtd_por_pagina),
             })
             .await
         {

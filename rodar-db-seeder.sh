@@ -1,1 +1,1 @@
-cargo run -p db_seeder
+cargo run -p db_seeder --release

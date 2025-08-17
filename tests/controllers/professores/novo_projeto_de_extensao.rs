@@ -2,12 +2,12 @@ use actix_web::http::StatusCode;
 use actix_web::test::{TestRequest, init_service};
 use actix_web::web::Data;
 use db_seeder::usuarios::inserir_usuarios;
+use dominio::identidade::entidades::professor::Professor;
+use dominio::projetos::entidades::projeto::Projeto;
 use inertia_rust::Inertia;
 use inertia_rust::test::{InertiaTestRequest, IntoAssertableInertia};
 use pretty_assertions::assert_eq;
-use projetario::dominio::identidade::entidades::professor::Professor;
-use projetario::dominio::projetos::entidades::projeto::Projeto;
-use projetario::libs::actix::server::get_server;
+use projetario::server::get_server;
 use rstest::rstest;
 use serde_json::json;
 use sqlx::query_as;
@@ -19,7 +19,7 @@ use crate::common::utils::headers::extraia_cookie_da_sessao;
 
 #[rstest]
 #[case("reginaldo@utfpr.com", "12345", "Reginaldo Ré")] // um Professor
-#[case("cremoso@utfpr.com", "12345", "Paulo Sabo")] // um Administrador
+#[case("sabo@utfpr.com", "12345", "Paulo Sabo")] // um Administrador
 #[awt]
 #[tokio::test]
 pub async fn um_professor_deveria_poder_criar_um_projeto_de_extensao(
@@ -68,6 +68,7 @@ pub async fn um_professor_deveria_poder_criar_um_projeto_de_extensao(
         .await
         .into_assertable_inertia();
 
+    dbg!(&pagina.get_props());
     assert!(pagina.get_props()["errors"].as_object().unwrap().is_empty());
     // endregion: --- Garante que não houve erros
 

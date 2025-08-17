@@ -1,28 +1,19 @@
 use actix_web::web::{Data, Json};
 use actix_web::{HttpRequest, web};
+use dominio::comum::paginacao::Paginacao;
+use dominio::vagas::servicos::buscar_vagas_de_projetos::BuscarVagasDeProjetosParams;
+use dominio::vagas::servicos::criar_vaga::CriarVagaParams;
 use inertia_rust::validators::InertiaValidateOrRedirect;
 use inertia_rust::{Inertia, InertiaFacade, hashmap};
 use sqlx::PgPool;
-use uuid::Uuid;
 
-use crate::dominio::identidade::entidades::professor::Professor;
-use crate::dominio::identidade::entidades::usuario::UsuarioModelo;
-use crate::dominio::identidade::enums::cargo::Cargo;
-use crate::dominio::identidade::repositorios::usuarios::RepositorioDeUsuarios;
-use crate::dominio::projetos::entidades::projeto::Projeto;
-use crate::dominio::projetos::repositorios::coordenadores_de_projetos::RepositorioDeCoordenadoresDeProjetos;
-use crate::dominio::projetos::repositorios::projetos::RepositorioDeProjetos;
-use crate::dominio::vagas::servicos::criar_vaga::CriarVagaParams;
 use crate::infra::dtos::vagas::criar_vaga::CriarVagaDto;
+use crate::infra::fabricas::servicos::buscar_projetos::obtenha_servico_buscar_projetos;
 use crate::infra::fabricas::servicos::criar_vaga::obtenha_servico_criar_vaga;
 use crate::infra::http::RouterRegistrable;
 use crate::infra::http::controllers::{RedirectDoApp, RespostaDoApp};
 use crate::infra::http::middlewares::usuario_da_requisicao::UsuarioDaRequisicao;
-use crate::infra::repositorios::sqlx::coordenadores_de_projetos::RepositorioDeCoordenadoresDeProjetosSQLX;
-use crate::infra::repositorios::sqlx::projetos::RepositorioDeProjetosSQLX;
-use crate::infra::repositorios::sqlx::usuarios::RepositorioDeUsuariosSQLX;
 use crate::unwrap_or_redirect;
-use crate::utils::erros::{ErroDeDominio, ResultadoDominio, TipoErroDeDominio};
 
 pub struct ControllerVagas;
 impl RouterRegistrable for ControllerVagas {
@@ -36,7 +27,18 @@ impl RouterRegistrable for ControllerVagas {
 }
 
 impl ControllerVagas {
-    pub async fn nova(req: HttpRequest) -> RespostaDoApp {
+    pub async fn nova(req: HttpRequest, db_conn: Data<PgPool>) -> RespostaDoApp {
+        // TODO: filtrar projetos por professor
+        // TODO: retornar os projetos como uma propriedade deferred pra tratar os erros
+        let _projetos_deste_professor = obtenha_servico_buscar_projetos(&db_conn)
+            .executar(BuscarVagasDeProjetosParams {
+                filtro: None,
+                ordenador: None,
+                paginacao: Paginacao::default(),
+                tipo: None,
+            })
+            .await;
+
         Inertia::render(&req, "professores/vagas/nova".into())
             .await
             .map_err(Into::into)

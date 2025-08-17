@@ -1,0 +1,30 @@
+[package]
+name = "dominio"
+version.workspace = true
+edition.workspace = true
+
+[features]
+test-utils = ["dep:fake", "dep:rand"]
+
+[dependencies]
+fake = { version = "4.3.0", features = [
+    "derive",
+    "chrono",
+    "url",
+], optional = true }
+rand = { workspace = true, optional = true }
+uuid.workspace = true
+sqlx.workspace = true
+comum.workspace = true
+anyhow.workspace = true
+log.workspace = true
+async-trait.workspace = true
+futures-util.workspace = true
+chrono = { workspace = true }
+serde.workspace = true
+
+[dev-dependencies]
+rstest.workspace = true
+tokio.workspace = true
+pretty_assertions.workspace = true
+url.workspace = true

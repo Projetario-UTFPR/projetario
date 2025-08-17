@@ -11,3 +11,5 @@ env_logger.workspace = true
 config.workspace = true
 tokio.workspace = true
 pbkdf2.workspace = true
+dominio = { workspace = true, features = ["test-utils"] }
+comum.workspace = true

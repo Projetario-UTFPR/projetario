@@ -1,5 +1,5 @@
-use projetario::dominio::autenticacao::HasherDeSenha;
-use projetario::dominio::identidade::entidades::usuario::UsuarioModelo;
+use dominio::autenticacao::HasherDeSenha;
+use dominio::identidade::entidades::usuario::UsuarioModelo;
 use projetario::infra::crypto::comparador_e_hasher_de_senhas::ComparadorEHasherDeSenhaCrypto;
 use sqlx::PgPool;
 

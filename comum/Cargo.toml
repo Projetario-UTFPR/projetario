@@ -1,0 +1,16 @@
+[package]
+name = "comum"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+chrono.workspace = true
+sqlx.workspace = true
+config.workspace = true
+anyhow.workspace = true
+serde.workspace = true
+thiserror.workspace = true
+log.workspace = true
+inertia-rust.workspace = true
+actix-web.workspace = true
+serde_json.workspace = true

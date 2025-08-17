@@ -1,15 +1,15 @@
 use actix_web::http::StatusCode;
 use actix_web::test::{TestRequest, init_service};
 use actix_web::web::Data;
+use dominio::identidade::traits::IntoUsuarioModelo;
+use dominio::projetos::enums::tipo_de_coordenacao::TipoDeCoordenacao;
+use dominio::test::fabricas_de_entidades::aluno::AlunoParcial;
+use dominio::test::fabricas_de_entidades::professor::ProfessorParcial;
+use dominio::test::fabricas_de_entidades::projeto::ProjetoParcial;
 use inertia_rust::Inertia;
 use inertia_rust::test::{InertiaTestRequest, IntoAssertableInertia};
 use pretty_assertions::assert_eq;
-use projetario::dominio::identidade::traits::IntoUsuarioModelo;
-use projetario::dominio::projetos::enums::tipo_de_coordenacao::TipoDeCoordenacao;
-use projetario::libs::actix::server::get_server;
-use projetario::utils::test::fabricas_de_entidades::aluno::AlunoParcial;
-use projetario::utils::test::fabricas_de_entidades::professor::ProfessorParcial;
-use projetario::utils::test::fabricas_de_entidades::projeto::ProjetoParcial;
+use projetario::server::get_server;
 use rstest::rstest;
 use serde_json::{Value, json};
 

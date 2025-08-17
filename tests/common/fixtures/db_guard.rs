@@ -1,6 +1,6 @@
 use actix_web::web::Data;
+use comum::sqlx::{connect_to_db, migrate_db};
 use config::app::AppConfig;
-use projetario::utils::sqlx::{connect_to_db, migrate_db};
 use rstest::fixture;
 use sqlx::PgPool;
 
