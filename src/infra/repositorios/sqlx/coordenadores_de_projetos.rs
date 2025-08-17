@@ -1,19 +1,12 @@
 use async_trait::async_trait;
 use comum::erros::ResultadoDominio;
 use comum::erros::erro_de_dominio::ErroDeDominio;
-use dominio::comum::filtragem::DirecaoOrdenacao;
-use dominio::comum::paginacao::Paginacao;
 use dominio::identidade::entidades::professor::Professor;
 use dominio::projetos::agregados::projeto_com_coordenadores::ProjetoComCoordenadores;
 use dominio::projetos::entidades::projeto::Projeto;
 use dominio::projetos::enums::tipo_de_coordenacao::TipoDeCoordenacao;
-use dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
-use dominio::projetos::filtragem::{FiltroDeProjeto, OrdenacaoDeProjeto};
-use dominio::projetos::repositorios::coordenadores_de_projetos::{
-    ProjetosPaginados,
-    RepositorioDeCoordenadoresDeProjetos,
-};
-use sqlx::{PgPool, Postgres, QueryBuilder};
+use dominio::projetos::repositorios::coordenadores_de_projetos::RepositorioDeCoordenadoresDeProjetos;
+use sqlx::PgPool;
 use uuid::Uuid;
 pub struct RepositorioDeCoordenadoresDeProjetosSQLX<'this> {
     db_conn: &'this PgPool,
@@ -107,94 +100,6 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
         })?;
 
         Ok(())
-    }
-
-    async fn buscar_projetos(
-        &self,
-        filtro: Option<FiltroDeProjeto>,
-        tipo: Option<TipoDeProjeto>,
-        ordenador: OrdenacaoDeProjeto,
-        paginacao: Paginacao,
-    ) -> Result<ProjetosPaginados, ErroDeDominio> {
-        let mut busca = QueryBuilder::<Postgres>::new(
-            r#"SELECT
-                id,
-                titulo,
-                descricao,
-                tipo,
-                registrado_em,
-                iniciado_em,
-                atualizado_em,
-                cancelado_em,
-                concluido_em
-            FROM projeto"#,
-        );
-
-        let mut tem_condicoes = false;
-
-        if let Some(filtro) = filtro {
-            match filtro {
-                FiltroDeProjeto::Titulo(titulo) => {
-                    busca.push(" WHERE titulo ILIKE '%' || ");
-                    busca.push_bind(titulo);
-                    busca.push(" || '%'");
-                    tem_condicoes = true;
-                }
-                FiltroDeProjeto::Coordenacao(_id_do_coordenador) => {
-                    // TODO: implementar essa parte
-                    todo!()
-                }
-            }
-        }
-
-        if let Some(tipo) = tipo {
-            if tem_condicoes {
-                busca.push(" AND tipo = ");
-            } else {
-                busca.push(" WHERE tipo = ");
-                // tem_condicoes = true;
-            }
-
-            busca.push_bind(tipo);
-        }
-
-        match ordenador {
-            OrdenacaoDeProjeto::Data(ordem) => {
-                busca.push(" ORDER BY iniciado_em ");
-                match ordem {
-                    DirecaoOrdenacao::Asc => busca.push("ASC"),
-                    DirecaoOrdenacao::Desc => busca.push("DESC"),
-                };
-            }
-            OrdenacaoDeProjeto::Titulo(ordem) => {
-                busca.push(" ORDER BY titulo ");
-                match ordem {
-                    DirecaoOrdenacao::Asc => busca.push("ASC"),
-                    DirecaoOrdenacao::Desc => busca.push("DESC"),
-                };
-            }
-        };
-
-        let offset = (paginacao.pagina - 1) * paginacao.qtd_por_pagina as u32;
-        busca
-            .push(" LIMIT ")
-            .push_bind(paginacao.qtd_por_pagina as i32)
-            .push(" OFFSET ")
-            .push_bind(offset as i32);
-
-        let projetos = busca
-            .build_query_as::<Projeto>()
-            .fetch_all(self.db_conn)
-            .await
-            .map_err(|err| {
-                log::error!("Falha ao buscar projetos: {}", err);
-                ErroDeDominio::interno()
-            })?;
-
-        Ok(ProjetosPaginados {
-            projetos,
-            qtd_por_pagina: paginacao.qtd_por_pagina,
-        })
     }
 
     async fn buscar_projeto_e_coordenadores_por_id(
