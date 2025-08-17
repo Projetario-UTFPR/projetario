@@ -556,6 +556,22 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5b63caa9aa9397e2d9480a9b13673856c78d8ac123288526c37d7839f2a86990"
 
 [[package]]
+name = "comum"
+version = "0.1.0"
+dependencies = [
+ "actix-web",
+ "anyhow",
+ "chrono",
+ "config",
+ "inertia-rust",
+ "log",
+ "serde",
+ "serde_json",
+ "sqlx",
+ "thiserror",
+]
+
+[[package]]
 name = "concurrent-queue"
 version = "2.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -737,12 +753,13 @@ dependencies = [
 name = "db_seeder"
 version = "0.1.0"
 dependencies = [
+ "comum",
  "config",
+ "dominio",
  "dotenvy",
  "env_logger",
  "log",
  "pbkdf2",
- "projetario",
  "sqlx",
  "tokio",
 ]
@@ -886,6 +903,27 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "dominio"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "chrono",
+ "comum",
+ "fake",
+ "futures-util",
+ "log",
+ "pretty_assertions",
+ "rand 0.9.1",
+ "rstest",
+ "serde",
+ "sqlx",
+ "tokio",
+ "url",
+ "uuid",
 ]
 
 [[package]]
@@ -2290,11 +2328,12 @@ dependencies = [
  "anyhow",
  "async-trait",
  "chrono",
+ "comum",
  "config",
  "db_seeder",
+ "dominio",
  "dotenvy",
  "env_logger",
- "fake",
  "futures-util",
  "inertia-rust",
  "inertia-sessions",
@@ -2302,14 +2341,12 @@ dependencies = [
  "openssl",
  "pbkdf2",
  "pretty_assertions",
- "rand 0.9.1",
  "rstest",
  "serde",
  "serde_json",
  "sqlx",
  "thiserror",
  "tokio",
- "url",
  "uuid",
  "validator",
  "vite-rust",
