@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use thiserror::Error;
 
-use crate::utils::erros::tipo_erro_de_dominio::TipoErroDeDominio;
+use crate::erros::tipo_erro_de_dominio::TipoErroDeDominio;
 
 #[derive(Debug, Error)]
 pub struct ErroDeDominio {

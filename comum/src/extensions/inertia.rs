@@ -1,6 +1,6 @@
 use inertia_rust::InertiaError;
 
-use crate::utils::erros::erro_de_dominio::ErroDeDominio;
+use crate::erros::erro_de_dominio::ErroDeDominio;
 
 impl From<InertiaError> for ErroDeDominio {
     fn from(val: InertiaError) -> Self {

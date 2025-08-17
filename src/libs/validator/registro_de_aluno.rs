@@ -1,9 +1,9 @@
 use std::borrow::Cow;
 
+use dominio::identidade::politicas::registro_de_aluno::valide_registro_de_aluno;
 use inertia_rust::hashmap;
 use validator::ValidationError;
 
-use crate::dominio::identidade::politicas::registro_de_aluno::valide_registro_de_aluno;
 use crate::libs::validator::CODIGO_DE_ERRO_VALIDACAO_DE_DOMINIO;
 
 pub fn validator_valide_registro_de_aluno(ra: &str) -> Result<(), ValidationError> {

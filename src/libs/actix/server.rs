@@ -7,6 +7,7 @@ use actix_web::dev::{ServiceFactory, ServiceRequest, ServiceResponse};
 use actix_web::middleware::NormalizePath;
 use actix_web::{App, HttpMessage};
 use config::app::{AppConfig, RustEnv};
+use dominio::identidade::traits::IntoUsuarioModelo;
 use futures_util::FutureExt;
 use inertia_rust::actix::InertiaMiddleware;
 use inertia_rust::{InertiaProp, InertiaService, IntoInertiaPropResult, hashmap};
@@ -15,7 +16,6 @@ use inertia_sessions::middlewares::garbage_collector::GarbageCollectorMiddleware
 use inertia_sessions::middlewares::reflash_temporary_session::ReflashTemporarySessionMiddleware;
 use serde_json::Map;
 
-use crate::dominio::identidade::traits::IntoUsuarioModelo;
 use crate::infra::http::RouterRegistrable;
 use crate::infra::http::middlewares::usuario_da_requisicao::{
     MiddlewareUsuarioDaRequisicao,

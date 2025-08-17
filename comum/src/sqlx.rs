@@ -3,23 +3,22 @@ use std::time::Duration;
 
 use chrono::{NaiveDateTime, Utc};
 use config::app::{AppConfig, RustEnv};
-use sqlx::any::AnyConnectOptions;
-use sqlx::migrate::Migrator;
+use log::error;
 use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
-use sqlx::{ConnectOptions, Connection, Database, PgConnection, PgPool};
+use sqlx::{ConnectOptions, PgPool};
 
 mod nullableu8;
 
 pub use nullableu8::*;
-
-use crate::libs::UtcDateTime;
 
 pub type DbDateTime = NaiveDateTime;
 
 pub fn db_date_time_now() -> DbDateTime { Utc::now().naive_utc() }
 
 pub async fn migrate_db(pool: &PgPool) -> anyhow::Result<()> {
-    sqlx::migrate!().run(pool).await;
+    if let Err(err) = sqlx::migrate!("../migrations").run(pool).await {
+        error!("{err}");
+    }
     Ok(())
 }
 
@@ -37,7 +36,7 @@ pub async fn connect_to_db(
         db_opts = db_opts.disable_statement_logging();
     }
 
-    let mut db_pool_opts = PgPoolOptions::new()
+    let db_pool_opts = PgPoolOptions::new()
         .max_connections(AppConfig::get().main_database_connections)
         .acquire_timeout(Duration::from_secs(8))
         .idle_timeout(Duration::from_secs(8))
