@@ -4,13 +4,13 @@ use std::rc::Rc;
 use actix_web::body::EitherBody;
 use actix_web::dev::{Service, ServiceRequest, ServiceResponse, Transform, forward_ready};
 use actix_web::{Error, HttpMessage, ResponseError};
+use comum::erros::ErroDeDominio;
+use dominio::autenticacao::politicas::autorizacao::PoliticasDeAutorizacao;
+use dominio::identidade::entidades::usuario;
+use dominio::identidade::enums::cargo::Cargo;
 use futures_util::future::{Ready, ready};
 
-use crate::dominio::autenticacao::politicas::autorizacao::PoliticasDeAutorizacao;
-use crate::dominio::identidade::entidades::usuario;
-use crate::dominio::identidade::enums::cargo::Cargo;
 use crate::infra::http::middlewares::usuario_da_requisicao::{self, UsuarioDaRequisicao};
-use crate::utils::erros::ErroDeDominio;
 
 #[derive(Clone, PartialEq)]
 pub enum AutorizacaoDaRota {

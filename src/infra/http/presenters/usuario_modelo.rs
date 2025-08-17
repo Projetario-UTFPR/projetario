@@ -1,10 +1,9 @@
 use chrono::NaiveDateTime;
+use comum::sqlx::DbDateTime;
+use dominio::identidade::entidades::usuario::UsuarioModelo;
+use dominio::identidade::enums::cargo::Cargo;
 use serde::Serialize;
 use uuid::Uuid;
-
-use crate::dominio::identidade::entidades::usuario::UsuarioModelo;
-use crate::dominio::identidade::enums::cargo::Cargo;
-use crate::utils::sqlx::DbDateTime;
 
 #[derive(Serialize)]
 pub struct UsuarioModeloPresenter {

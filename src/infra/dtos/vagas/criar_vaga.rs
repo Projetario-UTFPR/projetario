@@ -1,10 +1,10 @@
 use chrono::NaiveDateTime;
+use comum::sqlx::DbDateTime;
 use serde::Deserialize;
 use uuid::Uuid;
 use validator::Validate;
 
 use crate::libs::UtcDateTime;
-use crate::utils::sqlx::DbDateTime;
 
 #[derive(Deserialize, Validate, Debug)]
 pub struct CriarVagaDto {

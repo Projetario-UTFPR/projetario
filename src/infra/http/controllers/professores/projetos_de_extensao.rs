@@ -1,15 +1,15 @@
 use actix_web::web::{Data, Json};
 use actix_web::{HttpRequest, web};
+use dominio::identidade::entidades::professor::Professor;
+use dominio::identidade::traits::IntoUsuarioModelo;
+use dominio::projetos::servicos::criar_projeto_de_extensao::{
+    CriarProjetosDeExtensaoParams,
+    ServicoCriarProjetoDeExtensao,
+};
 use inertia_rust::validators::InertiaValidateOrRedirect;
 use inertia_rust::{Inertia, InertiaFacade, hashmap};
 use sqlx::PgPool;
 
-use crate::dominio::identidade::entidades::professor::Professor;
-use crate::dominio::identidade::traits::IntoUsuarioModelo;
-use crate::dominio::projetos::servicos::criar_projeto_de_extensao::{
-    CriarProjetosDeExtensaoParams,
-    ServicoCriarProjetoDeExtensao,
-};
 use crate::infra::dtos::projetos::criar_projeto::CriarProjetoDto;
 use crate::infra::fabricas::servicos::criar_projeto_de_extensao::obtenha_servico_criar_projeto_de_extensao;
 use crate::infra::http::RouterRegistrable;

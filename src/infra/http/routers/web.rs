@@ -1,6 +1,6 @@
 use actix_web::web;
+use dominio::identidade::enums::cargo::Cargo;
 
-use crate::dominio::identidade::enums::cargo::Cargo;
 use crate::infra::http::RouterRegistrable;
 use crate::infra::http::controllers::autenticacao::ControllerAutenticacao;
 use crate::infra::http::controllers::professores::projetos_de_extensao::ControllerProjetosDeExtensao;

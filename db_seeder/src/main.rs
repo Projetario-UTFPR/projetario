@@ -37,7 +37,7 @@ async fn main() {
 
     log::info!("Iniciando o seeding no banco de dados");
     let usuarios = inserir_usuarios(&db_pool).await;
-    let a = inserir_projetos(&db_pool, &usuarios).await;
+    inserir_projetos(&db_pool, &usuarios).await;
 }
 
 async fn conectar_no_db(db_url: &str) -> PgPool {

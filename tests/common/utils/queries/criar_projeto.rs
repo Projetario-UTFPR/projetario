@@ -1,7 +1,7 @@
-use projetario::dominio::identidade::entidades::professor::Professor;
-use projetario::dominio::projetos::entidades::projeto::Projeto;
-use projetario::dominio::projetos::enums::tipo_de_coordenacao::TipoDeCoordenacao;
-use projetario::utils::sqlx::db_date_time_now;
+use comum::sqlx::db_date_time_now;
+use dominio::identidade::entidades::professor::Professor;
+use dominio::projetos::entidades::projeto::Projeto;
+use dominio::projetos::enums::tipo_de_coordenacao::TipoDeCoordenacao;
 use sqlx::PgPool;
 
 pub async fn salvar_projeto(db_conn: &PgPool, projeto: &Projeto) {

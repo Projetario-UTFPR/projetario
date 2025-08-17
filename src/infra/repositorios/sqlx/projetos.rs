@@ -1,10 +1,9 @@
 use async_trait::async_trait;
+use comum::erros::{ErroDeDominio, ResultadoDominio};
+use dominio::projetos::entidades::projeto::Projeto;
+use dominio::projetos::repositorios::projetos::RepositorioDeProjetos;
 use sqlx::{PgPool, query_as};
 use uuid::Uuid;
-
-use crate::dominio::projetos::entidades::projeto::Projeto;
-use crate::dominio::projetos::repositorios::projetos::RepositorioDeProjetos;
-use crate::utils::erros::{ErroDeDominio, ResultadoDominio};
 
 pub struct RepositorioDeProjetosSQLX<'this> {
     db_conn: &'this PgPool,

@@ -1,12 +1,13 @@
-use db_seeder::usuarios::UsuariosCriados;
+use comum::sqlx::db_date_time_now;
+use dominio::identidade::entidades::professor::Professor;
+use dominio::projetos::agregados::projeto_com_coordenadores::ProjetoComCoordenadores;
+use dominio::projetos::entidades::projeto::Projeto;
+use dominio::projetos::enums::tipo_de_coordenacao::TipoDeCoordenacao;
+use dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
 use log::info;
-use projetario::dominio::identidade::entidades::professor::Professor;
-use projetario::dominio::projetos::agregados::projeto_com_coordenadores::ProjetoComCoordenadores;
-use projetario::dominio::projetos::entidades::projeto::Projeto;
-use projetario::dominio::projetos::enums::tipo_de_coordenacao::TipoDeCoordenacao;
-use projetario::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
-use projetario::utils::sqlx::db_date_time_now;
 use sqlx::{PgPool, query};
+
+use crate::usuarios::UsuariosCriados;
 
 pub async fn inserir_projetos(db_pool: &PgPool, usuarios: &UsuariosCriados) {
     let projetos = vec![

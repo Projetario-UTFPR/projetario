@@ -1,8 +1,7 @@
+use dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
+use dominio::projetos::filtragem::{FiltroDeProjeto, OrdenacaoDeProjeto};
 use serde::Deserialize;
 use validator::Validate;
-
-use crate::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
-use crate::dominio::projetos::filtragem::{FiltroDeProjeto, OrdenacaoDeProjeto};
 
 #[derive(Deserialize, Validate)]
 pub struct BuscarProjetoDto {

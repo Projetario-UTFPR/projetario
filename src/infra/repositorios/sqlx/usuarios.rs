@@ -1,12 +1,11 @@
 use async_trait::async_trait;
+use comum::erros::{ErroDeDominio, ResultadoDominio};
+use dominio::identidade::entidades::aluno::Aluno;
+use dominio::identidade::entidades::professor::Professor;
+use dominio::identidade::entidades::usuario::UsuarioModelo;
+use dominio::identidade::repositorios::usuarios::RepositorioDeUsuarios;
 use sqlx::{Execute, PgPool, query_as};
 use uuid::Uuid;
-
-use crate::dominio::identidade::entidades::aluno::Aluno;
-use crate::dominio::identidade::entidades::professor::Professor;
-use crate::dominio::identidade::entidades::usuario::UsuarioModelo;
-use crate::dominio::identidade::repositorios::usuarios::RepositorioDeUsuarios;
-use crate::utils::erros::{ErroDeDominio, ResultadoDominio};
 
 pub struct RepositorioDeUsuariosSQLX<'this> {
     db_conn: &'this PgPool,

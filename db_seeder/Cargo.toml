@@ -4,7 +4,6 @@ version.workspace = true
 edition.workspace = true
 
 [dependencies]
-projetario.workspace = true
 sqlx.workspace = true
 log.workspace = true
 dotenvy.workspace = true
@@ -12,3 +11,5 @@ env_logger.workspace = true
 config.workspace = true
 tokio.workspace = true
 pbkdf2.workspace = true
+dominio.workspace = true
+comum.workspace = true

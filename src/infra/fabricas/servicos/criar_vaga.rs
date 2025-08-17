@@ -1,7 +1,7 @@
+use dominio::vagas::repositorios::vaga::RepositorioDeVagas;
+use dominio::vagas::servicos::criar_vaga::ServicoCriarVaga;
 use sqlx::PgPool;
 
-use crate::dominio::vagas::repositorios::vaga::RepositorioDeVagas;
-use crate::dominio::vagas::servicos::criar_vaga::ServicoCriarVaga;
 use crate::infra::repositorios::sqlx::coordenadores_de_projetos::RepositorioDeCoordenadoresDeProjetosSQLX;
 use crate::infra::repositorios::sqlx::vagas::RepositorioDeVagasSQLX;
 

@@ -1,21 +1,22 @@
 use actix_web::web::{Data, Json};
 use actix_web::{HttpRequest, web};
+use comum::erros::{ErroDeDominio, ResultadoDominio, TipoErroDeDominio};
+use dominio::comum::paginacao::Paginacao;
+use dominio::identidade::entidades::professor::Professor;
+use dominio::identidade::entidades::usuario::UsuarioModelo;
+use dominio::identidade::enums::cargo::Cargo;
+use dominio::identidade::repositorios::usuarios::RepositorioDeUsuarios;
+use dominio::projetos::entidades::projeto::Projeto;
+use dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
+use dominio::projetos::repositorios::coordenadores_de_projetos::RepositorioDeCoordenadoresDeProjetos;
+use dominio::projetos::repositorios::projetos::RepositorioDeProjetos;
+use dominio::vagas::servicos::buscar_vagas_de_projetos::BuscarVagasDeProjetosParams;
+use dominio::vagas::servicos::criar_vaga::CriarVagaParams;
 use inertia_rust::validators::InertiaValidateOrRedirect;
 use inertia_rust::{Inertia, InertiaFacade, hashmap};
 use sqlx::PgPool;
 use uuid::Uuid;
 
-use crate::comum::paginacao::Paginacao;
-use crate::dominio::identidade::entidades::professor::Professor;
-use crate::dominio::identidade::entidades::usuario::UsuarioModelo;
-use crate::dominio::identidade::enums::cargo::Cargo;
-use crate::dominio::identidade::repositorios::usuarios::RepositorioDeUsuarios;
-use crate::dominio::projetos::entidades::projeto::Projeto;
-use crate::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
-use crate::dominio::projetos::repositorios::coordenadores_de_projetos::RepositorioDeCoordenadoresDeProjetos;
-use crate::dominio::projetos::repositorios::projetos::RepositorioDeProjetos;
-use crate::dominio::vagas::servicos::buscar_vagas_de_projetos::BuscarVagasDeProjetosParams;
-use crate::dominio::vagas::servicos::criar_vaga::CriarVagaParams;
 use crate::infra::dtos::vagas::criar_vaga::CriarVagaDto;
 use crate::infra::fabricas::servicos::buscar_projetos::obtenha_servico_buscar_projetos;
 use crate::infra::fabricas::servicos::criar_vaga::obtenha_servico_criar_vaga;
@@ -26,7 +27,6 @@ use crate::infra::repositorios::sqlx::coordenadores_de_projetos::RepositorioDeCo
 use crate::infra::repositorios::sqlx::projetos::RepositorioDeProjetosSQLX;
 use crate::infra::repositorios::sqlx::usuarios::RepositorioDeUsuariosSQLX;
 use crate::unwrap_or_redirect;
-use crate::utils::erros::{ErroDeDominio, ResultadoDominio, TipoErroDeDominio};
 
 pub struct ControllerVagas;
 impl RouterRegistrable for ControllerVagas {

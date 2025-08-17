@@ -1,15 +1,15 @@
 use actix_web::web::{Data, Json};
 use actix_web::{Either, HttpRequest, Responder, web};
+use dominio::comum::paginacao::Paginacao;
+use dominio::projetos::repositorios::coordenadores_de_projetos::ProjetosPaginados;
+use dominio::vagas::servicos::buscar_vagas_de_projetos::{
+    BuscarVagasDeProjetosParams,
+    ServicoBuscarVagasDeProjetos,
+};
 use inertia_rust::validators::InertiaValidateOrRedirect;
 use inertia_rust::{Inertia, InertiaFacade, hashmap};
 use sqlx::PgPool;
 
-use crate::comum::paginacao::Paginacao;
-use crate::dominio::projetos::repositorios::coordenadores_de_projetos::ProjetosPaginados;
-use crate::dominio::vagas::servicos::buscar_vagas_de_projetos::{
-    BuscarVagasDeProjetosParams,
-    ServicoBuscarVagasDeProjetos,
-};
 use crate::infra::dtos::projetos::buscar_projeto::BuscarProjetoDto;
 use crate::infra::fabricas::servicos::buscar_projetos::obtenha_servico_buscar_projetos;
 use crate::infra::http::RouterRegistrable;

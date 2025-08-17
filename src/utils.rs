@@ -1,9 +1,4 @@
-pub mod common;
-pub mod erros;
-pub mod sqlx;
-
-#[cfg(feature = "test-utils")]
-pub mod test;
+pub mod macros;
 
 pub fn resolve_uri<'b>(is_production_env: bool) -> (&'b str, u16) {
     // Se estiver sendo compilado em uma imagem Docker, é necessário que escute na porta padrão

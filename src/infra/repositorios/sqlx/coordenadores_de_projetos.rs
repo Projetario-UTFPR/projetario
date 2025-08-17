@@ -2,25 +2,24 @@ use std::cmp::Ordering;
 use std::ops::{Deref, DerefMut};
 
 use async_trait::async_trait;
+use comum::erros::ResultadoDominio;
+use comum::erros::erro_de_dominio::ErroDeDominio;
+use dominio::comum::filtragem::DirecaoOrdenacao;
+use dominio::comum::paginacao::Paginacao;
+use dominio::identidade::entidades::professor::Professor;
+use dominio::projetos::agregados::projeto_com_coordenadores::ProjetoComCoordenadores;
+use dominio::projetos::entidades::projeto::Projeto;
+use dominio::projetos::enums::tipo_de_coordenacao::TipoDeCoordenacao;
+use dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
+use dominio::projetos::filtragem::{FiltroDeProjeto, OrdenacaoDeProjeto};
+use dominio::projetos::repositorios::coordenadores_de_projetos::{
+    ProjetosPaginados,
+    RepositorioDeCoordenadoresDeProjetos,
+};
 use futures_util::FutureExt;
 use sqlx::postgres::{PgPoolCopyExt, PgRow};
 use sqlx::{AnyPool, Connection, Executor, PgPool, Pool, Postgres, QueryBuilder, Row};
 use uuid::Uuid;
-
-use crate::comum::filtragem::DirecaoOrdenacao;
-use crate::comum::paginacao::Paginacao;
-use crate::dominio::identidade::entidades::professor::Professor;
-use crate::dominio::projetos::agregados::projeto_com_coordenadores::ProjetoComCoordenadores;
-use crate::dominio::projetos::entidades::projeto::Projeto;
-use crate::dominio::projetos::enums::tipo_de_coordenacao::TipoDeCoordenacao;
-use crate::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
-use crate::dominio::projetos::filtragem::{FiltroDeProjeto, OrdenacaoDeProjeto};
-use crate::dominio::projetos::repositorios::coordenadores_de_projetos::{
-    ProjetosPaginados,
-    RepositorioDeCoordenadoresDeProjetos,
-};
-use crate::utils::erros::ResultadoDominio;
-use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 pub struct RepositorioDeCoordenadoresDeProjetosSQLX<'this> {
     db_conn: &'this PgPool,
 }

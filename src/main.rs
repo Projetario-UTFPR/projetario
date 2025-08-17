@@ -1,12 +1,12 @@
 use actix_web::HttpServer;
 use actix_web::web::Data;
+use comum::sqlx::{connect_to_db_from_app_config, migrate_db};
 use config::app::{AppConfig, RustEnv};
 use config::inertia::get_inertia;
 use config::vite::get_vite;
 use env_logger::Target;
 use projetario::libs::actix::server::get_server;
 use projetario::utils::resolve_uri;
-use projetario::utils::sqlx::{connect_to_db_from_app_config, migrate_db};
 
 #[actix_web::main]
 async fn main() -> anyhow::Result<()> {

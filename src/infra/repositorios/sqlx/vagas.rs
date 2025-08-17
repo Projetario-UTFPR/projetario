@@ -1,12 +1,11 @@
 use chrono::{NaiveDate, NaiveDateTime};
+use comum::erros::{ErroDeDominio, ResultadoDominio};
+use dominio::identidade::entidades::professor::Professor;
+use dominio::projetos::entidades::projeto::Projeto;
+use dominio::vagas::entidades::vaga::Vaga;
+use dominio::vagas::repositorios::vaga::RepositorioDeVagas;
 use sqlx::{PgPool, query, query_as};
 use uuid::Uuid;
-
-use crate::dominio::identidade::entidades::professor::Professor;
-use crate::dominio::projetos::entidades::projeto::Projeto;
-use crate::dominio::vagas::entidades::vaga::Vaga;
-use crate::dominio::vagas::repositorios::vaga::RepositorioDeVagas;
-use crate::utils::erros::{ErroDeDominio, ResultadoDominio};
 
 pub struct RepositorioDeVagasSQLX<'this> {
     db_conn: &'this PgPool,

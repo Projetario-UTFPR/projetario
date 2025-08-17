@@ -1,10 +1,11 @@
-use projetario::dominio::identidade::entidades::aluno::Aluno;
-use projetario::dominio::identidade::entidades::professor::Professor;
-use projetario::dominio::identidade::entidades::usuario::UsuarioModelo;
+use dominio::identidade::entidades::aluno::Aluno;
+use dominio::identidade::entidades::professor::Professor;
+use dominio::identidade::entidades::usuario::UsuarioModelo;
 use sqlx::{PgPool, query_as};
 
 use crate::senhas::aplicar_hash;
 
+#[allow(dead_code)]
 pub struct UsuariosCriados {
     pub admin: Professor,
     pub professor: Professor,
