@@ -1,3 +1,6 @@
+mod entidade_paginada;
+pub use entidade_paginada::*;
+
 pub const POR_PAGINA_PADRAO: u8 = 12;
 
 /// Esta estrutura serve para trafegar dados de paginação internamente
