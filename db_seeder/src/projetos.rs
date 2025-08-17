@@ -5,7 +5,7 @@ use dominio::projetos::entidades::projeto::Projeto;
 use dominio::projetos::enums::tipo_de_coordenacao::TipoDeCoordenacao;
 use dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
 use log::info;
-use sqlx::{PgPool, query};
+use sqlx::{PgPool, Postgres, Transaction, query};
 
 use crate::usuarios::UsuariosCriados;
 
@@ -21,14 +21,23 @@ pub async fn inserir_projetos(db_pool: &PgPool, usuarios: &UsuariosCriados) {
             None,
         ),
         ProjetoComCoordenadores::novo(
-        Projeto::novo(
-            "AgroTec: Inovação e Sustentabilidade na Agricultura Familiar".into(),
-            "<p>Este projeto de extensão visa capacitar pequenos agricultores e agricultoras da região de Campo Mourão sobre o uso de tecnologias sustentáveis para otimizar a produção. Por meio de oficinas, workshops e visitas técnicas, os participantes aprenderão sobre sistemas de irrigação inteligentes, manejo biológico de pragas e técnicas de conservação do solo. O projeto busca, com isso, aumentar a produtividade e a renda das famílias, enquanto promove práticas agrícolas que respeitam o meio ambiente.</p>".into(),
-            TipoDeProjeto::Extensao,
+            Projeto::novo(
+                "AgroTec: Inovação e Sustentabilidade na Agricultura Familiar".into(),
+                "<p>Este projeto de extensão visa capacitar pequenos agricultores e agricultoras da região de Campo Mourão sobre o uso de tecnologias sustentáveis para otimizar a produção. Por meio de oficinas, workshops e visitas técnicas, os participantes aprenderão sobre sistemas de irrigação inteligentes, manejo biológico de pragas e técnicas de conservação do solo. O projeto busca, com isso, aumentar a produtividade e a renda das famílias, enquanto promove práticas agrícolas que respeitam o meio ambiente.</p>".into(),
+                TipoDeProjeto::Extensao,
+            ),
+            usuarios.professor.clone(),
+            Some(usuarios.admin.clone()),
         ),
-        usuarios.professor.clone(),
-        Some(usuarios.admin.clone())
-        )
+        ProjetoComCoordenadores::novo(
+            Projeto::novo(
+                "Impacto da Poluição por Microplásticos em Ecossistemas Aquáticos Urbanos".into(),
+                "<p>A pesquisa tem como objetivo analisar a presença e a concentração de microplásticos em rios e lagos urbanos da região. Por meio da coleta e análise de amostras de água e sedimentos, o estudo pretende identificar as principais fontes de poluição e seus impactos na fauna local. Os resultados da pesquisa serão utilizados para desenvolver materiais educativos e campanhas de conscientização para a população e gestores públicos, buscando a redução da poluição plástica.</p>".into(),
+                TipoDeProjeto::IniciacaoCientifica,
+            ),
+            usuarios.admin.clone(),
+            Some(usuarios.professor.clone()),
+        ),
     ];
 
     for projeto in &projetos {
@@ -50,10 +59,16 @@ pub async fn inserir_projetos(db_pool: &PgPool, usuarios: &UsuariosCriados) {
 }
 
 async fn salvar_projeto(db_pool: &PgPool, projeto: &ProjetoComCoordenadores) {
-    let criar_projeto = query(
-        "INSERT INTO projeto \
-        (id, titulo, descricao, tipo, registrado_em, iniciado_em, atualizado_em, cancelado_em, concluido_em) \
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
+    let mut transaction = db_pool
+        .begin()
+        .await
+        .expect("Não foi possível iniciar uma transação no banco de dados");
+
+    let _ = query(concat!(
+        "INSERT INTO projeto ",
+        "(id, titulo, descricao, tipo, registrado_em, iniciado_em, atualizado_em, cancelado_em, concluido_em) ",
+        "SELECT $1, $2, $3, $4, $5, $6, $7, $8, $9 ",
+        "WHERE NOT EXISTS ( SELECT 1 FROM projeto WHERE titulo = $2 )"),
     )
     .bind(projeto.obtenha_projeto().obtenha_id())
     .bind(projeto.obtenha_projeto().obtenha_titulo())
@@ -64,44 +79,48 @@ async fn salvar_projeto(db_pool: &PgPool, projeto: &ProjetoComCoordenadores) {
     .bind(projeto.obtenha_projeto().obtenha_data_de_modificacao())
     .bind(projeto.obtenha_projeto().obtenha_data_de_cancelamento())
     .bind(projeto.obtenha_projeto().obtenha_data_de_conclusao())
-    .execute(db_pool);
+    .execute(&mut *transaction)
+    .await;
 
-    let relacionar_coord = relacionar_com_professor_se_houver(
-        db_pool,
+    let _ = relacionar_com_professor_se_houver(
+        &mut transaction,
         projeto.obtenha_projeto(),
         Some(projeto.obtenha_coordenador()),
         TipoDeCoordenacao::Coordenador,
-    );
+    )
+    .await;
 
-    let relacionar_com_vice = relacionar_com_professor_se_houver(
-        db_pool,
+    let _ = relacionar_com_professor_se_houver(
+        &mut transaction,
         projeto.obtenha_projeto(),
         projeto.obtenha_vice_coordenador(),
         TipoDeCoordenacao::ViceCoordenador,
-    );
+    )
+    .await;
 
-    if let Err(err) = tokio::try_join!(criar_projeto, relacionar_coord, relacionar_com_vice) {
-        panic!("{err}");
-    }
+    transaction
+        .commit()
+        .await
+        .expect("Não foi possível registrar o novo projeto no banco de dados");
 }
 
 async fn relacionar_com_professor_se_houver(
-    db_pool: &PgPool,
+    db_pool: &mut Transaction<'static, Postgres>,
     projeto: &Projeto,
     coordenador: Option<&Professor>,
     tipo: TipoDeCoordenacao,
 ) -> Result<(), sqlx::Error> {
     match coordenador {
-        Some(coordenador) => query(
-            "INSERT INTO coordenador_projeto \
-                (id_coordenador, id_projeto, tipo, iniciado_em) \
-                VALUES ($1, $2, $3, $4)",
-        )
+        Some(coordenador) => query(concat!(
+            "INSERT INTO coordenador_projeto ",
+            "(id_coordenador, id_projeto, tipo, iniciado_em) ",
+            "VALUES ($1, $2, $3, $4)",
+        ))
         .bind(coordenador.obtenha_usuario().obtenha_id())
         .bind(projeto.obtenha_id())
         .bind(tipo)
         .bind(db_date_time_now())
-        .execute(db_pool)
+        .execute(&mut **db_pool)
         .await
         .map(|_| ()),
         None => Ok(()),
