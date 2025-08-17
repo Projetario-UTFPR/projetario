@@ -45,6 +45,7 @@ pub async fn inserir_usuarios(db_pool: &PgPool) -> UsuariosCriados {
             senha_hash: Some("12345".into()),
             cargo: Some(Cargo::Aluno),
             registro_aluno: Some("a2250331".into()),
+            periodo: Some(2),
             ..Default::default()
         },
     );
