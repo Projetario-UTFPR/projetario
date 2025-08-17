@@ -742,6 +742,7 @@ dependencies = [
  "env_logger",
  "log",
  "pbkdf2",
+ "projetario",
  "sqlx",
  "tokio",
 ]

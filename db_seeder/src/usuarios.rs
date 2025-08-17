@@ -1,38 +1,55 @@
-use sqlx::{PgPool, query};
+use projetario::dominio::identidade::entidades::aluno::Aluno;
+use projetario::dominio::identidade::entidades::professor::Professor;
+use projetario::dominio::identidade::entidades::usuario::UsuarioModelo;
+use sqlx::{PgPool, query_as};
 
 use crate::senhas::aplicar_hash;
 
-pub async fn inserir_usuarios(db_pool: &PgPool) {
-    let criar_professor = query(
+pub struct UsuariosCriados {
+    pub admin: Professor,
+    pub professor: Professor,
+    pub aluno: Aluno,
+}
+
+pub async fn inserir_usuarios(db_pool: &PgPool) -> UsuariosCriados {
+    let criar_professor = query_as(
         "INSERT INTO usuario \
         (nome, email, senha_hash, cargo) \
         SELECT 'Reginaldo Ré', 'reginaldo@utfpr.com', $1, 'professor' \
-        WHERE NOT EXISTS ( SELECT 1 FROM usuario WHERE email = 'reginaldo@utfpr.com' )",
+        WHERE NOT EXISTS ( SELECT 1 FROM usuario WHERE email = 'reginaldo@utfpr.com' )
+        RETURNING *",
     )
     .bind(aplicar_hash("12345"))
-    .execute(db_pool);
+    .fetch_one(db_pool);
 
-    let criar_administrador = query(
+    let criar_administrador = query_as(
         "INSERT INTO usuario \
         (nome, email, senha_hash, cargo) \
         SELECT 'Paulo Sabo', 'cremoso@utfpr.com', $1, 'administrador' \
-        WHERE NOT EXISTS ( SELECT 1 FROM usuario WHERE email = 'cremoso@utfpr.com' )",
+        WHERE NOT EXISTS ( SELECT 1 FROM usuario WHERE email = 'cremoso@utfpr.com' )
+        RETURNING *",
     )
     .bind(aplicar_hash("12345"))
-    .execute(db_pool);
+    .fetch_one(db_pool);
 
-    let criar_aluno = query(
+    const RA_ALUNO: &str = "a2250331";
+
+    let criar_aluno = query_as(
         "INSERT INTO usuario \
         (nome, email, senha_hash, cargo, registro_aluno, periodo) \
-        SELECT 'Pedro Alberto', 'pedroalberto@alunos.utfpr.com', $1, 'aluno', 'a2250331', 2 \
-        WHERE NOT EXISTS ( SELECT 1 FROM usuario WHERE registro_aluno = 'a2250331' )",
+        SELECT 'Pedro Alberto', 'pedroalberto@alunos.utfpr.com', $1, 'aluno', $2, 2 \
+        WHERE NOT EXISTS ( SELECT 1 FROM usuario WHERE registro_aluno = $2 )
+        RETURNING *",
     )
     .bind(aplicar_hash("12345"))
-    .execute(db_pool);
+    .bind(RA_ALUNO)
+    .fetch_one(db_pool);
 
-    if let Err(err) = tokio::try_join!(criar_professor, criar_administrador, criar_aluno) {
-        panic!("{err}");
-    };
+    let (prof, admin, aluno): (UsuarioModelo, UsuarioModelo, UsuarioModelo) =
+        match tokio::try_join!(criar_professor, criar_administrador, criar_aluno) {
+            Err(err) => panic!("{err}"),
+            Ok(result) => result,
+        };
 
     log::info!(
         "Adicionado o professor Reginaldo Ré com as credenciais: reginaldo@utfpr.com, 12345"
@@ -43,8 +60,14 @@ pub async fn inserir_usuarios(db_pool: &PgPool) {
     );
 
     log::info!(
-        "Adicionado o aluno Pedro Alberto com as credenciais: pedroalberto@alunos.utfpr.com, 12345"
+        "Adicionado o aluno Pedro Alberto com as credenciais: pedroalberto@alunos.utfpr.com, 12345, {RA_ALUNO}"
     );
+
+    UsuariosCriados {
+        admin: Professor::try_from(&admin).unwrap(),
+        professor: Professor::try_from(&prof).unwrap(),
+        aluno: Aluno::try_from(&aluno).unwrap(),
+    }
 }
 
 // id                  UUID            NOT NULL    DEFAULT gen_random_uuid(),
