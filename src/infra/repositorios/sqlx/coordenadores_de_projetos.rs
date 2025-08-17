@@ -7,19 +7,17 @@ use sqlx::postgres::{PgPoolCopyExt, PgRow};
 use sqlx::{AnyPool, Connection, Executor, PgPool, Pool, Postgres, QueryBuilder, Row};
 use uuid::Uuid;
 
+use crate::comum::filtragem::DirecaoOrdenacao;
+use crate::comum::paginacao::Paginacao;
 use crate::dominio::identidade::entidades::professor::Professor;
 use crate::dominio::projetos::agregados::projeto_com_coordenadores::ProjetoComCoordenadores;
 use crate::dominio::projetos::entidades::projeto::Projeto;
 use crate::dominio::projetos::enums::tipo_de_coordenacao::TipoDeCoordenacao;
 use crate::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
+use crate::dominio::projetos::filtragem::{FiltroDeProjeto, OrdenacaoDeProjeto};
 use crate::dominio::projetos::repositorios::coordenadores_de_projetos::{
-    DirecaoOrdenacao,
-    Filtro,
-    Ordenador,
-    Paginacao,
     ProjetosPaginados,
     RepositorioDeCoordenadoresDeProjetos,
-    Tipo,
 };
 use crate::utils::erros::ResultadoDominio;
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
@@ -119,9 +117,9 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
 
     async fn buscar_projetos(
         &self,
-        filtro: Filtro,
-        tipo: Option<Tipo>,
-        ordenador: Ordenador,
+        filtro: Option<FiltroDeProjeto>,
+        tipo: Option<TipoDeProjeto>,
+        ordenador: OrdenacaoDeProjeto,
         paginacao: Paginacao,
     ) -> Result<ProjetosPaginados, ErroDeDominio> {
         let mut busca = QueryBuilder::<Postgres>::new(
@@ -140,34 +138,37 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
 
         let mut tem_condicoes = false;
 
-        match filtro {
-            Filtro::Titulo(titulo) => {
-                busca.push(" WHERE titulo ILIKE '%' || ");
-                busca.push_bind(titulo);
-                busca.push(" || '%'");
-                tem_condicoes = true;
+        if let Some(filtro) = filtro {
+            match filtro {
+                FiltroDeProjeto::Titulo(titulo) => {
+                    busca.push(" WHERE titulo ILIKE '%' || ");
+                    busca.push_bind(titulo);
+                    busca.push(" || '%'");
+                    tem_condicoes = true;
+                }
             }
         }
 
-        if let Some(Tipo::Tipo(tipo)) = tipo {
+        if let Some(tipo) = tipo {
             if tem_condicoes {
                 busca.push(" AND tipo = ");
             } else {
                 busca.push(" WHERE tipo = ");
                 tem_condicoes = true;
             }
+
             busca.push_bind(tipo);
         }
 
         match ordenador {
-            Ordenador::Data(ordem) => {
+            OrdenacaoDeProjeto::Data(ordem) => {
                 busca.push(" ORDER BY iniciado_em ");
                 match ordem {
                     DirecaoOrdenacao::Asc => busca.push("ASC"),
                     DirecaoOrdenacao::Desc => busca.push("DESC"),
                 };
             }
-            Ordenador::Titulo(ordem) => {
+            OrdenacaoDeProjeto::Titulo(ordem) => {
                 busca.push(" ORDER BY titulo ");
                 match ordem {
                     DirecaoOrdenacao::Asc => busca.push("ASC"),
@@ -176,12 +177,12 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
             }
         };
 
-        let limite = (paginacao.pagina - 1) * paginacao.qtd_por_pagina as u32;
+        let offset = (paginacao.pagina - 1) * paginacao.qtd_por_pagina as u32;
         busca
             .push(" LIMIT ")
             .push_bind(paginacao.qtd_por_pagina as i32)
             .push(" OFFSET ")
-            .push_bind(limite as i32);
+            .push_bind(offset as i32);
 
         let projetos = busca
             .build_query_as::<Projeto>()

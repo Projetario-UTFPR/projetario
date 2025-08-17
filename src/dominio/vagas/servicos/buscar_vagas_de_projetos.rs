@@ -1,20 +1,18 @@
+use crate::comum::paginacao::{POR_PAGINA_PADRAO, Paginacao};
 use crate::dominio::projetos::entidades::projeto::Projeto;
 use crate::dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
+use crate::dominio::projetos::filtragem::{FiltroDeProjeto, OrdenacaoDeProjeto};
 use crate::dominio::projetos::repositorios::coordenadores_de_projetos::{
-    Filtro,
-    Ordenador,
-    Paginacao,
     ProjetosPaginados,
     RepositorioDeCoordenadoresDeProjetos,
-    Tipo,
 };
 use crate::utils::erros::erro_de_dominio::ErroDeDominio;
 
 pub struct BuscarVagasDeProjetosParams {
-    pub filtro: Filtro,
-    pub tipo: Option<Tipo>,
-    pub ordenador: Ordenador,
-    pub pagina: u32,
+    pub filtro: Option<FiltroDeProjeto>,
+    pub tipo: Option<TipoDeProjeto>,
+    pub ordenador: Option<OrdenacaoDeProjeto>,
+    pub paginacao: Paginacao,
 }
 
 pub struct ServicoBuscarVagasDeProjetos<RCP>
@@ -41,18 +39,11 @@ where
             filtro,
             tipo,
             ordenador,
-            pagina,
+            paginacao,
         } = params;
 
-        let qtd_por_pagina: u8 = 10;
-
-        let paginacao = Paginacao {
-            pagina,
-            qtd_por_pagina,
-        };
-
         self.repositorio_de_coordenadores
-            .buscar_projetos(filtro, tipo, ordenador, paginacao)
+            .buscar_projetos(filtro, tipo, ordenador.unwrap_or_default(), paginacao)
             .await
     }
 }

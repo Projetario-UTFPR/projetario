@@ -4,6 +4,7 @@ use inertia_rust::validators::InertiaValidateOrRedirect;
 use inertia_rust::{Inertia, InertiaFacade, hashmap};
 use sqlx::PgPool;
 
+use crate::comum::paginacao::Paginacao;
 use crate::dominio::projetos::repositorios::coordenadores_de_projetos::ProjetosPaginados;
 use crate::dominio::vagas::servicos::buscar_vagas_de_projetos::{
     BuscarVagasDeProjetosParams,
@@ -48,7 +49,7 @@ impl ControllerProjetos {
                 filtro: body.filtro,
                 tipo: body.tipo,
                 ordenador: body.ordenador,
-                pagina: body.pagina_atual,
+                paginacao: Paginacao::nova_por_opcionais(body.pagina, body.qtd_por_pagina),
             })
             .await
         {
