@@ -63,29 +63,27 @@ url = "2.5.4"
 [dependencies]
 dominio.workspace = true
 comum.workspace = true
+config.workspace = true
+inertia-sessions.workspace = true
+vite-rust.workspace = true
 actix-files.workspace = true
 actix-session.workspace = true
-tokio.workspace = true
-vite-rust.workspace = true
-inertia-sessions.workspace = true
-config.workspace = true
 inertia-rust.workspace = true
-anyhow.workspace = true
 async-trait.workspace = true
-actix-web.workspace = true
-chrono.workspace = true
-dotenvy.workspace = true
 env_logger.workspace = true
+actix-web.workspace = true
+uuid.workspace = true
+chrono.workspace = true
+anyhow.workspace = true
+dotenvy.workspace = true
 log.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 futures-util.workspace = true
 sqlx.workspace = true
-thiserror.workspace = true
 validator = { version = "0.20", features = ["derive"] }
 openssl = { version = "0.10.73", optional = true }
 pbkdf2.workspace = true
-uuid.workspace = true
 
 [dev-dependencies]
 pretty_assertions.workspace = true
