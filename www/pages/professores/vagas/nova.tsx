@@ -175,7 +175,12 @@ export default function CriarNovaVagaDeProjeto() {
               required
             />
 
-            <Button.CallToAction type="submit" className="mt-6">
+            <Button.CallToAction
+              type="submit"
+              className="mt-6"
+              disabled={processing}
+              aria-busy={processing}
+            >
               Publicar
             </Button.CallToAction>
           </form>
