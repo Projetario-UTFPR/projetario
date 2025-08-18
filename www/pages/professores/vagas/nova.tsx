@@ -1,10 +1,11 @@
-import { Head, useForm } from "@inertiajs/react";
+import { Deferred, Head, useForm } from "@inertiajs/react";
 import type { FormEvent } from "react";
 import { toast } from "react-toastify";
 import Button from "@/components/button";
 import Form from "@/components/form";
 import { H1 } from "@/components/h1";
 import { Main } from "@/components/main";
+import { ProjectsSelect, ProjectsSelectSkeleton } from "./nova/projects-select";
 
 type FormData = {
   id_projeto: string;
@@ -103,15 +104,13 @@ export default function CriarNovaVagaDeProjeto() {
               }
             />
 
-            <Form.Input
-              label="Id do projeto"
-              type="text"
-              error={errors.id_projeto}
-              name="projeto"
-              placeholder="9cb6564e-9c9c-405b-a912-d156fb41a509"
-              required
-              onInput={(id_projeto) => setData({ ...data, id_projeto })}
-            />
+            <Deferred data="projetos" fallback={<ProjectsSelectSkeleton />}>
+              <ProjectsSelect
+                error={errors.id_projeto}
+                projectId={data.id_projeto}
+                setProjectId={(id_projeto) => setData({ ...data, id_projeto })}
+              />
+            </Deferred>
 
             <Form.Input
               value={data.horas_por_semana}
