@@ -84,6 +84,7 @@ sqlx.workspace = true
 validator = { version = "0.20", features = ["derive"] }
 openssl = { version = "0.10.73", optional = true }
 pbkdf2.workspace = true
+tokio.workspace = true
 
 [dev-dependencies]
 pretty_assertions.workspace = true

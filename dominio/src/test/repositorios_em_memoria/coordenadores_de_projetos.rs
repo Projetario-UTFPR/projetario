@@ -3,17 +3,11 @@ use comum::erros::ResultadoDominio;
 use comum::erros::erro_de_dominio::ErroDeDominio;
 use uuid::Uuid;
 
-use crate::comum::paginacao::Paginacao;
 use crate::identidade::entidades::professor::Professor;
 use crate::identidade::entidades::usuario::UsuarioModelo;
 use crate::projetos::agregados::projeto_com_coordenadores::ProjetoComCoordenadores;
 use crate::projetos::entidades::projeto::Projeto;
-use crate::projetos::enums::tipo_de_projeto::TipoDeProjeto;
-use crate::projetos::filtragem::{FiltroDeProjeto, OrdenacaoDeProjeto};
-use crate::projetos::repositorios::coordenadores_de_projetos::{
-    ProjetosPaginados,
-    RepositorioDeCoordenadoresDeProjetos,
-};
+use crate::projetos::repositorios::coordenadores_de_projetos::RepositorioDeCoordenadoresDeProjetos;
 use crate::test::repositorios_em_memoria::TabelaThreadSafeEmMemoria;
 
 pub struct ProjetoCoordenadorTupla {
@@ -46,17 +40,6 @@ impl RepositorioDeCoordenadoresDeProjetos for RepositorioDeCoordenadoresDeProjet
             });
 
         Ok(())
-    }
-
-    // TODO: tornar essa implementação em SQL uma implementação em memória
-    async fn buscar_projetos(
-        &self,
-        _filtro: Option<FiltroDeProjeto>,
-        _tipo: Option<TipoDeProjeto>,
-        _ordenador: OrdenacaoDeProjeto,
-        _paginacao: Paginacao,
-    ) -> Result<ProjetosPaginados, ErroDeDominio> {
-        todo!()
     }
 
     async fn buscar_projeto_e_coordenadores_por_id(

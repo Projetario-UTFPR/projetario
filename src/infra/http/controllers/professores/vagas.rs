@@ -1,18 +1,23 @@
 use actix_web::web::{Data, Json};
 use actix_web::{HttpRequest, web};
+use comum::erros::ErroDeDominio;
 use dominio::comum::paginacao::Paginacao;
-use dominio::vagas::servicos::buscar_vagas_de_projetos::BuscarVagasDeProjetosParams;
+use dominio::projetos::filtragem::{EstadoDoProjeto, FiltroDeProjeto};
+use dominio::projetos::servicos::buscar_projetos_de_extensao::BuscarProjetosDeExtensaoParams;
 use dominio::vagas::servicos::criar_vaga::CriarVagaParams;
 use inertia_rust::validators::InertiaValidateOrRedirect;
-use inertia_rust::{Inertia, InertiaFacade, hashmap};
+use inertia_rust::{Inertia, InertiaFacade, InertiaProp, hashmap, prop_resolver};
 use sqlx::PgPool;
 
 use crate::infra::dtos::vagas::criar_vaga::CriarVagaDto;
-use crate::infra::fabricas::servicos::buscar_projetos::obtenha_servico_buscar_projetos;
+use crate::infra::fabricas::servicos::buscar_projeto_de_extensao::obtenha_servico_buscar_de_projetos_de_extensao;
 use crate::infra::fabricas::servicos::criar_vaga::obtenha_servico_criar_vaga;
 use crate::infra::http::RouterRegistrable;
 use crate::infra::http::controllers::{RedirectDoApp, RespostaDoApp};
 use crate::infra::http::middlewares::usuario_da_requisicao::UsuarioDaRequisicao;
+use crate::infra::http::presenters::paginacao::PaginacaoMelhoradaPresenter;
+use crate::infra::http::presenters::projeto::ProjetoPresenter;
+use crate::libs::inertia::inertiafy_domain_error;
 use crate::unwrap_or_redirect;
 
 pub struct ControllerVagas;
@@ -27,21 +32,39 @@ impl RouterRegistrable for ControllerVagas {
 }
 
 impl ControllerVagas {
-    pub async fn nova(req: HttpRequest, db_conn: Data<PgPool>) -> RespostaDoApp {
-        // TODO: filtrar projetos por professor
-        // TODO: retornar os projetos como uma propriedade deferred pra tratar os erros
-        let _projetos_deste_professor = obtenha_servico_buscar_projetos(&db_conn)
-            .executar(BuscarVagasDeProjetosParams {
-                filtro: None,
-                ordenador: None,
-                paginacao: Paginacao::default(),
-                tipo: None,
-            })
-            .await;
+    pub async fn nova(
+        req: HttpRequest,
+        db_conn: Data<PgPool>,
+        usuario: UsuarioDaRequisicao,
+    ) -> RespostaDoApp {
+        let UsuarioDaRequisicao::Professor(professor) = usuario else {
+            return Err(ErroDeDominio::nao_autorizado(
+                "Somente um professor pode criar vagas para um projeto.",
+            ));
+        };
+        let id_professor = professor.obtenha_usuario().obtenha_id().to_owned();
 
-        Inertia::render(&req, "professores/vagas/nova".into())
-            .await
-            .map_err(Into::into)
+        Inertia::render_with_props(
+            &req,
+            "professores/vagas/nova".into(),
+            hashmap![
+                "projetos" => InertiaProp::Deferred(prop_resolver!(let db_conn = db_conn.clone(); {
+                    let projetos = obtenha_servico_buscar_de_projetos_de_extensao(&db_conn)
+                        .executar(BuscarProjetosDeExtensaoParams {
+                            estado: Some(EstadoDoProjeto::Ativo),
+                            filtro: Some(FiltroDeProjeto::Coordenacao(id_professor)),
+                            ordenador: None,
+                            paginacao: Paginacao::nova(1, 100),
+                        })
+                        .await
+                        .map(|projetos_paginados| PaginacaoMelhoradaPresenter::apresente(&projetos_paginados, ProjetoPresenter::apresente));
+
+                    inertiafy_domain_error(projetos)
+                }), None)
+            ],
+        )
+        .await
+        .map_err(Into::into)
     }
 
     pub async fn criar(

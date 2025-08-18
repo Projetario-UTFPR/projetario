@@ -6,6 +6,7 @@ type Props = {
   label: string;
   required?: boolean;
   initialValue?: string;
+  value?: string;
   error?: string;
   atualizarCoteudo: (conteudo: string) => void;
 };
@@ -14,6 +15,7 @@ export function Editor({
   label,
   required,
   error,
+  value,
   atualizarCoteudo,
   initialValue,
 }: Props) {
@@ -23,6 +25,7 @@ export function Editor({
       {error && <AlertaDeErro>{error}</AlertaDeErro>}
       <TinyMCEEditor
         initialValue={initialValue}
+        value={value}
         onEditorChange={(html, _editor) => atualizarCoteudo(html)}
       />
     </div>

@@ -1,6 +1,8 @@
 import Form from ".";
 import { InputLabelSpan } from "./label-span";
 
+type Value = React.InputHTMLAttributes<HTMLInputElement>["value"];
+
 type InputProps = {
   label: string;
   type: "text" | "password" | "date" | "datetime-local" | "number";
@@ -8,7 +10,8 @@ type InputProps = {
   name?: string;
   placeholder?: string;
   error?: string;
-  onInput: (value: string) => void;
+  value?: Value;
+  onInput?: (value: string) => void;
   /** Adiciona um pequeno texto de observação em relação a esse campo de texto. */
   observacao?: string;
   required?: boolean;
@@ -21,6 +24,7 @@ export function Input({
   type = "text",
   placeholder,
   error,
+  value,
   onInput,
   required,
   observacao,
@@ -41,9 +45,10 @@ export function Input({
         id={id}
         type={type}
         name={name}
+        value={value}
         placeholder={placeholder}
         className="text-input leading-none"
-        onInput={(event) => onInput(event.currentTarget.value)}
+        onInput={(event) => onInput?.(event.currentTarget.value)}
         required={required}
       />
     </label>
