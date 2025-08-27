@@ -1,5 +1,5 @@
 use actix_web::http::StatusCode;
-use actix_web::test::{TestRequest, init_service};
+use actix_web::test::TestRequest;
 use actix_web::web::Data;
 use db_seeder::usuarios::inserir_usuarios;
 use dominio::identidade::entidades::professor::Professor;
@@ -7,7 +7,6 @@ use dominio::projetos::entidades::projeto::Projeto;
 use inertia_rust::Inertia;
 use inertia_rust::test::{InertiaTestRequest, IntoAssertableInertia};
 use pretty_assertions::assert_eq;
-use projetario::server::get_server;
 use rstest::rstest;
 use serde_json::json;
 use sqlx::query_as;
@@ -16,6 +15,7 @@ use crate::common::fixtures::db_guard::{DBGuard, db_guard};
 use crate::common::fixtures::inertia::inertia;
 use crate::common::setup::__setup;
 use crate::common::utils::headers::extraia_cookie_da_sessao;
+use crate::instanciar_app;
 
 #[rstest]
 #[case("reginaldo@utfpr.com", "12345", "Reginaldo Ré")] // um Professor
@@ -32,12 +32,7 @@ pub async fn um_professor_deveria_poder_criar_um_projeto_de_extensao(
 ) {
     inserir_usuarios(db_guard.as_ref()).await;
 
-    let app = init_service(
-        get_server()
-            .app_data(inertia)
-            .app_data(db_guard.clone_a_conexao()),
-    )
-    .await;
+    let app = instanciar_app!(inertia, db_guard.clone_a_conexao());
 
     let autenticacao = TestRequest::post()
         .uri("/autenticacao/login")
@@ -111,12 +106,7 @@ async fn um_aluno_nao_deveria_poder_criar_um_projeto_de_extensao(
 ) {
     inserir_usuarios(db_guard.as_ref()).await;
 
-    let app = init_service(
-        get_server()
-            .app_data(inertia)
-            .app_data(db_guard.clone_a_conexao()),
-    )
-    .await;
+    let app = instanciar_app!(inertia, db_guard.clone_a_conexao());
 
     let autenticacao = TestRequest::post()
         .uri("/autenticacao/login")
@@ -151,12 +141,7 @@ async fn deveria_criar_projeto_com_data_de_inicio_customizada(
 ) {
     inserir_usuarios(db_guard.as_ref()).await;
 
-    let app = init_service(
-        get_server()
-            .app_data(inertia)
-            .app_data(db_guard.clone_a_conexao()),
-    )
-    .await;
+    let app = instanciar_app!(inertia, db_guard.clone_a_conexao());
 
     let autenticacao = TestRequest::post()
         .uri("/autenticacao/login")

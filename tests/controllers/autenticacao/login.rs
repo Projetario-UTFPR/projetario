@@ -1,6 +1,6 @@
 use actix_web::http::StatusCode;
 use actix_web::http::header::REFERER;
-use actix_web::test::{TestRequest, init_service};
+use actix_web::test::TestRequest;
 use actix_web::web::Data;
 use dominio::autenticacao::HasherDeSenha;
 use dominio::test::fabricas_de_entidades::usuario_modelo::UsuarioModeloParcial;
@@ -8,7 +8,6 @@ use inertia_rust::Inertia;
 use inertia_rust::test::{InertiaTestRequest, IntoAssertableInertia};
 use pretty_assertions::assert_eq;
 use projetario::infra::crypto::comparador_e_hasher_de_senhas::ComparadorEHasherDeSenhaCrypto;
-use projetario::server::get_server;
 use rstest::rstest;
 use serde_json::json;
 use sqlx::PgPool;
@@ -17,6 +16,7 @@ use crate::common::fixtures::db_guard::{DBGuard, db_guard};
 use crate::common::fixtures::inertia::inertia;
 use crate::common::setup::__setup;
 use crate::common::utils::headers::{extraia_cookie_da_sessao, extraia_valor_do_header_location};
+use crate::instanciar_app;
 
 #[rstest]
 #[awt]
@@ -28,12 +28,7 @@ pub async fn um_usuario_deveria_poder_se_autenticar(
 ) {
     inserir_usuario_no_db(db_guard.as_ref()).await;
 
-    let app = init_service(
-        get_server()
-            .app_data(inertia)
-            .app_data(db_guard.clone_a_conexao()),
-    )
-    .await;
+    let app = instanciar_app!(inertia, db_guard.clone_a_conexao());
 
     let resposta = TestRequest::post()
         .uri("/autenticacao/login")
@@ -86,12 +81,7 @@ pub async fn soh_usuarios_nao_autenticados_deveriam_poder_ver_a_pagina_de_login(
 ) {
     inserir_usuario_no_db(db_guard.as_ref()).await;
 
-    let app = init_service(
-        get_server()
-            .app_data(inertia)
-            .app_data(db_guard.clone_a_conexao()),
-    )
-    .await;
+    let app = instanciar_app!(inertia, db_guard.clone_a_conexao());
 
     let resposta_login = TestRequest::post()
         .uri("/autenticacao/login")

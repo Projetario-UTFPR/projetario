@@ -2,6 +2,7 @@ import type { PageResolver } from "@inertiajs/core";
 import type { JSX, ReactElement } from "react";
 import type { Autenticacao } from "@/core/types/usuario-autenticado";
 import { DefaultLayout } from "@/layouts/default";
+import type { Tema, TemaDoSistema } from "@/tema";
 
 type PageComponent = ReactElement & {
   default: { layout: (_page: JSX.Element) => ReactElement };
@@ -31,5 +32,7 @@ declare module "@inertiajs/core" {
   export interface PageProps {
     autenticacao: null | Autenticacao;
     flash: Record<string, string>;
+    temaPreferido: Tema;
+    temaSistema: TemaDoSistema;
   }
 }

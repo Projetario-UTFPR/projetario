@@ -5,6 +5,8 @@ use serde_json::Value;
 
 use crate::infra::http::resposta_incerta_do_servidor::RespostaIncertaDoServidor;
 
+pub mod middleware;
+
 pub fn inertiafy_domain_error<T: Serialize>(
     data: ResultadoDominio<T>,
 ) -> Result<Value, InertiaError> {
