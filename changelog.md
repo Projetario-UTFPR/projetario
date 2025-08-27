@@ -27,8 +27,15 @@ Nesse arquivo constam as alterações realizadas ao longo das versões do Projet
 ### Adicionados
 * Agora é possível se autenticar [#10], criar um projeto de extensão [#8] e criar vagas para um projeto [#20]
 * Services para cancelar e alterar vagas [#18]
-* Código base para buscar vagas de projetos #[15]
+* Código base para buscar vagas de projetos [#15]
 * Workflows de testes e linting
+
+[#10]: https://github.com/Projetario-UTFPR/projetario/pull/10
+[#8]: https://github.com/Projetario-UTFPR/projetario/pull/8
+[#20]: https://github.com/Projetario-UTFPR/projetario/pull/20
+[#18]: https://github.com/Projetario-UTFPR/projetario/pull/18
+[#15]: https://github.com/Projetario-UTFPR/projetario/pull/15
+
 
 ### Novos Contribuidores
 * @dotwolf em https://github.com/Projetario-UTFPR/projetario/pull/13
