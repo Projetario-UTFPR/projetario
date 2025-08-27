@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="min-h-full">
+<html lang="pt-BR"
+  class="min-h-full{{ #if (or (eq view_data.tema 'escuro') (and (eq view_data.tema 'sistema') (eq view_data.tema_do_sistema 'escuro'))) }} dark{{ /if }}">
 
 <head>
   <meta charset="UTF-8">
