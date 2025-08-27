@@ -18,6 +18,11 @@ Nesse arquivo constam as alterações realizadas ao longo das versões do Projet
 * Agora é possível iniciar o programa com o SSR ativado quando em produção: anteriormente,
     resultaria no erro "Error: Ssr is not enabled and, hence, a ssr server cannot be raised."
 
+[#25]: https://github.com/Projetario-UTFPR/projetario/pull/25
+[#9]: https://github.com/Projetario-UTFPR/projetario/pull/9
+[#21]: https://github.com/Projetario-UTFPR/projetario/pull/21
+[#19]: https://github.com/Projetario-UTFPR/projetario/pull/19
+
 ## Projetário v0.1.0
 ### Adicionados
 * Agora é possível se autenticar [#10], criar um projeto de extensão [#8] e criar vagas para um projeto [#20]
