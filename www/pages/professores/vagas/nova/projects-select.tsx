@@ -3,6 +3,7 @@ import { CaretDownIcon } from "@phosphor-icons/react/dist/ssr/CaretDown";
 import * as S from "@radix-ui/react-select";
 import clsx from "clsx";
 import type { PropsWithChildren } from "react";
+import { Alerta } from "@/components/alerta";
 import { AlertaDeErro } from "@/components/form/alerta-de-erro";
 import { InputLabelSpan } from "@/components/form/label-span";
 import type { Projeto } from "@/core/types/entidades/projeto";
@@ -127,7 +128,11 @@ function ProjectsSelectSuccess({
             "data-[side=right]:animate-slide-left-and-fade data-[side=top]:animate-slide-down-and-fade",
           )}
         >
-          {projects.dados.map(ProjectItem)}
+          {projects.total > 0 ? (
+            projects.dados.map(ProjectItem)
+          ) : (
+            <Alerta>Você ainda não possui nenhum projeto de extensão.</Alerta>
+          )}
         </S.Content>
       </S.Portal>
     </S.Root>
