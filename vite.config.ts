@@ -1,10 +1,9 @@
+import path from "node:path";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import laravel from "laravel-vite-plugin";
 import type { UserConfig } from "vite";
-
 import tsconfig from "./tsconfig.json";
-import path from "node:path";
 
 export const tsconfigPathAliases = Object.fromEntries(
   Object.entries(tsconfig.compilerOptions.paths).map(([key, values]) => {
@@ -38,7 +37,7 @@ export default {
   ],
   publicDir: "/public",
   resolve: {
-    alias: tsconfigPathAliases
+    alias: tsconfigPathAliases,
   },
   server: {
     watch: {

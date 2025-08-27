@@ -8,3 +8,4 @@ node_modules/
 storage/
 .vscode/*
 !.vscode/sample.settings.json
+.DS_Store

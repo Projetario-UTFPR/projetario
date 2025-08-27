@@ -12,9 +12,9 @@ use crate::infra::http::middlewares::somente_com_cargo::{
 pub mod projetos_de_extensao;
 pub mod vagas;
 
-pub struct ProfessoresRouter;
+pub struct ProfessoresControllersGroup;
 
-impl RouterRegistrable for ProfessoresRouter {
+impl RouterRegistrable for ProfessoresControllersGroup {
     fn register(cfg: &mut actix_web::web::ServiceConfig) {
         cfg.service(
             web::scope("/professores")
