@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 import { atualizarHtmlComNovoTema, TEMAS_DO_SISTEMA, type Tema } from "@/tema";
 
 function onSuccess(page: Page<PageProps>) {
-  console.log(page);
   atualizarHtmlComNovoTema(page.props.temaPreferido, page.props.temaSistema);
 }
 
