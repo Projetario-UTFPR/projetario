@@ -125,26 +125,22 @@ impl RepositorioDeProjetos for RepositorioDeProjetosSQLX<'_> {
             count.push_bind(tipo);
         }
 
-        count.push(" GROUP BY proj.id");
-
-        [&mut busca, &mut count].into_iter().for_each(|query| {
-            match &ordenador {
-                OrdenacaoDeProjeto::Data(ordem) => {
-                    query.push(" ORDER BY proj.iniciado_em ");
-                    match ordem {
-                        DirecaoOrdenacao::Asc => query.push("ASC"),
-                        DirecaoOrdenacao::Desc => query.push("DESC"),
-                    };
-                }
-                OrdenacaoDeProjeto::Titulo(ordem) => {
-                    query.push(" ORDER BY proj.titulo ");
-                    match ordem {
-                        DirecaoOrdenacao::Asc => query.push("ASC"),
-                        DirecaoOrdenacao::Desc => query.push("DESC"),
-                    };
-                }
-            };
-        });
+        match &ordenador {
+            OrdenacaoDeProjeto::Data(ordem) => {
+                busca.push(" ORDER BY proj.iniciado_em ");
+                match ordem {
+                    DirecaoOrdenacao::Asc => busca.push("ASC"),
+                    DirecaoOrdenacao::Desc => busca.push("DESC"),
+                };
+            }
+            OrdenacaoDeProjeto::Titulo(ordem) => {
+                busca.push(" ORDER BY proj.titulo ");
+                match ordem {
+                    DirecaoOrdenacao::Asc => busca.push("ASC"),
+                    DirecaoOrdenacao::Desc => busca.push("DESC"),
+                };
+            }
+        };
 
         let offset = (paginacao.pagina - 1) * paginacao.qtd_por_pagina as u64;
         busca
