@@ -5,6 +5,7 @@ use config::app::{AppConfig, RustEnv};
 use config::inertia::get_inertia;
 use config::vite::get_vite;
 use env_logger::Target;
+use projetario::infra::tema::GerenteDeTema;
 use projetario::server::get_server;
 use projetario::utils::resolve_uri;
 
@@ -36,6 +37,7 @@ async fn main() -> anyhow::Result<()> {
         get_server()
             .app_data(inertia_data.clone())
             .app_data(db_pool.clone())
+            .app_data(GerenteDeTema::new(is_production_env))
     })
     .bind((host, port))?;
 
