@@ -1,5 +1,5 @@
 use actix_web::http::StatusCode;
-use actix_web::test::{TestRequest, init_service};
+use actix_web::test::TestRequest;
 use actix_web::web::Data;
 use dominio::identidade::traits::IntoUsuarioModelo;
 use dominio::projetos::enums::tipo_de_coordenacao::TipoDeCoordenacao;
@@ -9,7 +9,6 @@ use dominio::test::fabricas_de_entidades::projeto::ProjetoParcial;
 use inertia_rust::Inertia;
 use inertia_rust::test::{InertiaTestRequest, IntoAssertableInertia};
 use pretty_assertions::assert_eq;
-use projetario::server::get_server;
 use rstest::rstest;
 use serde_json::{Value, json};
 
@@ -18,6 +17,7 @@ use crate::common::fixtures::inertia::inertia;
 use crate::common::setup::__setup;
 use crate::common::utils::headers::extraia_cookie_da_sessao;
 use crate::common::utils::queries::{criar_projeto_e_associar, salvar_usuario};
+use crate::instanciar_app;
 
 #[rstest]
 #[case(json!({}))]
@@ -52,12 +52,7 @@ async fn ninguem_deveria_poder_criar_vagas_invalidas(
     let professor = ProfessorParcial::default().into_entidade();
     salvar_usuario(db_guard.as_ref(), &professor.clone().into_usuario_modelo()).await;
 
-    let app = init_service(
-        get_server()
-            .app_data(inertia)
-            .app_data(db_guard.clone_a_conexao()),
-    )
-    .await;
+    let app = instanciar_app!(inertia, db_guard.clone_a_conexao());
 
     let autenticacao = TestRequest::post()
         .uri("/autenticacao/login")
@@ -100,12 +95,7 @@ async fn um_aluno_nao_deveria_poder_criar_vagas(
     let aluno = AlunoParcial::default().into_entidade();
     salvar_usuario(db_guard.as_ref(), &aluno.clone().into_usuario_modelo()).await;
 
-    let app = init_service(
-        get_server()
-            .app_data(inertia)
-            .app_data(db_guard.clone_a_conexao()),
-    )
-    .await;
+    let app = instanciar_app!(inertia, db_guard.clone_a_conexao());
 
     let autenticacao = TestRequest::post()
         .uri("/autenticacao/login")
@@ -141,12 +131,7 @@ async fn um_professor_deveria_poder_criar_vagas_para_seus_projetos(
     let professor = ProfessorParcial::default().into_entidade();
     salvar_usuario(db_guard.as_ref(), &professor.clone().into_usuario_modelo()).await;
 
-    let app = init_service(
-        get_server()
-            .app_data(inertia)
-            .app_data(db_guard.clone_a_conexao()),
-    )
-    .await;
+    let app = instanciar_app!(inertia, db_guard.clone_a_conexao());
 
     let autenticacao = TestRequest::post()
         .uri("/autenticacao/login")
