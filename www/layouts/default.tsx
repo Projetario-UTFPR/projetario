@@ -1,5 +1,6 @@
 import type { PropsWithChildren } from "react";
 import { ToastContainer } from "react-toastify";
+import { Footer } from "@/ui/footer";
 import { Header } from "@/ui/header";
 
 export function DefaultLayout({ children }: PropsWithChildren) {
@@ -7,6 +8,7 @@ export function DefaultLayout({ children }: PropsWithChildren) {
     <>
       <Header />
       {children}
+      <Footer />
       <ToastContainer />
     </>
   );
