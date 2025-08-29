@@ -8,6 +8,9 @@ COPY Cargo.lock Cargo.toml rust-toolchain.toml ./
 COPY config/ ./config
 COPY sessions/ ./sessions/
 COPY db_seeder/ ./db_seeder/
+COPY comum/ ./comum/
+COPY dominio/ ./dominio/
+COPY migrations/ ./migrations/
 
 # É necessário para manter as dependências em cache. O Cargo não possui um meio de compilar
 # somente as dependências para evitar recompilar tudo a cada alteração no código fonte,
@@ -17,7 +20,7 @@ COPY db_seeder/ ./db_seeder/
 RUN \
     mkdir -v src && \
     echo 'fn main() {}' > src/main.rs && \
-    cargo build --release && \
+    cargo build --release --locked --features=dockerimgb && \
     rm -Rvf src
 
 # Copia o resto da aplicação e compila em uma segunda camada, evitando a invalidação do cache
@@ -54,10 +57,10 @@ EXPOSE 80
 
 # Cria um usuário somente para rodar o sistema, de modo que ele não tenha privilégios de super usuário.
 # Ele ainda precisa ter permissão pra manusear os arquivos dentro de /app, no entanto.
-RUN useradd -m projetario
-RUN chown -R projetario:projetario /app
-RUN chmod 755 /app
+RUN groupadd projetario && useradd -g projetario -m app
+RUN chown -R app:projetario .
+RUN chmod 755 .
 
-USER projetario
+USER app
 
 ENTRYPOINT [ "./projetario" ]
