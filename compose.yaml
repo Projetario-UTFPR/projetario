@@ -12,7 +12,8 @@ services:
 
   app:
     container_name: projetario-app
-    image: projetario/app:0.1.0
+    build: .
+    image: projetario/app:latest
     ports:
       - 3000:80
     volumes:
