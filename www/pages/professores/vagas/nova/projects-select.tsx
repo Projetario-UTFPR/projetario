@@ -122,7 +122,7 @@ function ProjectsSelectSuccess({
           sticky="partial"
           collisionPadding={24}
           className={clsx(
-            "overflow-hidden bg-white shadow-md rounded-2xl border border-black/10",
+            "overflow-hidden bg-white dark:bg-gray-800 shadow-md rounded-2xl border border-black/10",
             "w-[var(--radix-select-trigger-width)] p-2 flex flex-col gap-0.5",
             "data-[side=bottom]:animate-slide-up-and-fade data-[side=left]:animate-slide-right-and-fade",
             "data-[side=right]:animate-slide-left-and-fade data-[side=top]:animate-slide-down-and-fade",
@@ -153,6 +153,7 @@ function ProjectItem(project: Projeto) {
         "hover:before:inset-0 hover:before:bg-yellow-500/50",
         "active:before:bg-yellow-500 focus:before:bg-yellow-500/50 focus:before:inset-0",
         "data-[state=checked]:before:bg-yellow-500 data-[state=checked]:before:inset-0",
+        "dark:active:text-black data-[state=checked]:dark:text-black",
       )}
     >
       <S.ItemText>
@@ -167,7 +168,7 @@ function ProjectItem(project: Projeto) {
 export function ProjectsSelectSkeleton() {
   return (
     <ProjectsSelectWrapper>
-      <div className="text-input animate-pulse bg-gray-200 h-9" />
+      <div className="text-input animate-pulse bg-gray-200 dark:bg-white/5 dark:border dark:border-white/20 h-8.5" />
     </ProjectsSelectWrapper>
   );
 }
