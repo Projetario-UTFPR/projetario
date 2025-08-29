@@ -9,7 +9,7 @@ export function Main({ children, className }: PropsWithChildren<Props>) {
   return (
     <main
       className={clsx(
-        "mx-auto w-[calc(100%_-_48px)] max-w-lg",
+        "flex-1 mx-auto w-[calc(100%_-_48px)] max-w-lg h-auto",
         className && className,
       )}
     >

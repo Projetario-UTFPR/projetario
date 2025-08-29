@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR"
-  class="min-h-full{{ #if (or (eq view_data.tema 'escuro') (and (eq view_data.tema 'sistema') (eq view_data.tema_do_sistema 'escuro'))) }} dark{{ /if }}">
+  class="h-full{{ #if (or (eq view_data.tema 'escuro') (and (eq view_data.tema 'sistema') (eq view_data.tema_do_sistema 'escuro'))) }} dark{{ /if }}">
 
 <head>
   <meta charset="UTF-8">
@@ -18,7 +18,7 @@
   {{{ inertia_head }}}
 </head>
 
-<body class="h-full">
+<body class="h-full bg-gray-100 dark:bg-gray-1000 dark:text-white">
   {{{ inertia_body }}}
 </body>
 

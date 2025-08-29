@@ -27,6 +27,8 @@
 @layer base {
   #app {
     height: 100%;
+    display: flex;
+    flex-direction: column;
   }
 
   a,
@@ -68,6 +70,16 @@
       @apply ring-4;
       border-color: var(--color-yellow-500);
     }
+
+    @variant dark {
+      color: white;
+      border: 1px solid color-mix(in oklab, var(--color-white) 20%, transparent);
+      background: color-mix(in oklab, var(--color-white) 5%, transparent);
+
+      &::placeholder {
+        color: color-mix(in oklab, var(--color-white) 70%, transparent);
+      }
+    }
   }
 
   #editor {
@@ -90,6 +102,10 @@
       0 54px 54px 0 color-mix(in oklab, var(--color-black) 4%, transparent),
       0 122px 73px 0 color-mix(in oklab, var(--color-black) 3%, transparent),
       0 217px 87px 0 color-mix(in oklab, var(--color-black) 1%, transparent);
+
+    @variant dark {
+      background: var(--color-gray-900);
+    }
   }
 
   /* Estilização do conteúdo do editor e de como ele será disponibilizado na página de vagas/projetos  */

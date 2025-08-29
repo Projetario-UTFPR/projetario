@@ -1,10 +1,11 @@
-import { Deferred, Head, useForm } from "@inertiajs/react";
+import { Deferred, Head, useForm, usePage } from "@inertiajs/react";
 import type { FormEvent } from "react";
 import { toast } from "react-toastify";
 import Button from "@/components/button";
 import Form from "@/components/form";
 import { H1 } from "@/components/h1";
 import { Main } from "@/components/main";
+import { resolvaTema } from "@/tema";
 import { ProjectsSelect, ProjectsSelectSkeleton } from "./nova/projects-select";
 
 type FormData = {
@@ -26,6 +27,8 @@ const dateTimeIntoDateString = (date?: string | Date): string | undefined => {
 };
 
 export default function CriarNovaVagaDeProjeto() {
+  const props = usePage().props;
+  const tema = resolvaTema(props.temaPreferido, props.temaSistema);
   const { data, setData, errors, post, processing, reset } = useForm<FormData>({
     id_projeto: undefined as unknown as string,
     horas_por_semana: 0,
@@ -167,8 +170,9 @@ export default function CriarNovaVagaDeProjeto() {
             />
 
             <Form.Editor
+              tema={tema}
               label="Corpo da vaga"
-              atualizarCoteudo={(conteudo) => setData({ ...data, conteudo })}
+              atualizarConteudo={(conteudo) => setData({ ...data, conteudo })}
               error={errors.conteudo}
               value={data.conteudo}
               required

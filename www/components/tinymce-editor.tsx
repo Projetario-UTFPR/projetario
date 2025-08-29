@@ -1,14 +1,20 @@
 // TinyMCE so the global var exists
 import "tinymce/tinymce";
 import "tinymce/models/dom/model";
+
 // Theme
 import "tinymce/themes/silver/theme";
+
 // Toolbar icons
 import "tinymce/icons/default";
+
 // Editor styles
 import "tinymce/skins/ui/oxide/skin";
+import "tinymce/skins/ui/oxide-dark/skin";
+
 // The default content CSS can be changed or replaced with appropriate CSS for the editor content.
-// import contentCss from 'tinymce/skins/content/default/content.js'
+// import "tinymce/skins/content/default/content.js";
+// import "tinymce/skins/content/dark/content.js";
 //
 // importing the plugin js.
 import "tinymce/plugins/emoticons/js/emojis";
@@ -47,14 +53,15 @@ import "tinymce/skins/ui/oxide/content.inline.min.css";
 
 import { Editor, type IAllProps } from "@tinymce/tinymce-react";
 import clsx from "clsx";
-
+import type { TemaEstrito } from "@/tema";
 import Form from "./form";
 
 type TinyMCEEditorProps = Omit<IAllProps, "licenseKey"> & {
   erro?: string;
+  tema: TemaEstrito;
 };
 
-export function TinyMCEEditor({ erro, ...props }: TinyMCEEditorProps) {
+export function TinyMCEEditor({ erro, tema, ...props }: TinyMCEEditorProps) {
   return (
     <div className="conteudo-editor">
       {erro && <Form.AlertaDeErro>{erro}</Form.AlertaDeErro>}
@@ -160,6 +167,7 @@ export function TinyMCEEditor({ erro, ...props }: TinyMCEEditorProps) {
           extended_valid_elements:
             "script[src|async|defer|type|charset],style,div[*],center",
           custom_elements: "style,script,center,div",
+          skin: tema === "escuro" ? "oxide-dark" : "oxide",
         }}
       />
     </div>

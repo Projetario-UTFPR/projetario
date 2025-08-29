@@ -47,5 +47,17 @@
         "recommended": true
       }
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["www/**/*.css"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noDuplicateProperties": "off"
+          }
+        }
+      }
+    }
+  ]
 }

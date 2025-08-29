@@ -6,7 +6,7 @@ import { NavItem } from "./nav-item";
 
 export function Header() {
   return (
-    <header className="bg-gray-100 py-2.5 border-b border-black/10">
+    <header className="bg-gray-100 dark:bg-gray-1000 py-2.5 border-b border-black/10 dark:border-white/10">
       <div className="w-[calc(100%_-_48px)] max-w-lg mx-auto flex items-center justify-between">
         <img src={Logo} alt="Logo Projetário" width={216} height={50} />
 

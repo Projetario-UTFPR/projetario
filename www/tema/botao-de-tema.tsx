@@ -63,7 +63,7 @@ export function BotaoDeTema() {
       type="button"
       className={clsx(
         "p-3 bg-yellow-800/10 rounded-3xl text-yellow-800",
-        "dark:bg-yellow-500/5 text-yellow-500 disabled:opacity-50",
+        "dark:bg-yellow-500/5 dark:text-yellow-500 disabled:opacity-50",
       )}
       disabled={processando}
       aria-busy={processando}

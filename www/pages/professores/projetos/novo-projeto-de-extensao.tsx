@@ -1,14 +1,12 @@
-import { Head, Link, useForm } from "@inertiajs/react";
+import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import { PlusIcon } from "@phosphor-icons/react/dist/ssr/Plus";
 import type { FormEvent } from "react";
 import { toast } from "react-toastify";
 import Button from "@/components/button";
 import Form from "@/components/form";
-import { AlertaDeErro } from "@/components/form/alerta-de-erro";
-import { InputLabelSpan } from "@/components/form/label-span";
 import { H1 } from "@/components/h1";
 import { Main } from "@/components/main";
-import { TinyMCEEditor } from "@/components/tinymce-editor";
+import { resolvaTema } from "@/tema";
 
 type FormData = {
   titulo: string;
@@ -18,6 +16,8 @@ type FormData = {
 };
 
 export default function NovoProjetoDeExtensao() {
+  const props = usePage().props;
+  const tema = resolvaTema(props.temaPreferido, props.temaSistema);
   const { post, data, setData, errors, processing } = useForm<FormData>();
 
   const handleSubmit = (event: FormEvent) => {
@@ -76,18 +76,14 @@ export default function NovoProjetoDeExtensao() {
               observacao="Apenas preencha esse campo se você quiser adicionar uma data customizada."
             />
 
-            <div className="flex flex-col gap-2">
-              <InputLabelSpan required>Conteúdo</InputLabelSpan>
-              {errors.descricao && (
-                <AlertaDeErro>{errors.descricao}</AlertaDeErro>
-              )}
-              <TinyMCEEditor
-                initialValue="Descreva o projeto em detalhes."
-                onEditorChange={(html, _editor) =>
-                  setData({ ...data, descricao: html })
-                }
-              />
-            </div>
+            <Form.Editor
+              required
+              label="Conteúdo"
+              error={errors.descricao}
+              atualizarConteudo={(descricao) => setData({ ...data, descricao })}
+              initialValue="Descreva o projeto em detalhes."
+              tema={tema}
+            />
 
             <div className="flex items-center gap-3 mt-6">
               <Button.CallToAction type="submit" disabled={processing}>
