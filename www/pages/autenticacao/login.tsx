@@ -32,7 +32,11 @@ type LoginForm = {
 
 export default function Login() {
   const props = usePage().props;
-  const { errors, data, setData, post } = useForm<LoginForm>();
+  const { errors, data, setData, post } = useForm<LoginForm>({
+    senha: "",
+    email: "",
+    registro_aluno: "",
+  });
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -75,12 +79,15 @@ export default function Login() {
             <>
               <form className="flex-5/6" onSubmit={handleSubmit}>
                 {errors.error && (
-                  <Form.AlertaDeErro>{errors.error}</Form.AlertaDeErro>
+                  <Form.AlertaDeErro className="mb-4">
+                    {errors.error}
+                  </Form.AlertaDeErro>
                 )}
                 <Form.Input
                   label="Identificação do Usuário"
                   type="text"
                   placeholder="Seu e-mail institucional ou RA"
+                  required
                   error={errors.registro_aluno || errors.email}
                   onInput={(identificacao) => {
                     setData({
@@ -96,6 +103,7 @@ export default function Login() {
                   label="Senha"
                   type="password"
                   placeholder="●●●●●●●●"
+                  required
                   error={errors.senha}
                   onInput={(senha) => setData({ ...data, senha })}
                 />
@@ -111,7 +119,7 @@ export default function Login() {
                 </div>
               </form>
 
-              <div className="bg-gray-200 p-3 rounded-lg self-start max-w-3xs">
+              <div className="bg-gray-200 dark:bg-gray-1000 dark:text-gray-300 p-3 rounded-lg self-start max-w-3xs">
                 <h2>
                   <strong>Alunos</strong>
                 </h2>

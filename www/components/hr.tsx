@@ -1,3 +1,3 @@
 export function Hr() {
-  return <hr className="h-[1px] border-none bg-gray-300 dark:bg-white/5" />;
+  return <hr className="text-gray-300 dark:text-white/10" />;
 }
