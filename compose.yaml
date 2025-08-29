@@ -18,6 +18,8 @@ services:
       - 3000:80
     volumes:
       - .env:/app/.env
+    environment:
+      - MAIN_DB_DOMAIN=db
     profiles:
       - preview
     depends_on:
