@@ -1,22 +1,25 @@
+import type { TemaEstrito } from "@/tema";
 import { TinyMCEEditor } from "../tinymce-editor";
 import { AlertaDeErro } from "./alerta-de-erro";
 import { InputLabelSpan } from "./label-span";
 
 type Props = {
+  tema?: TemaEstrito;
   label: string;
   required?: boolean;
   initialValue?: string;
   value?: string;
   error?: string;
-  atualizarCoteudo: (conteudo: string) => void;
+  atualizarConteudo: (conteudo: string) => void;
 };
 
 export function Editor({
+  tema = "claro",
   label,
   required,
   error,
   value,
-  atualizarCoteudo,
+  atualizarConteudo,
   initialValue,
 }: Props) {
   return (
@@ -24,9 +27,10 @@ export function Editor({
       <InputLabelSpan required={required}>{label}</InputLabelSpan>
       {error && <AlertaDeErro>{error}</AlertaDeErro>}
       <TinyMCEEditor
+        tema={tema}
         initialValue={initialValue}
         value={value}
-        onEditorChange={(html, _editor) => atualizarCoteudo(html)}
+        onEditorChange={(html, _editor) => atualizarConteudo(html)}
       />
     </div>
   );
