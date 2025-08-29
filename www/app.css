@@ -104,7 +104,7 @@
       0 217px 87px 0 color-mix(in oklab, var(--color-black) 1%, transparent);
 
     @variant dark {
-        background: var(--color-gray-900);
+      background: var(--color-gray-900);
     }
   }
 
