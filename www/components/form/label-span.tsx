@@ -9,7 +9,7 @@ export function InputLabelSpan({ children, className, required }: Props) {
   return (
     <span className={className}>
       {children}
-      {required && <sup className="text-red-500">*</sup>}
+      {required && <sup className="text-red-500 dark:text-red-300">*</sup>}
     </span>
   );
 }
