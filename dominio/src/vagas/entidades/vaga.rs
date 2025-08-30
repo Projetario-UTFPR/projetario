@@ -4,6 +4,7 @@ use comum::erros::erro_de_dominio::ErroDeDominio;
 use comum::sqlx::{DbDateTime, db_date_time_now};
 use uuid::Uuid;
 
+use crate::comum::agregacao_com_coordenador::AgregadoComCoordenador;
 use crate::identidade::entidades::professor::Professor;
 use crate::projetos::agregados::projeto_com_coordenadores::ProjetoComCoordenadores;
 use crate::projetos::entidades::projeto::Projeto;
@@ -124,14 +125,6 @@ impl Vaga {
     }
 
     pub fn esta_ativa(&self) -> bool { self.cancelada_em.is_none() && !self.foi_concluida() }
-
-    pub fn obtenha_coordenador(&self) -> &Professor {
-        self.projeto_e_coordenadores.obtenha_coordenador()
-    }
-
-    pub fn obtenha_vice_coordenador(&self) -> Option<&Professor> {
-        self.projeto_e_coordenadores.obtenha_vice_coordenador()
-    }
 }
 
 // setters
@@ -263,5 +256,15 @@ impl Vaga {
         }
 
         Ok(())
+    }
+}
+
+impl AgregadoComCoordenador for Vaga {
+    fn obtenha_coordenador(&self) -> &Professor {
+        self.projeto_e_coordenadores.obtenha_coordenador()
+    }
+
+    fn obtenha_vice_coordenador(&self) -> Option<&Professor> {
+        self.projeto_e_coordenadores.obtenha_vice_coordenador()
     }
 }

@@ -1,4 +1,5 @@
 use comum::sqlx::db_date_time_now;
+use dominio::comum::agregacao_com_coordenador::AgregadoComCoordenador;
 use dominio::identidade::entidades::professor::Professor;
 use dominio::projetos::agregados::projeto_com_coordenadores::ProjetoComCoordenadores;
 use dominio::projetos::entidades::projeto::Projeto;

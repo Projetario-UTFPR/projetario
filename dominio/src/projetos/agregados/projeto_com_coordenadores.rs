@@ -1,3 +1,4 @@
+use crate::comum::agregacao_com_coordenador::AgregadoComCoordenador;
 use crate::identidade::entidades::professor::Professor;
 use crate::projetos::entidades::projeto::Projeto;
 
@@ -26,10 +27,12 @@ impl ProjetoComCoordenadores {
 
 impl ProjetoComCoordenadores {
     pub fn obtenha_projeto(&self) -> &Projeto { &self.projeto }
+}
 
-    pub fn obtenha_coordenador(&self) -> &Professor { &self.coordenador }
+impl AgregadoComCoordenador for ProjetoComCoordenadores {
+    fn obtenha_coordenador(&self) -> &Professor { &self.coordenador }
 
-    pub fn obtenha_vice_coordenador(&self) -> Option<&Professor> { self.vice_coordenador.as_ref() }
+    fn obtenha_vice_coordenador(&self) -> Option<&Professor> { self.vice_coordenador.as_ref() }
 }
 
 impl ProjetoComCoordenadores {

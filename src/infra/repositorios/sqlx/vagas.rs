@@ -1,4 +1,5 @@
 use comum::erros::{ErroDeDominio, ResultadoDominio};
+use dominio::comum::agregacao_com_coordenador::AgregadoComCoordenador;
 use dominio::vagas::entidades::vaga::Vaga;
 use dominio::vagas::repositorios::vaga::RepositorioDeVagas;
 use sqlx::PgPool;

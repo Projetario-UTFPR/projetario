@@ -4,7 +4,7 @@ use comum::sqlx::DbDateTime;
 use uuid::Uuid;
 
 use crate::identidade::entidades::professor::Professor;
-use crate::identidade::enums::cargo::Cargo;
+use crate::projetos::politicas::PoliticasDeProjetos;
 use crate::projetos::repositorios::coordenadores_de_projetos::RepositorioDeCoordenadoresDeProjetos;
 use crate::vagas::entidades::vaga::Vaga;
 use crate::vagas::repositorios::vaga::RepositorioDeVagas;
@@ -72,8 +72,7 @@ where
             ));
         }
 
-        if Cargo::Administrador.ne(professor.obtenha_cargo())
-            && projeto_com_coords.obtenha_coordenador().ne(professor)
+        if !PoliticasDeProjetos::professor_tem_poderio_sobre_projeto(professor, &projeto_com_coords)
         {
             return Err(ErroDeDominio::nao_autorizado(
                 "Você não tem autorização para abrir vagas para este projeto.",

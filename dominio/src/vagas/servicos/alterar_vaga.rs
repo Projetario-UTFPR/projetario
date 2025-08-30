@@ -3,7 +3,7 @@ use comum::sqlx::DbDateTime;
 use uuid::Uuid;
 
 use crate::identidade::entidades::professor::Professor;
-use crate::identidade::enums::cargo::Cargo;
+use crate::projetos::politicas::PoliticasDeProjetos;
 use crate::vagas::entidades::vaga::Vaga;
 use crate::vagas::repositorios::vaga::RepositorioDeVagas;
 
@@ -38,12 +38,8 @@ where
             ErroDeDominio::nao_encontrado("Vaga não encontrada".to_string()),
         )?;
 
-        let professor_pode_alterar_vaga = vaga
-            .obtenha_coordenador()
-            .obtenha_usuario()
-            .obtenha_id()
-            .eq(professor.obtenha_usuario().obtenha_id())
-            || *professor.obtenha_cargo() == Cargo::Administrador;
+        let professor_pode_alterar_vaga =
+            PoliticasDeProjetos::professor_tem_poderio_sobre_projeto(professor, &vaga);
 
         if !professor_pode_alterar_vaga {
             return Err(ErroDeDominio::nao_autorizado(
