@@ -1,8 +1,14 @@
+use std::collections::HashSet;
+
 use comum::erros::{ErroDeDominio, ResultadoDominio};
+use const_format::concatcp;
 use dominio::comum::agregacao_com_coordenador::AgregadoComCoordenador;
+use dominio::comum::filtragem::LimitadorDeData;
+use dominio::comum::paginacao::{EntidadePaginada, Paginacao};
 use dominio::vagas::entidades::vaga::Vaga;
+use dominio::vagas::filtragem::{EstadoDaVaga, FiltroDeVaga, OrdenacaoDeVaga};
 use dominio::vagas::repositorios::vaga::RepositorioDeVagas;
-use sqlx::PgPool;
+use sqlx::{PgPool, Postgres, QueryBuilder};
 use uuid::Uuid;
 
 pub struct RepositorioDeVagasSQLX<'this> {
@@ -66,11 +72,124 @@ impl RepositorioDeVagas for RepositorioDeVagasSQLX<'_> {
             })
     }
 
+    // TODO: implementar método de atualizar vaga no repositório SQLX
     async fn atualizar_vaga(&self, _vaga: &Vaga) -> ResultadoDominio<()> { todo!() }
+
+    async fn buscar_vagas(
+        &self,
+        filtros: HashSet<FiltroDeVaga>,
+        ordenador: OrdenacaoDeVaga,
+        paginacao: Paginacao,
+    ) -> ResultadoDominio<EntidadePaginada<Vaga>> {
+        let mut busca = sqlx::QueryBuilder::<Postgres>::new(SELECT_VAGA_QUERY);
+        let mut contagem = sqlx::QueryBuilder::<Postgres>::new(concatcp!(
+            "SELECT COUNT(v.id) count ",
+            SELECT_VAGA_JOINS
+        ));
+
+        busca.push(" WHERE TRUE");
+        contagem.push(" WHERE TRUE");
+
+        for filtro in &filtros {
+            Self::transformar_filtro_em_sql(&mut busca, filtro);
+            Self::transformar_filtro_em_sql(&mut contagem, filtro);
+        }
+
+        match ordenador {
+            OrdenacaoDeVaga::Data(direcao) => busca
+                .push(" ORDER BY v.iniciada_em ")
+                .push(direcao.into_sql_string()),
+            OrdenacaoDeVaga::Titulo(direcao) => busca
+                .push(" ORDER BY v.titulo ")
+                .push(direcao.into_sql_string()),
+        };
+
+        busca
+            .push(" LIMIT ")
+            .push_bind(paginacao.qtd_por_pagina as i32)
+            .push(" OFFSET ")
+            .push_bind(paginacao.calcule_offset() as i64);
+
+        let (vagas, qtd_total): (_, i64) = tokio::try_join!(
+            busca.build_query_as::<Vaga>().fetch_all(self.db_conn),
+            contagem.build_query_scalar().fetch_one(self.db_conn)
+        )
+        .map_err(|err| {
+            log::error!("{err}");
+            ErroDeDominio::interno()
+        })?;
+
+        Ok(EntidadePaginada {
+            dados: vagas,
+            qtd_total: qtd_total as u64,
+        })
+    }
 }
 
-const SELECT_VAGA_QUERY: &str = r#"SELECT
-        v.*,
+impl RepositorioDeVagasSQLX<'_> {
+    fn transformar_filtro_em_sql<'a>(
+        busca: &mut QueryBuilder<'a, Postgres>,
+        filtro: &'a FiltroDeVaga,
+    ) {
+        match filtro {
+            FiltroDeVaga::Titulo(titulo) => {
+                busca
+                    .push(" AND v.titulo ILIKE '%' || ")
+                    .push_bind(titulo)
+                    .push(" || '%'");
+            }
+            FiltroDeVaga::Coordenador(id) => {
+                busca
+                    .push(" AND (c.id = ")
+                    .push_bind(id)
+                    .push(" OR vice.id = ")
+                    .push_bind(id)
+                    .push(")");
+            }
+            FiltroDeVaga::Estado(estado) => {
+                busca.push(" AND");
+                let query_do_estado = match estado {
+                    EstadoDaVaga::Ativa => " v.cancelada_em IS NULL AND v.inscricoes_ate > now()",
+                    EstadoDaVaga::Cancelada => " v.cancelada_em IS NOT NULL",
+                    EstadoDaVaga::Encerrada => " v.inscricoes_ate < now()",
+                };
+
+                busca.push(query_do_estado);
+            }
+            FiltroDeVaga::DataDePublicacao(data, limitador) => {
+                busca
+                    .push(" AND v.iniciada_em ")
+                    .push(match limitador {
+                        LimitadorDeData::Apos => "> ",
+                        LimitadorDeData::Ate => "<= ",
+                    })
+                    .push_bind(data);
+            }
+            FiltroDeVaga::Tipo(tipo) => {
+                busca.push(" AND p.tipo = ").push_bind(tipo);
+            }
+        }
+    }
+}
+
+const SELECT_VAGA_QUERY: &str = concatcp!(
+    r#"SELECT
+        -- vaga
+        v.id,
+        v.id_projeto,
+        v.id_coordenador,
+        v.id_vice_coordenador,
+        v.horas_por_semana,
+        v.imagem,
+        v.quantidade,
+        v.link_edital,
+        v.link_candidatura,
+        v.titulo,
+        v.conteudo,
+        v.iniciada_em,
+        v.inscricoes_ate,
+        v.cancelada_em,
+        v.atualizada_em,
 
         -- projeto
         p.id as "p_id",
@@ -102,7 +221,11 @@ const SELECT_VAGA_QUERY: &str = r#"SELECT
         vice.atualizado_em as "vice_atualizado_em",
         vice.desativado_em as "vice_desativado_em",
         vice.registrado_em as "vice_registrado_em"
-    FROM vaga v
+    "#,
+    SELECT_VAGA_JOINS
+);
+
+const SELECT_VAGA_JOINS: &str = r#"FROM vaga v
     -- projeto
     INNER JOIN projeto p ON p.id = v.id_projeto
 
@@ -116,5 +239,4 @@ const SELECT_VAGA_QUERY: &str = r#"SELECT
     LEFT JOIN coordenador_projeto vice_rel
         ON vice_rel.id_projeto = p.id
         AND vice_rel.tipo = 'vice_coordenador'
-    LEFT JOIN usuario vice ON vice.id = vice_rel.id_coordenador
-    "#;
+    LEFT JOIN usuario vice ON vice.id = vice_rel.id_coordenador"#;
