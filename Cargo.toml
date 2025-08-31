@@ -85,6 +85,7 @@ validator = { version = "0.20", features = ["derive"] }
 openssl = { version = "0.10.73", optional = true }
 pbkdf2.workspace = true
 tokio.workspace = true
+const_format = "0.2.34"
 
 [dev-dependencies]
 pretty_assertions.workspace = true
