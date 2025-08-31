@@ -1,6 +1,4 @@
-use serde::Deserialize;
-
-#[derive(Deserialize, Default)]
+#[derive(Default)]
 pub enum DirecaoOrdenacao {
     Asc,
     #[default]

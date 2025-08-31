@@ -1,9 +1,7 @@
-use serde::Deserialize;
 use uuid::Uuid;
 
 use crate::comum::filtragem::DirecaoOrdenacao;
 
-#[derive(Deserialize)]
 pub enum OrdenacaoDeProjeto {
     /// Ordenar os projetos pela sua data na ordem fornecida.
     Data(DirecaoOrdenacao),
