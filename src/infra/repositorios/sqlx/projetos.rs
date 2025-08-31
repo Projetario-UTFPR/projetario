@@ -142,12 +142,11 @@ impl RepositorioDeProjetos for RepositorioDeProjetosSQLX<'_> {
             }
         };
 
-        let offset = (paginacao.pagina - 1) * paginacao.qtd_por_pagina as u64;
         busca
             .push(" LIMIT ")
             .push_bind(paginacao.qtd_por_pagina as i32)
             .push(" OFFSET ")
-            .push_bind(offset as i64);
+            .push_bind(paginacao.calcule_offset() as i64);
 
         let (projetos, qtd_total): (_, i64) = tokio::try_join!(
             busca.build_query_as::<Projeto>().fetch_all(self.db_conn),

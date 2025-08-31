@@ -44,4 +44,6 @@ impl Paginacao {
         self.qtd_por_pagina = qtd;
         self
     }
+
+    pub fn calcule_offset(&self) -> u64 { (self.pagina - 1) * self.qtd_por_pagina as u64 }
 }
