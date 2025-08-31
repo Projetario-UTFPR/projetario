@@ -46,3 +46,5 @@ impl<RP: RepositorioDeProjetos> ServicoBuscarProjetoDeExtensao<RP> {
         ))
     }
 }
+
+// TODO: implementar testes unitários para o serviço de buscar projetos de extensao
