@@ -5,6 +5,7 @@ edition.workspace = true
 
 [features]
 test-utils = ["dep:fake", "dep:rand"]
+fabricas_de_entidades = []
 
 [dependencies]
 fake = { version = "4.3.0", features = [
