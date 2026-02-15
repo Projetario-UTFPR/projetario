@@ -1,18 +1,15 @@
-use actix_session::SessionExt;
-use actix_web::Error;
-use actix_web::HttpMessage;
-use actix_web::dev::{Service, ServiceRequest, ServiceResponse, Transform, forward_ready};
-use futures_util::future::LocalBoxFuture;
-use inertia_rust::{
-    InertiaSessionToReflash, InertiaTemporarySession,
-    actix::{SessionErrors, is_inertia_response},
-};
-use log::error;
-use serde_json::Map;
 use std::collections::HashMap;
 use std::future::{Ready, ready};
 
+use actix_session::SessionExt;
+use actix_web::dev::{Service, ServiceRequest, ServiceResponse, Transform, forward_ready};
+use actix_web::{Error, HttpMessage};
 use config::app::AppConfig;
+use futures_util::future::LocalBoxFuture;
+use inertia_rust::actix::{SessionErrors, is_inertia_response};
+use inertia_rust::{InertiaSessionToReflash, InertiaTemporarySession};
+use log::error;
+use serde_json::Map;
 
 pub struct ReflashTemporarySessionMiddleware;
 

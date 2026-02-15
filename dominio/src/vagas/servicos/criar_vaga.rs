@@ -100,10 +100,10 @@ where
 #[cfg(test)]
 #[cfg(feature = "test-utils")]
 mod test {
-    use chrono::{Duration};
+    use chrono::Duration;
     use fake::faker::{self, lorem};
     use fake::{Fake, Faker};
-    use rstest::{ rstest};
+    use rstest::rstest;
     use url::Url;
     use uuid::Uuid;
 

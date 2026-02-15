@@ -62,11 +62,15 @@ impl DBGuard<'_> {
     ///
     /// ## Panic
     /// Essa função resulta em pânico se a conexão tiver sido removida anteriormente.
-    pub fn clone_a_conexao(&self) -> Data<PgPool> { self.db_conn.as_ref().unwrap().clone() }
+    pub fn clone_a_conexao(&self) -> Data<PgPool> {
+        self.db_conn.as_ref().unwrap().clone()
+    }
 }
 
 impl AsRef<PgPool> for DBGuard<'_> {
-    fn as_ref(&self) -> &PgPool { self.db_conn.as_ref().unwrap() }
+    fn as_ref(&self) -> &PgPool {
+        self.db_conn.as_ref().unwrap()
+    }
 }
 
 impl Drop for DBGuard<'_> {
