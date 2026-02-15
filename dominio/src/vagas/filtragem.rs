@@ -4,7 +4,7 @@ use uuid::Uuid;
 use crate::comum::filtragem::{DirecaoOrdenacao, LimitadorDeData};
 use crate::projetos::enums::tipo_de_projeto::TipoDeProjeto;
 
-#[derive(PartialEq, Eq, Hash, Clone)]
+#[derive(PartialEq, Eq, Hash, Clone, Debug)]
 pub enum FiltroDeVaga {
     Titulo(String),
     Tipo(TipoDeProjeto),
@@ -15,7 +15,7 @@ pub enum FiltroDeVaga {
     // campus
 }
 
-#[derive(PartialEq, Eq, Hash, Clone)]
+#[derive(PartialEq, Eq, Hash, Clone, Debug)]
 pub enum EstadoDaVaga {
     Ativa,
     Cancelada,

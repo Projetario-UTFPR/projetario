@@ -14,7 +14,7 @@ impl DirecaoOrdenacao {
     }
 }
 
-#[derive(Default, PartialEq, Eq, Hash, Clone)]
+#[derive(Default, PartialEq, Eq, Hash, Clone, Debug)]
 pub enum LimitadorDeData {
     #[default]
     Ate,
