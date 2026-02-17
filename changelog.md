@@ -6,6 +6,12 @@ Nesse arquivo constam as alterações realizadas ao longo das versões do Projet
 * Temas — claro, escuro e padrão do sistema — agora funcionam e podem ser alterados pelo usuário
     (PR [#25], issue [#9])
 * Footer foi adicionado ao layout
+* Crates [`const_format`](https://crates.io/crates/const_format), [`derive_builder`](https://crates.io/crates/derive_builder),
+    [`proptest`](https://crates.io/crates/proptest) e [`proptest-arbitrary-interop`](https://crates.io/crates/proptest-arbitrary-interop)
+    como dependências
+* Funcionalidade de buscar vagas de projetos
+    * Serviço, métodos em repositórios
+* Builders de entidades para testes (perante configuração de ambiente `dev_utils`)
 
 ### Removidos
 * Serviço, fábrica e controller de buscar projetos
@@ -14,6 +20,11 @@ Nesse arquivo constam as alterações realizadas ao longo das versões do Projet
 * É possível selecionar o projeto (de extensão) para o qual se quer criar vagas por meio de um
     dropdown de select — anteriormente, era necessário inserir o ID do projeto diretamente
 * O domínio de vagas (das entidades aos serviços) foi completamente remodelado (PR [#21], issue [#19])
+* Workflow de testes agora executa todos os testes do workspace sem distinção por features
+* Builders antigos foram substituídos pela crate `derive_builder` em ambientes de testes & métodos `novo_de_dados_brutos`
+* Adicionado variável de configuração `dev_utils`, equivalente a `any(test, feature = "test-utils")`
+    * Adicionada crate `build-utils` no workspace pra lidar com a lógica de inserção dessa configuração de ambiente,
+      bem como arquivo `build.rs` na crate `dominio`
 
 ### Correções
 * Agora é possível iniciar o programa com o SSR ativado quando em produção: anteriormente,
