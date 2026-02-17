@@ -4,15 +4,18 @@ version.workspace = true
 edition.workspace = true
 
 [features]
-test-utils = ["dep:fake", "dep:rand"]
+test-utils = [
+    "dep:fake",
+    "dep:rand",
+    "dep:proptest",
+    "dep:proptest-arbitrary-interop",
+    "dep:url",
+    "chrono/arbitrary",
+]
 fabricas_de_entidades = []
 
 [dependencies]
-fake = { version = "4.3.0", features = [
-    "derive",
-    "chrono",
-    "url",
-], optional = true }
+fake = { workspace = true, optional = true }
 rand = { workspace = true, optional = true }
 uuid.workspace = true
 sqlx.workspace = true
@@ -23,11 +26,20 @@ async-trait.workspace = true
 futures-util.workspace = true
 chrono = { workspace = true }
 serde.workspace = true
+derive_builder.workspace = true
+proptest = { workspace = true, optional = true }
+proptest-arbitrary-interop = { workspace = true, optional = true }
+url = { workspace = true, optional = true }
 
 [dev-dependencies]
 rstest.workspace = true
 tokio.workspace = true
 pretty_assertions.workspace = true
+proptest.workspace = true
+proptest-arbitrary-interop.workspace = true
+chrono = { workspace = true, features = ["arbitrary"] }
+app-macros = { path = "../macros" }
+fake.workspace = true
 
 [build-dependencies]
 build-utils.workspace = true
