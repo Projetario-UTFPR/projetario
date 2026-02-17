@@ -40,9 +40,9 @@ impl RepositorioDeVagas for RepositorioDeVagasSQLX<'_> {
             vaga.obtenha_vice_coordenador()
                 .map(|vice| vice.obtenha_usuario().obtenha_id()),
         )
-        .bind(vaga.obtenha_horas_por_semana() as i32)
+        .bind(vaga.obtenha_horas_por_semana() as i16)
         .bind(vaga.obtenha_imagem())
-        .bind(vaga.obtenha_quantidade() as i32)
+        .bind(vaga.obtenha_quantidade() as i16)
         .bind(vaga.obtenha_link_edital())
         .bind(vaga.obtenha_link_candidatura())
         .bind(vaga.obtenha_titulo())
@@ -81,18 +81,25 @@ impl RepositorioDeVagas for RepositorioDeVagasSQLX<'_> {
         ordenador: OrdenacaoDeVaga,
         paginacao: Paginacao,
     ) -> ResultadoDominio<EntidadePaginada<Vaga>> {
-        let mut busca = sqlx::QueryBuilder::<Postgres>::new(SELECT_VAGA_QUERY);
-        let mut contagem = sqlx::QueryBuilder::<Postgres>::new(concatcp!(
-            "SELECT COUNT(v.id) count ",
-            SELECT_VAGA_JOINS
-        ));
+        #[derive(sqlx::FromRow, Debug)]
+        struct VagaComTotal {
+            #[sqlx(flatten)]
+            pub vaga: Vaga,
+            pub total: i64,
+        }
+
+        let query = concatcp!(
+            VAGA_SELECT_QUERY,
+            ", COUNT(v.*) OVER() as total ",
+            VAGA_JOIN_QUERY
+        );
+
+        let mut busca = sqlx::QueryBuilder::<Postgres>::new(query);
 
         busca.push(" WHERE TRUE");
-        contagem.push(" WHERE TRUE");
 
         for filtro in &filtros {
             Self::transformar_filtro_em_sql(&mut busca, filtro);
-            Self::transformar_filtro_em_sql(&mut contagem, filtro);
         }
 
         match ordenador {
@@ -110,18 +117,28 @@ impl RepositorioDeVagas for RepositorioDeVagasSQLX<'_> {
             .push(" OFFSET ")
             .push_bind(paginacao.calcule_offset() as i64);
 
-        let (vagas, qtd_total): (_, i64) = tokio::try_join!(
-            busca.build_query_as::<Vaga>().fetch_all(self.db_conn),
-            contagem.build_query_scalar().fetch_one(self.db_conn)
-        )
-        .map_err(|err| {
-            log::error!("{err}");
-            ErroDeDominio::interno()
-        })?;
+        let vagas_e_contagem = busca
+            .build_query_as::<VagaComTotal>()
+            .fetch_all(self.db_conn)
+            .await
+            .map_err(|err| {
+                log::error!("{err}");
+                ErroDeDominio::interno()
+            })?;
+
+        let mut qtd_total = 0u64;
+
+        let vagas = vagas_e_contagem
+            .into_iter()
+            .map(|tupla| {
+                qtd_total = tupla.total as u64;
+                tupla.vaga
+            })
+            .collect();
 
         Ok(EntidadePaginada {
             dados: vagas,
-            qtd_total: qtd_total as u64,
+            qtd_total,
         })
     }
 }
@@ -172,24 +189,23 @@ impl RepositorioDeVagasSQLX<'_> {
     }
 }
 
-const SELECT_VAGA_QUERY: &str = concatcp!(
-    r#"SELECT
+const VAGA_SELECT_QUERY: &str = r#"SELECT
         -- vaga
-        v.id,
-        v.id_projeto,
-        v.id_coordenador,
-        v.id_vice_coordenador,
-        v.horas_por_semana,
-        v.imagem,
-        v.quantidade,
-        v.link_edital,
-        v.link_candidatura,
-        v.titulo,
-        v.conteudo,
-        v.iniciada_em,
-        v.inscricoes_ate,
-        v.cancelada_em,
-        v.atualizada_em,
+        v.id as vaga_id,
+        v.id_projeto as vaga_id_projeto,
+        v.id_coordenador as vaga_id_coordenador,
+        v.id_vice_coordenador as vaga_id_vice_coordenador,
+        v.horas_por_semana as vaga_horas_por_semana,
+        v.imagem as vaga_imagem,
+        v.quantidade as vaga_quantidade,
+        v.link_edital as vaga_link_edital,
+        v.link_candidatura as vaga_link_candidatura,
+        v.titulo as vaga_titulo,
+        v.conteudo as vaga_conteudo,
+        v.iniciada_em as vaga_iniciada_em,
+        v.inscricoes_ate as vaga_inscricoes_ate,
+        v.cancelada_em as vaga_cancelada_em,
+        v.atualizada_em as vaga_atualizada_em,
 
         -- projeto
         p.id as "p_id",
@@ -203,14 +219,15 @@ const SELECT_VAGA_QUERY: &str = concatcp!(
         p.concluido_em as "p_concluido_em",
 
         -- coordenador
-        c.id as "c_id",
-        c.nome as "c_nome",
-        c.email as "c_email",
-        c.senha_hash as "c_senha_hash",
-        c.url_curriculo_lattes as "c_url_curriculo_lattes",
-        c.atualizado_em as "c_atualizado_em",
-        c.desativado_em as "c_desativado_em",
-        c.registrado_em as "c_registrado_em",
+        c.id as "coord_id",
+        c.nome as "coord_nome",
+        c.email as "coord_email",
+        c.senha_hash as "coord_senha_hash",
+        c.url_curriculo_lattes as "coord_url_curriculo_lattes",
+        c.atualizado_em as "coord_atualizado_em",
+        c.desativado_em as "coord_desativado_em",
+        c.registrado_em as "coord_registrado_em",
+        c.cargo as "coord_cargo",
 
         -- vice coordenador
         vice.id as "vice_id",
@@ -220,12 +237,11 @@ const SELECT_VAGA_QUERY: &str = concatcp!(
         vice.url_curriculo_lattes as "vice_url_curriculo_lattes",
         vice.atualizado_em as "vice_atualizado_em",
         vice.desativado_em as "vice_desativado_em",
-        vice.registrado_em as "vice_registrado_em"
-    "#,
-    SELECT_VAGA_JOINS
-);
+        vice.registrado_em as "vice_registrado_em",
+        vice.cargo as "vice_cargo"
+    "#;
 
-const SELECT_VAGA_JOINS: &str = r#"FROM vaga v
+const VAGA_JOIN_QUERY: &str = r#"FROM vaga v
     -- projeto
     INNER JOIN projeto p ON p.id = v.id_projeto
 
@@ -240,3 +256,5 @@ const SELECT_VAGA_JOINS: &str = r#"FROM vaga v
         ON vice_rel.id_projeto = p.id
         AND vice_rel.tipo = 'vice_coordenador'
     LEFT JOIN usuario vice ON vice.id = vice_rel.id_coordenador"#;
+
+const SELECT_VAGA_QUERY: &str = concatcp!(VAGA_SELECT_QUERY, VAGA_JOIN_QUERY);
