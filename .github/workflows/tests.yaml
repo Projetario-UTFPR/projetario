@@ -22,4 +22,4 @@ jobs:
             - run: docker compose up -d
             - name: "check if docker containers are running"
               run: docker ps
-            - run: cargo test --features test-utils --release
+            - run: cargo test --all-features --workspace --release
