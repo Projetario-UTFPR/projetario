@@ -28,4 +28,6 @@ serde.workspace = true
 rstest.workspace = true
 tokio.workspace = true
 pretty_assertions.workspace = true
-url.workspace = true
+
+[build-dependencies]
+build-utils.workspace = true

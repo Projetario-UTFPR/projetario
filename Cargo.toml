@@ -8,11 +8,12 @@ dockerimgb = ["openssl/vendored"]
 test-utils = ["dominio/test-utils"]
 
 [workspace]
-members = ["comum", "config", "db_seeder", "dominio", "sessions"]
+members = ["build_utils", "comum", "config", "db_seeder", "dominio", "sessions"]
 package.version = "0.1.0"
 package.edition = "2024"
 
 [workspace.dependencies]
+build-utils.path = "build_utils"
 comum.path = "comum"
 dominio.path = "dominio"
 inertia-sessions.path = "sessions"
@@ -86,6 +87,7 @@ openssl = { version = "0.10.73", optional = true }
 pbkdf2.workspace = true
 tokio.workspace = true
 const_format = "0.2.34"
+build-utils = "0.1.0"
 
 [dev-dependencies]
 pretty_assertions.workspace = true
