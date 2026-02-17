@@ -1,14 +1,14 @@
 use comum::erros::erro_de_dominio::ErroDeDominio;
-use comum::sqlx::{DbDateTime, NullableU8, db_date_time_now};
+use comum::sqlx::{DbDateTime, NullableU8, db_date_time_now, sanitize_date_time};
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 use uuid::Uuid;
 
 use crate::identidade::enums::cargo::Cargo;
 
-pub mod builder;
-
 #[derive(Debug, FromRow, Clone, PartialEq)]
+#[cfg_attr(dev_utils, derive(derive_builder::Builder))]
+#[cfg_attr(dev_utils, builder(setter(into)))]
 pub struct Usuario {
     pub(super) id: Uuid,
     pub(super) nome: String,
@@ -56,6 +56,29 @@ impl Usuario {
         }
     }
 
+    #[allow(clippy::too_many_arguments)]
+    pub(crate) fn novo_de_dados_brutos(
+        id: Uuid,
+        nome: String,
+        email: String,
+        senha_hash: String,
+        url_curriculo_lattes: Option<String>,
+        registrado_em: DbDateTime,
+        atualizado_em: Option<DbDateTime>,
+        desativado_em: Option<DbDateTime>,
+    ) -> Self {
+        Self {
+            atualizado_em: atualizado_em.map(sanitize_date_time),
+            desativado_em: desativado_em.map(sanitize_date_time),
+            email,
+            id,
+            nome,
+            registrado_em: sanitize_date_time(registrado_em),
+            senha_hash,
+            url_curriculo_lattes,
+        }
+    }
+
     /// Desativa um usuario permanentemente na plataforma, tornando impossível
     /// identificar-se como esta na plataforma.
     pub fn desativar(&mut self) { self.desativado_em = Some(db_date_time_now()); }
@@ -84,6 +107,8 @@ impl Usuario {
     pub fn obtenha_data_de_registro(&self) -> DbDateTime { self.registrado_em }
 
     pub fn obtenha_data_de_modificacao(&self) -> Option<DbDateTime> { self.atualizado_em }
+
+    pub fn obtenha_data_de_desativacao(&self) -> Option<DbDateTime> { self.desativado_em }
 
     pub fn esta_ativo(&self) -> bool { self.desativado_em.is_none() }
 }

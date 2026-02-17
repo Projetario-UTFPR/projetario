@@ -5,8 +5,7 @@ use fake::{Fake, faker};
 use rand::Rng;
 use uuid::Uuid;
 
-use crate::identidade::entidades::usuario::builder::UsuarioBuilder;
-use crate::identidade::entidades::usuario::{Usuario, UsuarioModelo};
+use crate::identidade::entidades::usuario::{Usuario, UsuarioBuilder, UsuarioModelo};
 use crate::identidade::enums::cargo::Cargo;
 
 #[derive(Default)]
@@ -23,21 +22,25 @@ pub struct UsuarioParcial {
 
 impl UsuarioParcial {
     pub fn into_builder(self) -> UsuarioBuilder {
-        UsuarioBuilder {
-            atualizado_em: self.atualizado_em,
-            desativado_em: self.desativado_em,
-            email: self.email.unwrap_or_else(|| FreeEmail().fake()),
-            id: self.id.unwrap_or_else(Uuid::new_v4),
-            nome: self
-                .nome
-                .unwrap_or_else(|| faker::name::pt_br::Name().fake()),
-            registrado_em: self.registrado_em.unwrap_or_else(db_date_time_now),
-            senha_hash: self.senha_hash.unwrap_or_else(|| Password(2..15).fake()),
-            url_curriculo_lattes: self.url_curriculo_lattes,
-        }
+        let mut builder = UsuarioBuilder::default();
+
+        builder
+            .atualizado_em(self.atualizado_em)
+            .desativado_em(self.desativado_em)
+            .email(self.email.unwrap_or_else(|| FreeEmail().fake()))
+            .id(self.id.unwrap_or_else(Uuid::new_v4))
+            .nome(
+                self.nome
+                    .unwrap_or_else(|| faker::name::pt_br::Name().fake()),
+            )
+            .registrado_em(self.registrado_em.unwrap_or_else(db_date_time_now))
+            .senha_hash(self.senha_hash.unwrap_or_else(|| Password(2..15).fake()))
+            .url_curriculo_lattes(self.url_curriculo_lattes);
+
+        builder
     }
 
-    pub fn into_entidade(self) -> Usuario { self.into_builder().into() }
+    pub fn into_entidade(self) -> Usuario { self.into_builder().build().unwrap() }
 }
 
 #[derive(Default)]

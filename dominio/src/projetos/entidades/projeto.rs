@@ -1,14 +1,14 @@
 use chrono::{NaiveDate, Utc};
-use comum::sqlx::{DbDateTime, db_date_time_now};
+use comum::sqlx::{DbDateTime, db_date_time_now, sanitize_date_time};
 use serde::Serialize;
 use sqlx::FromRow;
 use uuid::Uuid;
 
 use crate::projetos::enums::tipo_de_projeto::TipoDeProjeto;
 
-pub mod builder;
-
 #[derive(Serialize, Debug, Clone, FromRow)]
+#[cfg_attr(dev_utils, derive(derive_builder::Builder))]
+#[cfg_attr(dev_utils, builder(setter(into)))]
 pub struct Projeto {
     id: Uuid,
     titulo: String,
@@ -42,6 +42,31 @@ impl Projeto {
             concluido_em: None,
             iniciado_em,
             registrado_em: db_date_time_now(),
+        }
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    pub(crate) fn novo_de_dados_brutos(
+        id: Uuid,
+        titulo: String,
+        descricao: String,
+        tipo: TipoDeProjeto,
+        registrado_em: DbDateTime,
+        iniciado_em: NaiveDate,
+        atualizado_em: Option<DbDateTime>,
+        cancelado_em: Option<DbDateTime>,
+        concluido_em: Option<NaiveDate>,
+    ) -> Self {
+        Self {
+            atualizado_em: atualizado_em.map(sanitize_date_time),
+            cancelado_em: cancelado_em.map(sanitize_date_time),
+            concluido_em,
+            descricao,
+            id,
+            iniciado_em,
+            registrado_em: sanitize_date_time(registrado_em),
+            tipo,
+            titulo,
         }
     }
 }
@@ -86,6 +111,15 @@ impl Projeto {
         }
 
         self.descricao = descricao;
+        self.toque();
+    }
+
+    pub fn coloque_tipo(&mut self, tipo: TipoDeProjeto) {
+        if self.tipo == tipo {
+            return;
+        }
+
+        self.tipo = tipo;
         self.toque();
     }
 

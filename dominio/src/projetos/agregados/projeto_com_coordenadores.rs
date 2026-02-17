@@ -1,13 +1,15 @@
+use derive_builder::Builder;
+
 use crate::comum::agregacao_com_coordenador::AgregadoComCoordenador;
 use crate::identidade::entidades::professor::Professor;
 use crate::projetos::entidades::projeto::Projeto;
 
-pub mod builder;
-
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Builder)]
+#[builder(setter(into))]
 pub struct ProjetoComCoordenadores {
     projeto: Projeto,
     coordenador: Professor,
+    #[builder(default = None)]
     vice_coordenador: Option<Professor>,
 }
 
@@ -27,6 +29,7 @@ impl ProjetoComCoordenadores {
 
 impl ProjetoComCoordenadores {
     pub fn obtenha_projeto(&self) -> &Projeto { &self.projeto }
+    pub fn obtenha_projeto_mut(&mut self) -> &mut Projeto { &mut self.projeto }
 }
 
 impl AgregadoComCoordenador for ProjetoComCoordenadores {

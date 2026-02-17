@@ -5,9 +5,9 @@ use crate::identidade::entidades::usuario::{Usuario, UsuarioModelo};
 use crate::identidade::enums::cargo::Cargo;
 use crate::identidade::traits::IntoUsuarioModelo;
 
-pub mod builder;
-
 #[derive(Debug, FromRow, Clone, PartialEq)]
+#[cfg_attr(dev_utils, derive(derive_builder::Builder))]
+#[cfg_attr(dev_utils, builder(setter(into)))]
 pub struct Professor {
     #[sqlx(flatten)]
     usuario: Usuario,
@@ -38,6 +38,10 @@ impl Professor {
         cargo: Cargo,
     ) -> Self {
         let usuario = Usuario::novo(nome, email, senha_hash, url_curriculo_lattes);
+        Self { usuario, cargo }
+    }
+
+    pub(crate) fn novo_de_dados_brutos(usuario: Usuario, cargo: Cargo) -> Self {
         Self { usuario, cargo }
     }
 }

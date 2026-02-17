@@ -5,8 +5,7 @@ use fake::faker::job::pt_br::Title;
 use fake::faker::lorem;
 use uuid::Uuid;
 
-use crate::projetos::entidades::projeto::Projeto;
-use crate::projetos::entidades::projeto::builder::ProjetoBuilder;
+use crate::projetos::entidades::projeto::{Projeto, ProjetoBuilder};
 use crate::projetos::enums::tipo_de_projeto::TipoDeProjeto;
 
 #[allow(unused)]
@@ -25,22 +24,25 @@ pub struct ProjetoParcial {
 
 impl ProjetoParcial {
     pub fn into_builder(self) -> ProjetoBuilder {
-        ProjetoBuilder {
-            id: self.id.unwrap_or_else(Uuid::new_v4),
-            titulo: self.titulo.unwrap_or_else(|| Title().fake()),
-            descricao: self.descricao.unwrap_or_else(|| {
+        let mut builder = ProjetoBuilder::default();
+
+        builder
+            .id(self.id.unwrap_or_else(Uuid::new_v4))
+            .titulo(self.titulo.unwrap_or_else(|| Title().fake()))
+            .descricao(self.descricao.unwrap_or_else(|| {
                 lorem::pt_br::Paragraphs(2..5)
                     .fake::<Vec<String>>()
                     .join("\n")
-            }),
-            tipo: TipoDeProjeto::Extensao,
-            registrado_em: db_date_time_now(),
-            iniciado_em: db_date_time_now().date(),
-            atualizado_em: None,
-            cancelado_em: None,
-            concluido_em: None,
-        }
+            }))
+            .tipo(TipoDeProjeto::Extensao)
+            .registrado_em(db_date_time_now())
+            .iniciado_em(db_date_time_now().date())
+            .atualizado_em(None)
+            .cancelado_em(None)
+            .concluido_em(None);
+
+        builder
     }
 
-    pub fn into_entidade(self) -> Projeto { self.into_builder().into() }
+    pub fn into_entidade(self) -> Projeto { self.into_builder().build().unwrap() }
 }

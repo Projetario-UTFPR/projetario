@@ -9,9 +9,9 @@ use crate::identidade::entidades::professor::Professor;
 use crate::projetos::agregados::projeto_com_coordenadores::ProjetoComCoordenadores;
 use crate::projetos::entidades::projeto::Projeto;
 
-pub mod builder;
-
 #[derive(Debug, Clone)]
+#[cfg_attr(dev_utils, derive(derive_builder::Builder))]
+#[cfg_attr(dev_utils, builder(setter(into)))]
 pub struct Vaga {
     id: Uuid,
     projeto_e_coordenadores: ProjetoComCoordenadores,
@@ -86,6 +86,38 @@ impl Vaga {
             iniciada_em: Utc::now().date_naive(),
         })
     }
+
+    pub(crate) fn nova_de_dados_brutos(
+        id: Uuid,
+        projeto_e_coordenadores: ProjetoComCoordenadores,
+        horas_por_semana: u8,
+        imagem: String,
+        quantidade: u8,
+        link_edital: String,
+        link_candidatura: Option<String>,
+        titulo: Option<String>,
+        conteudo: String,
+        iniciada_em: NaiveDate,
+        inscricoes_ate: DbDateTime,
+        cancelada_em: Option<DbDateTime>,
+        atualizada_em: Option<DbDateTime>,
+    ) -> Self {
+        Self {
+            atualizada_em,
+            cancelada_em,
+            conteudo,
+            projeto_e_coordenadores,
+            horas_por_semana,
+            id,
+            imagem,
+            iniciada_em,
+            inscricoes_ate,
+            link_candidatura,
+            link_edital,
+            quantidade,
+            titulo,
+        }
+    }
 }
 
 // getters
@@ -125,6 +157,8 @@ impl Vaga {
     }
 
     pub fn esta_ativa(&self) -> bool { self.cancelada_em.is_none() && !self.foi_concluida() }
+
+    pub fn foi_cancelada(&self) -> bool { self.cancelada_em.is_some() }
 }
 
 // setters
