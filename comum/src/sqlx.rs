@@ -1,7 +1,7 @@
 use std::str::FromStr;
 use std::time::Duration;
 
-use chrono::{NaiveDateTime, Utc};
+use chrono::{NaiveDateTime, Timelike, Utc};
 use config::app::{AppConfig, RustEnv};
 use log::error;
 use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
@@ -13,7 +13,11 @@ pub use nullableu8::*;
 
 pub type DbDateTime = NaiveDateTime;
 
-pub fn db_date_time_now() -> DbDateTime { Utc::now().naive_utc() }
+pub fn db_date_time_now() -> DbDateTime { sanitize_date_time(Utc::now().naive_utc()) }
+
+pub fn sanitize_date_time(date_time: DbDateTime) -> DbDateTime {
+    date_time.with_nanosecond(0).unwrap_or(date_time)
+}
 
 pub async fn migrate_db(pool: &PgPool) -> anyhow::Result<()> {
     if let Err(err) = sqlx::migrate!("../migrations").run(pool).await {
