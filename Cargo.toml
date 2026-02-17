@@ -8,7 +8,15 @@ dockerimgb = ["openssl/vendored"]
 test-utils = ["dominio/test-utils"]
 
 [workspace]
-members = ["build_utils", "comum", "config", "db_seeder", "dominio", "sessions"]
+members = [
+    "build_utils",
+    "comum",
+    "config",
+    "db_seeder",
+    "dominio",
+    "macros",
+    "sessions",
+]
 package.version = "0.1.0"
 package.edition = "2024"
 
@@ -17,6 +25,7 @@ build-utils.path = "build_utils"
 comum.path = "comum"
 dominio.path = "dominio"
 inertia-sessions.path = "sessions"
+app-macros.path = "macros"
 config.path = "config"
 actix-files = "0.6.6"
 actix-session = "0.10.1"
@@ -90,6 +99,7 @@ const_format = "0.2.34"
 build-utils = "0.1.0"
 
 [dev-dependencies]
+app-macros.workspace = true
 pretty_assertions.workspace = true
 rstest.workspace = true
 tokio = { workspace = true, features = ["test-util"] }

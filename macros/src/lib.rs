@@ -1,7 +1,28 @@
 use proc_macro::TokenStream;
 use quote::{format_ident, quote};
-use syn::{FnArg, ItemFn, PatType, Type, TypePath, TypeReference, parse_macro_input};
+use syn::{FnArg, ItemFn, Type, TypePath, TypeReference, parse_macro_input};
 
+/// Injeta uma referência de `PgPool` obtível via parâmetros da função.
+/// Requer o uso do atributo `with_setup`. Requer que o teste seja assíncrono.
+/// Se utilizado com `rstest`, deve ser posicionado após os atributos do `rstest`
+/// e o parâmetro deve utilizar o atributo `#[ignore]` do `rstest`.
+///
+/// # Exemplo
+/// ```rs
+/// #[with_setup]
+/// #[rstest]
+/// #[case(...)]
+/// ...
+/// #[case(...)]
+/// #[awt]
+/// #[with_db_conn]
+/// #[tokio::test]
+/// async fn meu_teste_complexo(
+///     #[ignore] db_conn: &PgPool,
+/// ) {
+///     ...
+/// }
+/// ```
 #[proc_macro_attribute]
 pub fn with_db_conn(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let input = parse_macro_input!(item as ItemFn);
@@ -11,12 +32,15 @@ pub fn with_db_conn(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let sig = &input.sig;
     let block = &input.block;
     let fn_name = &sig.ident;
+    let generics = &sig.generics;
+    let output = &sig.output;
 
     let inner_name = format_ident!("__{}_inner", fn_name);
 
     let inputs = &sig.inputs;
 
     let mut call_args = Vec::new();
+    let mut wrapper_inputs = syn::punctuated::Punctuated::<FnArg, syn::token::Comma>::new();
 
     for arg in inputs.iter() {
         if let FnArg::Typed(pat_type) = arg {
@@ -24,7 +48,10 @@ pub fn with_db_conn(_attr: TokenStream, item: TokenStream) -> TokenStream {
 
             let is_pgpool = if let Type::Reference(TypeReference { elem, .. }) = &*pat_type.ty {
                 if let Type::Path(TypePath { path, .. }) = &**elem {
-                    path.segments.last().unwrap().ident == "PgPool"
+                    path.segments
+                        .last()
+                        .map(|s| s.ident == "PgPool")
+                        .unwrap_or(false)
                 } else {
                     false
                 }
@@ -36,15 +63,19 @@ pub fn with_db_conn(_attr: TokenStream, item: TokenStream) -> TokenStream {
                 call_args.push(quote! { &__real_pool });
             } else {
                 call_args.push(quote! { #pat });
+                wrapper_inputs.push(arg.clone());
             }
+        } else {
+            wrapper_inputs.push(arg.clone());
         }
     }
 
     let expanded = quote! {
         #(#attrs)*
-        #vis #sig {
+        #vis async fn #fn_name #generics (#wrapper_inputs) #output {
             use futures_util::FutureExt;
 
+            crate::common::setup::setup();
             let schema = crate::common::utils::esquema_db::obtenha_esquema_unico_do_db().leak();
             let db_guard = crate::common::fixtures::db_guard::DBGuard::novo(schema).await;
 
@@ -63,7 +94,7 @@ pub fn with_db_conn(_attr: TokenStream, item: TokenStream) -> TokenStream {
             }
         }
 
-        async fn #inner_name(#inputs) {
+        async fn #inner_name #generics (#inputs) #output {
             #block
         }
     };
@@ -71,65 +102,51 @@ pub fn with_db_conn(_attr: TokenStream, item: TokenStream) -> TokenStream {
     expanded.into()
 }
 
+/// Executa a função de [`setup`](crate::common::setup::setup), inicializando as configurações.
+/// Deve ser posicionado antes de todos os atributos relacionados a testes.
 #[proc_macro_attribute]
-pub fn _with_db_conn(_attr: TokenStream, item: TokenStream) -> TokenStream {
-    // Parse a função original
+pub fn with_setup(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let input = parse_macro_input!(item as ItemFn);
-    let fn_name = input.sig.ident.clone();
-    let fn_vis = input.vis.clone();
-    let fn_attrs = input.attrs.clone();
-    let fn_generics = input.sig.generics.clone();
-    let fn_async = input.sig.asyncness;
-    let fn_output = input.sig.output.clone();
-    let fn_body = input.block;
 
-    // Identificador para a função interna
-    let inner_fn_name = format_ident!("__{}_inner", fn_name);
+    let vis = &input.vis;
+    let attrs = &input.attrs;
+    let sig = &input.sig;
+    let block = &input.block;
+    let fn_name = &sig.ident;
+    let inputs = &sig.inputs;
+    let output = &sig.output;
 
-    // Itera nos argumentos e separa:
-    // - os que não são &PgPool -> para a função externa
-    // - os que são &PgPool -> será injetado
-    let mut external_args = Vec::new();
-    let mut internal_args = Vec::new();
-    for arg in input.sig.inputs.iter() {
-        match arg {
-            FnArg::Typed(PatType { pat, ty, .. }) => {
-                if let Type::Reference(TypeReference { elem, .. }) = &**ty {
-                    if let Type::Path(path) = &**elem {
-                        if path.path.segments.last().unwrap().ident == "PgPool" {
-                            // é &PgPool -> será injetado
-                            internal_args.push(arg.clone());
-                            continue;
-                        }
-                    }
-                }
-                // qualquer outro -> mantemos no wrapper
-                external_args.push(arg.clone());
-                internal_args.push(arg.clone());
-            }
-            _ => {
-                external_args.push(arg.clone());
-                internal_args.push(arg.clone());
-            }
+    let inner_name = format_ident!("__{}_inner", fn_name);
+
+    let arg_names = inputs.iter().map(|arg| match arg {
+        syn::FnArg::Typed(pat_type) => {
+            let pat = &pat_type.pat;
+            quote! { #pat }
         }
-    }
+        syn::FnArg::Receiver(_) => quote! { self },
+    });
+
+    let clean_inputs = inputs.iter().map(|arg| {
+        if let syn::FnArg::Typed(pt) = arg {
+            let mut new_pt = pt.clone();
+            new_pt.attrs.clear(); // Remove #[case], #[ignore], etc.
+            syn::FnArg::Typed(new_pt)
+        } else {
+            arg.clone()
+        }
+    });
 
     let expanded = quote! {
-        #(#fn_attrs)*
-        #fn_vis #fn_async fn #fn_name #fn_generics (#(#external_args),*) #fn_output {
-            // cria pool dinamicamente
-            let schema = crate::common::utils::esquema_db::obtenha_esquema_unico_do_db().leak();
-            let db_guard = crate::common::fixtures::db_guard::DBGuard::novo(schema).await;
-            let db_pool: &PgPool = db_guard.as_ref();
-
-            #inner_fn_name(#(#internal_args.iter().map(|arg| {
-                // substitui o tipo &PgPool pelo pool real
-                quote! { db_pool }
-            }).collect::<Vec<_>>()),*).await
+        #(#attrs)*
+        #vis async fn #fn_name(#inputs) #output {
+            crate::common::setup::setup();
+            #inner_name(#(#arg_names),*).await
         }
 
-        async fn #inner_fn_name #fn_generics (#(#internal_args),*) #fn_output #fn_body
+        async fn #inner_name(#(#clean_inputs),*) #output {
+            #block
+        }
     };
 
-    TokenStream::from(expanded)
+    expanded.into()
 }

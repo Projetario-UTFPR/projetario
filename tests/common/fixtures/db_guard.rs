@@ -15,6 +15,7 @@ pub async fn db_guard<'a>(
 
 pub struct DBGuard<'this> {
     pub db_conn: Option<Data<PgPool>>,
+    has_been_cleaned: bool,
     schema: &'this str,
 }
 
@@ -24,7 +25,7 @@ impl DBGuard<'_> {
 
         let db_conn = connect_to_db(options.main_database_url, Some(schema))
             .await
-            .expect("Failed to initialize datastore in test fixture.");
+            .expect("Failed to initialize datastore in test fixture");
 
         if let Err(err) = sqlx::query(&format!("CREATE SCHEMA IF NOT EXISTS {}", schema))
             .execute(&db_conn)
@@ -40,7 +41,30 @@ impl DBGuard<'_> {
         Self {
             db_conn: Some(Data::new(db_conn)),
             schema,
+            has_been_cleaned: false,
         }
+    }
+
+    pub async fn cleanup(mut self) {
+        // ao invés de dar .close() e .await, deixamos que o pool chame sua implementação de
+        // Drop e feche todas as conexões brutalmente por conta própria.
+        // Chamar e dar await em um datastore.close() pode causar deadlock, pois ele
+        // estará esperando que todas as conexões sejam resolvidas e devolvidas para fechar,
+        // e não queremos nenhum comportamento gracioso aqui, apenas que sejam fechados à força.
+        self.db_conn.take();
+
+        let schema = self.schema.to_string().leak();
+        let database_url = AppConfig::get().main_database_url.to_owned().leak();
+        let datastore = connect_to_db(database_url, Some(schema)).await.unwrap();
+
+        if let Err(err) = sqlx::query(&format!("DROP SCHEMA IF EXISTS {} CASCADE", schema))
+            .execute(&datastore)
+            .await
+        {
+            log::error!("{err}");
+        };
+
+        self.has_been_cleaned = true;
     }
 
     /// Extrai a conexão do DBGuard, deixando um `None` em seu lugar.
@@ -62,19 +86,19 @@ impl DBGuard<'_> {
     ///
     /// ## Panic
     /// Essa função resulta em pânico se a conexão tiver sido removida anteriormente.
-    pub fn clone_a_conexao(&self) -> Data<PgPool> {
-        self.db_conn.as_ref().unwrap().clone()
-    }
+    pub fn clone_a_conexao(&self) -> Data<PgPool> { self.db_conn.as_ref().unwrap().clone() }
 }
 
 impl AsRef<PgPool> for DBGuard<'_> {
-    fn as_ref(&self) -> &PgPool {
-        self.db_conn.as_ref().unwrap()
-    }
+    fn as_ref(&self) -> &PgPool { self.db_conn.as_ref().unwrap() }
 }
 
 impl Drop for DBGuard<'_> {
     fn drop(&mut self) {
+        if self.has_been_cleaned {
+            return;
+        };
+
         let schema = self.schema.to_owned();
         let database_url = AppConfig::get().main_database_url.to_owned();
 
@@ -86,9 +110,12 @@ impl Drop for DBGuard<'_> {
                 .build()
                 .expect("Couldn't initialize tokio runtime to drop database test schema.")
                 .block_on(async move {
-                    if let Some(datastore) = previous_datasotre {
-                        datastore.close().await;
-                    }
+                    // ao invés de dar .close() e .await, deixamos que o pool chame sua implementação de
+                    // Drop e feche todas as conexões brutalmente por conta própria.
+                    // Chamar e dar await em um datastore.close() pode causar deadlock, pois ele
+                    // estará esperando que todas as conexões sejam resolvidas e devolvidas para fechar,
+                    // e não queremos nenhum comportamento gracioso aqui, apenas que sejam fechados à força.
+                    drop(previous_datasotre);
 
                     let database_url = database_url.leak();
                     let schema = schema.leak();

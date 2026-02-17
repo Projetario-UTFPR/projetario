@@ -1,8 +1,7 @@
 use config::app::AppConfig;
 use rstest::fixture;
 
-#[fixture]
-pub fn __setup() -> () {
+pub fn setup() {
     dotenvy::from_filename(".env.test")
         .expect("Failed to inject `.env` into environment variables.");
 
@@ -13,3 +12,6 @@ pub fn __setup() -> () {
 
     AppConfig::initialize();
 }
+
+#[fixture]
+pub fn __setup() -> () { setup(); }
