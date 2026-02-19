@@ -6,11 +6,22 @@ use fake::Fake;
 use fake::faker::boolean::pt_br::Boolean;
 use fake::faker::chrono::pt_br::{DateTimeAfter, DateTimeBefore};
 
+/// Gera `ativadas` vagas ativas, `concluidas` vagas já expiradas e `canceladas` vagas canceladas
+/// sobre projetos escolhidos aleatoriamente do vetor `projetos`.
+///
+/// Se `ativadas` for >= 1, é garantido que ao menos uma vaga incluirá `titulo_conhecido` no seu título.
+/// Para todas as demais vagas – ativadas, concluídas ou canceladas –, é garantido 50% de chance
+/// do título incluir `titulo_conhecido`.
+///
+/// Das atividades ativas, a distribuição das datas de início será, uniforme e aproximadamente,
+/// * 20% de ser após `data_conhecida`,
+/// * 26,66% de ser anterior a `data_conhecida`, e
+/// * 53,33% de assumir o valor padrão gerado pelo builder (ex: data atual).
 pub fn gerar_vagas_de_projetos(
     projetos: Vec<&ProjetoComCoordenadores>,
-    ativadas: u8,
-    concluidas: u8,
-    canceladas: u8,
+    ativadas: u32,
+    concluidas: u32,
+    canceladas: u32,
     titulo_conhecido: String,
     data_conhecida: NaiveDateTime,
 ) -> Vec<Vaga> {
