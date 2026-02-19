@@ -105,9 +105,15 @@ impl RepositorioDeVagas for RepositorioDeVagasSQLX<'_> {
         match ordenador {
             OrdenacaoDeVaga::Data(direcao) => busca
                 .push(" ORDER BY v.iniciada_em ")
+                .push(direcao.clone().into_sql_string())
+                .push(", v.id ")
                 .push(direcao.into_sql_string()),
             OrdenacaoDeVaga::Titulo(direcao) => busca
                 .push(" ORDER BY v.titulo ")
+                .push(direcao.clone().into_sql_string())
+                .push(", v.iniciada_em ")
+                .push(direcao.clone().into_sql_string())
+                .push(", v.id ")
                 .push(direcao.into_sql_string()),
         };
 
