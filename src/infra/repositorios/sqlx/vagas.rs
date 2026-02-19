@@ -88,18 +88,22 @@ impl RepositorioDeVagas for RepositorioDeVagasSQLX<'_> {
             pub total: i64,
         }
 
-        let query = concatcp!(
+        let mut busca = sqlx::QueryBuilder::<Postgres>::new(concatcp!(
             VAGA_SELECT_QUERY,
             ", COUNT(v.*) OVER() as total ",
-            VAGA_JOIN_QUERY
-        );
+            VAGA_JOIN_QUERY,
+            " WHERE TRUE "
+        ));
 
-        let mut busca = sqlx::QueryBuilder::<Postgres>::new(query);
-
-        busca.push(" WHERE TRUE");
+        let mut query_reserva_de_contagem = QueryBuilder::<Postgres>::new(concatcp!(
+            "SELECT COUNT(*) as total ",
+            VAGA_JOIN_QUERY,
+            " WHERE TRUE "
+        ));
 
         for filtro in &filtros {
             Self::transformar_filtro_em_sql(&mut busca, filtro);
+            Self::transformar_filtro_em_sql(&mut query_reserva_de_contagem, filtro);
         }
 
         match ordenador {
@@ -132,15 +136,29 @@ impl RepositorioDeVagas for RepositorioDeVagasSQLX<'_> {
                 ErroDeDominio::interno()
             })?;
 
-        let mut qtd_total = 0u64;
+        let mut qtd_total = None;
 
         let vagas = vagas_e_contagem
             .into_iter()
             .map(|tupla| {
-                qtd_total = tupla.total as u64;
+                qtd_total = Some(tupla.total as u64);
                 tupla.vaga
             })
-            .collect();
+            .collect::<Vec<_>>();
+
+        let qtd_total = if let Some(qtd) = qtd_total {
+            qtd
+        } else {
+            query_reserva_de_contagem
+                .build_query_as::<(i64,)>()
+                .fetch_one(self.db_conn)
+                .await
+                .map_err(|err| {
+                    log::error!("{err}");
+                    ErroDeDominio::interno()
+                })?
+                .0 as u64
+        };
 
         Ok(EntidadePaginada {
             dados: vagas,
