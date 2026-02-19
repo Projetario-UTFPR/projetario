@@ -35,7 +35,7 @@ pub fn with_db_conn(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let generics = &sig.generics;
     let output = &sig.output;
 
-    let inner_name = format_ident!("__{}_inner", fn_name);
+    let inner_name = format_ident!("__{}_inner_with_db_conn", fn_name);
 
     let inputs = &sig.inputs;
 
@@ -116,7 +116,7 @@ pub fn with_setup(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let inputs = &sig.inputs;
     let output = &sig.output;
 
-    let inner_name = format_ident!("__{}_inner", fn_name);
+    let inner_name = format_ident!("__{}_inner_with_setup", fn_name);
 
     let arg_names = inputs.iter().map(|arg| match arg {
         syn::FnArg::Typed(pat_type) => {
