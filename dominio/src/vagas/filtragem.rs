@@ -22,6 +22,7 @@ pub enum EstadoDaVaga {
     Encerrada,
 }
 
+#[derive(Clone)]
 pub enum OrdenacaoDeVaga {
     Data(DirecaoOrdenacao),
     Titulo(DirecaoOrdenacao),

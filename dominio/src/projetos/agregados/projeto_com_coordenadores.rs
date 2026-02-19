@@ -4,7 +4,7 @@ use crate::comum::agregacao_com_coordenador::AgregadoComCoordenador;
 use crate::identidade::entidades::professor::Professor;
 use crate::projetos::entidades::projeto::Projeto;
 
-#[derive(Debug, Clone, Builder)]
+#[derive(Debug, Clone, Builder, PartialEq)]
 #[builder(setter(into))]
 pub struct ProjetoComCoordenadores {
     projeto: Projeto,

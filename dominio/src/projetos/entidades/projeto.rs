@@ -6,7 +6,7 @@ use uuid::Uuid;
 
 use crate::projetos::enums::tipo_de_projeto::TipoDeProjeto;
 
-#[derive(Serialize, Debug, Clone, FromRow)]
+#[derive(Serialize, Debug, Clone, FromRow, PartialEq)]
 #[cfg_attr(dev_utils, derive(derive_builder::Builder))]
 #[cfg_attr(dev_utils, builder(setter(into)))]
 pub struct Projeto {

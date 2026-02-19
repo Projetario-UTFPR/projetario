@@ -9,7 +9,7 @@ use crate::identidade::entidades::professor::Professor;
 use crate::projetos::agregados::projeto_com_coordenadores::ProjetoComCoordenadores;
 use crate::projetos::entidades::projeto::Projeto;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(dev_utils, derive(derive_builder::Builder))]
 #[cfg_attr(dev_utils, builder(setter(into)))]
 pub struct Vaga {
