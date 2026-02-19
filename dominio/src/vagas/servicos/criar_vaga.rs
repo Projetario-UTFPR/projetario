@@ -271,7 +271,6 @@ mod test {
             })
             .await;
 
-        dbg!(&resultado);
         assert_eq!(deveria_permitir, resultado.is_ok());
     }
 
