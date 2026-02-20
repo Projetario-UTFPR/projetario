@@ -13,7 +13,7 @@ pub struct PaginacaoMelhorada<Entidade: Debug> {
 
 impl<Entidade: Debug> PaginacaoMelhorada<Entidade> {
     pub fn nova(dados: Vec<Entidade>, total: u64, por_pagina: u8, pagina_atual: u64) -> Self {
-        let ultima_pagina = total.div_ceil(por_pagina as u64);
+        let ultima_pagina = total.div_ceil(por_pagina as u64).max(1);
 
         Self {
             dados,
