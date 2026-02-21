@@ -12,6 +12,7 @@
     "enabled": true,
     "indentStyle": "space",
     "indentWidth": 2,
+    "lineWidth": 110,
     "useEditorconfig": true,
     "formatWithErrors": true
   },

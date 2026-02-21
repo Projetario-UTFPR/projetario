@@ -35,11 +35,7 @@ export function Input({
 
       {error && <Form.AlertaDeErro>{error}</Form.AlertaDeErro>}
 
-      {observacao && (
-        <span className="text-sm text-gray-600 dark:text-gray-500">
-          {observacao}
-        </span>
-      )}
+      {observacao && <span className="text-sm text-gray-600 dark:text-gray-500">{observacao}</span>}
 
       <input
         id={id}

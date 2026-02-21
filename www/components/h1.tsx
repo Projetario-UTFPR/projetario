@@ -6,9 +6,5 @@ type Props = PropsWithChildren<{
 }>;
 
 export function H1({ children, className }: Props) {
-  return (
-    <h1 className={clsx("text-3xl font-medium", className && className)}>
-      {children}
-    </h1>
-  );
+  return <h1 className={clsx("text-3xl font-medium", className && className)}>{children}</h1>;
 }

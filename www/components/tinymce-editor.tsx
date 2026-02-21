@@ -72,28 +72,13 @@ export function TinyMCEEditor({ erro, tema, ...props }: TinyMCEEditorProps) {
        */}
       <Editor
         {...props}
-        plugins={[
-          "code",
-          "lists",
-          "image",
-          "anchor",
-          "link",
-          "quickbars",
-          "autoresize",
-          "table",
-        ]}
+        plugins={["code", "lists", "image", "anchor", "link", "quickbars", "autoresize", "table"]}
         toolbar={[
           { name: "extra", items: ["code"] },
           { name: "history", items: ["undo", "redo"] },
           {
             name: "styles",
-            items: [
-              "styles",
-              "fontsize",
-              "forecolor",
-              "backcolor",
-              "removeformat",
-            ],
+            items: ["styles", "fontsize", "forecolor", "backcolor", "removeformat"],
           },
           {
             name: "formatting",
@@ -114,14 +99,7 @@ export function TinyMCEEditor({ erro, tema, ...props }: TinyMCEEditorProps) {
           },
           {
             name: "blocks",
-            items: [
-              "bullist",
-              "numlist",
-              "blockquote",
-              "image",
-              "table",
-              "anchor",
-            ],
+            items: ["bullist", "numlist", "blockquote", "image", "table", "anchor"],
           },
           { name: "indentation", items: ["outdent", "indent"] },
         ]}
@@ -164,8 +142,7 @@ export function TinyMCEEditor({ erro, tema, ...props }: TinyMCEEditorProps) {
           keep_styles: true,
           inline_styles: true,
           valid_children: "+body[style]",
-          extended_valid_elements:
-            "script[src|async|defer|type|charset],style,div[*],center",
+          extended_valid_elements: "script[src|async|defer|type|charset],style,div[*],center",
           custom_elements: "style,script,center,div",
           skin: tema === "escuro" ? "oxide-dark" : "oxide",
         }}

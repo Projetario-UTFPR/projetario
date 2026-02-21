@@ -87,12 +87,7 @@ type DropdownItemProps = PropsWithChildren<{
   danger?: boolean;
 }>;
 
-function DropdownItem({
-  children,
-  asChild,
-  className,
-  danger,
-}: DropdownItemProps) {
+function DropdownItem({ children, asChild, className, danger }: DropdownItemProps) {
   return (
     <Dropdown.Item
       asChild={asChild}
@@ -104,9 +99,7 @@ function DropdownItem({
               "text-red-500 bg-red-500/2 hover:bg-red-500/10 active:bg-red-500/15",
               "dark:text-red-400 dark:bg-red-300/5 dark:hover:bg-red-300/10 dark:active:bg-red-300/20",
             ]
-          : [
-              "hover:bg-gray-200 active:bg-gray-300 dark:hover:bg-white/5 dark:active:bg-white/10",
-            ],
+          : ["hover:bg-gray-200 active:bg-gray-300 dark:hover:bg-white/5 dark:active:bg-white/10"],
         className && className,
       )}
     >
@@ -117,8 +110,6 @@ function DropdownItem({
 
 function DropdownLabel({ children }: PropsWithChildren) {
   return (
-    <Dropdown.Label className="px-4 text-sm mb-1 text-gray-600 dark:text-gray-300">
-      {children}
-    </Dropdown.Label>
+    <Dropdown.Label className="px-4 text-sm mb-1 text-gray-600 dark:text-gray-300">{children}</Dropdown.Label>
   );
 }

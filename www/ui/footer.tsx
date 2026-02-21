@@ -12,8 +12,7 @@ import { Rotas } from "@/rotas";
 export function Footer() {
   const pageProps = usePage().props;
   const usuarioEstaLogado = !!pageProps.autenticacao;
-  const usuarioEhProfessor =
-    usuarioEstaLogado && pageProps.autenticacao!.usuario.cargo !== "Aluno";
+  const usuarioEhProfessor = usuarioEstaLogado && pageProps.autenticacao!.usuario.cargo !== "Aluno";
 
   return (
     <footer className="mt-20 bg-gray-200 dark:bg-white/5 px-6 py-12 prose-h6:cursor-default">
@@ -32,18 +31,10 @@ export function Footer() {
             <div>
               <h6 className="mb-2 uppercase">Redes do Projetário</h6>
               <div className="flex gap-2">
-                <a
-                  target="_blank"
-                  referrerPolicy="no-referrer"
-                  href={RedesSociais.projetario.github}
-                >
+                <a target="_blank" referrerPolicy="no-referrer" href={RedesSociais.projetario.github}>
                   <GithubLogoIcon size={24} weight="fill" />
                 </a>
-                <a
-                  target="_blank"
-                  referrerPolicy="no-referrer"
-                  href={RedesSociais.projetario.instagram}
-                >
+                <a target="_blank" referrerPolicy="no-referrer" href={RedesSociais.projetario.instagram}>
                   <InstagramLogoIcon size={24} weight="fill" />
                 </a>
               </div>
@@ -52,25 +43,13 @@ export function Footer() {
             <div>
               <h6 className="mb-2 uppercase">Redes da UTFPR</h6>
               <div className="flex gap-2">
-                <a
-                  target="_blank"
-                  referrerPolicy="no-referrer"
-                  href={RedesSociais.utfpr.instagram}
-                >
+                <a target="_blank" referrerPolicy="no-referrer" href={RedesSociais.utfpr.instagram}>
                   <InstagramLogoIcon size={24} weight="fill" />
                 </a>
-                <a
-                  target="_blank"
-                  referrerPolicy="no-referrer"
-                  href={RedesSociais.utfpr.linkedin}
-                >
+                <a target="_blank" referrerPolicy="no-referrer" href={RedesSociais.utfpr.linkedin}>
                   <LinkedinLogoIcon size={24} weight="fill" />
                 </a>
-                <a
-                  target="_blank"
-                  referrerPolicy="no-referrer"
-                  href={RedesSociais.utfpr.x}
-                >
+                <a target="_blank" referrerPolicy="no-referrer" href={RedesSociais.utfpr.x}>
                   <XLogoIcon size={24} weight="fill" />
                 </a>
               </div>
@@ -104,13 +83,7 @@ export function Footer() {
   );
 }
 
-function FooterLink({
-  children,
-  className,
-  href = "#",
-  disabled,
-  ...props
-}: InertiaLinkProps) {
+function FooterLink({ children, className, href = "#", disabled, ...props }: InertiaLinkProps) {
   return (
     <Link
       href={href}

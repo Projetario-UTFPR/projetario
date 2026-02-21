@@ -10,8 +10,7 @@ type PageComponent = ReactElement & {
 
 const appName = "Projetário UTFPR";
 
-export const resolveTitle = (title?: string) =>
-  title ? `${appName} - ${title}` : appName;
+export const resolveTitle = (title?: string) => (title ? `${appName} - ${title}` : appName);
 
 export const resolvePage: PageResolver = async (name: string) => {
   const pages = import.meta.glob("../pages/**/*.tsx", { eager: false });
@@ -21,9 +20,7 @@ export const resolvePage: PageResolver = async (name: string) => {
 
   const page = (await pagePromise()) as PageComponent;
 
-  page.default.layout ??= (page: JSX.Element) => (
-    <DefaultLayout>{page}</DefaultLayout>
-  );
+  page.default.layout ??= (page: JSX.Element) => <DefaultLayout>{page}</DefaultLayout>;
 
   return page;
 };

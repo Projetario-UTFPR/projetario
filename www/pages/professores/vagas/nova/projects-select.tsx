@@ -16,10 +16,7 @@ type ProjectsSelectProps = {
   error?: string;
 };
 
-function ProjectsSelectWrapper({
-  children,
-  error,
-}: PropsWithChildren<{ error?: string }>) {
+function ProjectsSelectWrapper({ children, error }: PropsWithChildren<{ error?: string }>) {
   return (
     <label htmlFor="select-projetos" className="flex flex-col gap-2 mb-3">
       <InputLabelSpan required>Projetos</InputLabelSpan>
@@ -31,27 +28,17 @@ function ProjectsSelectWrapper({
   );
 }
 
-export function ProjectsSelect({
-  projectId,
-  setProjectId,
-  error,
-}: ProjectsSelectProps) {
+export function ProjectsSelect({ projectId, setProjectId, error }: ProjectsSelectProps) {
   type Projetos = RespostaIncertaDoServidor<Paginacao<Projeto>>;
   const projects = usePage().props.projetos as Projetos;
 
   const selectElement = projects.success ? (
-    <ProjectsSelectSuccess
-      projects={projects.data}
-      selected={projectId ?? ""}
-      onSelect={setProjectId}
-    />
+    <ProjectsSelectSuccess projects={projects.data} selected={projectId ?? ""} onSelect={setProjectId} />
   ) : (
     <ProjectsSelectFailure error={projects.error} />
   );
 
-  return (
-    <ProjectsSelectWrapper error={error}>{selectElement}</ProjectsSelectWrapper>
-  );
+  return <ProjectsSelectWrapper error={error}>{selectElement}</ProjectsSelectWrapper>;
 }
 
 function ProjectsSelectFailure({ error }: { error: string }) {
@@ -69,11 +56,7 @@ function ProjectsSelectFailure({ error }: { error: string }) {
   return (
     <AlertaDeErro className="relative p-4!">
       {error}
-      <button
-        onClick={tryToRefetch}
-        type="button"
-        className="absolute right-2 bottom-1 text-xs underline"
-      >
+      <button onClick={tryToRefetch} type="button" className="absolute right-2 bottom-1 text-xs underline">
         Tentar novamente
       </button>
     </AlertaDeErro>
@@ -86,23 +69,11 @@ type ProjectsSelectSuccessProps = {
   onSelect: (value: string) => void;
 };
 
-function ProjectsSelectSuccess({
-  projects,
-  selected,
-  onSelect,
-}: ProjectsSelectSuccessProps) {
+function ProjectsSelectSuccess({ projects, selected, onSelect }: ProjectsSelectSuccessProps) {
   return (
-    <S.Root
-      required
-      name="select-de-projetos"
-      value={selected}
-      onValueChange={onSelect}
-    >
+    <S.Root required name="select-de-projetos" value={selected} onValueChange={onSelect}>
       <S.Trigger className="group text-input leading-0 flex items-center justify-between">
-        <S.Value
-          placeholder="Escolha um projeto"
-          className="placeholder:text-gray-300"
-        />
+        <S.Value placeholder="Escolha um projeto" className="placeholder:text-gray-300" />
         <S.Icon>
           <CaretDownIcon
             size={16}
@@ -157,9 +128,7 @@ function ProjectItem(project: Projeto) {
       )}
     >
       <S.ItemText>
-        <div className="block relative z-10 cursor-default">
-          {project.titulo}
-        </div>
+        <div className="block relative z-10 cursor-default">{project.titulo}</div>
       </S.ItemText>
     </S.Item>
   );
