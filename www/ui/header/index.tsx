@@ -1,4 +1,5 @@
 import Logo from "@/assets/logo-projetario.svg";
+import { Rotas } from "@/rotas";
 import { BotaoDeTema } from "../../tema/botao-de-tema";
 import { BotaoDeLogin } from "./botao-de-login";
 import { DropdownUsuario } from "./dropdown-usuario";
@@ -12,8 +13,8 @@ export function Header() {
 
         <div className="flex gap-6 divide-x divide-black/10 dark:divide-white/10">
           <nav className="flex items-stretch pr-6">
-            <NavItem href="/" label="Início" />
-            <NavItem href="/projetos" label="Projetos" />
+            <NavItem href={Rotas.inicio()} label="Início" />
+            <NavItem href={Rotas.vagas.listar()} label="Projetos com vagas" />
           </nav>
 
           <div className="flex items-center gap-2">

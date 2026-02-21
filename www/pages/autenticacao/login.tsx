@@ -4,6 +4,7 @@ import Button from "@/components/button";
 import Form from "@/components/form";
 import { H1 } from "@/components/h1";
 import { Main } from "@/components/main";
+import { Rotas } from "@/rotas";
 
 const numbersOnlyRegex = /^[0-9]+$/;
 
@@ -59,15 +60,12 @@ export default function Login() {
               </h2>
 
               <div className="flex gap-3">
-                <Link
-                  href="/"
-                  className="underline decoration-wavy text-yellow-800 dark:text-yellow-500"
-                >
+                <Link href={Rotas.inicio()} className="underline decoration-wavy text-yellow-800 dark:text-yellow-500">
                   Volte para o início
                 </Link>
 
                 <Link
-                  href="/autenticacao/logout"
+                  href={Rotas.autenticacao.logout()}
                   method="post"
                   className="underline decoration-wavy text-red-500 dark:text-red-300"
                 >
@@ -114,7 +112,7 @@ export default function Login() {
                   </Button.CallToAction>
 
                   <Button.Secundario asChild>
-                    <Link href="/">Ficar como visitante</Link>
+                    <Link href={Rotas.inicio()}>Ficar como visitante</Link>
                   </Button.Secundario>
                 </div>
               </form>

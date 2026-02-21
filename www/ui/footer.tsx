@@ -7,6 +7,7 @@ import clsx from "clsx";
 import Logo from "@/assets/logo-projetario.svg";
 import { Hr } from "@/components/hr";
 import { RedesSociais } from "@/core/redes-sociais";
+import { Rotas } from "@/rotas";
 
 export function Footer() {
   const pageProps = usePage().props;
@@ -15,7 +16,7 @@ export function Footer() {
     usuarioEstaLogado && pageProps.autenticacao!.usuario.cargo !== "Aluno";
 
   return (
-    <footer className="bg-gray-200 dark:bg-white/5 px-6 py-12 prose-h6:cursor-default">
+    <footer className="mt-20 bg-gray-200 dark:bg-white/5 px-6 py-12 prose-h6:cursor-default">
       <div className="mx-auto w-[calc(100%_-_48px)] max-w-lg flex gap-36">
         <div className="flex flex-col gap-6">
           <figure>
@@ -86,12 +87,8 @@ export function Footer() {
           <div className="flex-1 flex flex-col gap-2">
             <h6>Recursos</h6>
             <FooterLink>FAQ</FooterLink>
-            {!usuarioEstaLogado && (
-              <FooterLink href="/autenticacao/login">Login</FooterLink>
-            )}
-            {usuarioEhProfessor && (
-              <FooterLink href="#">Painel do professor</FooterLink>
-            )}
+            {!usuarioEstaLogado && <FooterLink href={Rotas.autenticacao.login()}>Login</FooterLink>}
+            {usuarioEhProfessor && <FooterLink href="#">Painel do professor</FooterLink>}
             <FooterLink>Termos e condições</FooterLink>
           </div>
 

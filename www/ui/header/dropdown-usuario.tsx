@@ -5,6 +5,7 @@ import type { PropsWithChildren } from "react";
 import { Avatar } from "@/components/avatar";
 import { Hr } from "@/components/hr";
 import { cargoEhMaiorOuIgual } from "@/core/utils/hierarquia-de-cargo";
+import { Rotas } from "@/rotas";
 
 export function DropdownUsuario() {
   const autenticacao = usePage().props.autenticacao;
@@ -44,7 +45,7 @@ export function DropdownUsuario() {
           )}
 
           <DropdownItem asChild danger>
-            <Link href="/autenticacao/logout" method="post">
+            <Link href={Rotas.autenticacao.logout()} method="post">
               Deslogar
             </Link>
           </DropdownItem>
@@ -58,12 +59,10 @@ function SecaoParaProfessoresSomente() {
   return (
     <DropdownGroup label="Professores">
       <DropdownItem asChild>
-        <Link href="/professores/projetos/extensao/novo">
-          Novo projeto de extensão
-        </Link>
+        <Link href={Rotas.professores.projetos.novoProjetoDeExtensao()}>Novo projeto de extensão</Link>
       </DropdownItem>
       <DropdownItem asChild>
-        <Link href="/professores/vagas/nova">Nova vaga de projeto</Link>
+        <Link href={Rotas.professores.vagas.nova()}>Nova vaga de projeto</Link>
       </DropdownItem>
     </DropdownGroup>
   );

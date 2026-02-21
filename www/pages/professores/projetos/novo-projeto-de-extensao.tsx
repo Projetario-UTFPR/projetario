@@ -6,6 +6,7 @@ import Button from "@/components/button";
 import Form from "@/components/form";
 import { H1 } from "@/components/h1";
 import { Main } from "@/components/main";
+import { Rotas } from "@/rotas";
 import { resolvaTema } from "@/tema";
 
 type FormData = {
@@ -91,7 +92,7 @@ export default function NovoProjetoDeExtensao() {
                 Criar
               </Button.CallToAction>
               <Button.Secundario asChild>
-                <Link href="/">Voltar</Link>
+                <Link href={Rotas.inicio()}>Voltar</Link>
               </Button.Secundario>
             </div>
           </form>
