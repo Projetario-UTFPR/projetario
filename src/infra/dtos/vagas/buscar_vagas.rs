@@ -9,7 +9,7 @@ use uuid::Uuid;
 ///
 /// [`BuscarVagasQueryDto`]: BuscarVagasQueryDto
 /// [`BuscarVagasQueryDto::sanitize`]: BuscarVagasQueryDto::sanitize
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub struct BuscarVagasDto {
     pub(crate) filtro: Option<FiltroDeVaga>,
     pub(crate) ordenacao: Option<OrdenacaoDeVaga>,
