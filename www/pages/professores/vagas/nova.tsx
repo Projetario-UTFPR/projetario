@@ -63,11 +63,7 @@ export default function CriarNovaVagaDeProjeto() {
 
         <section className="container-box">
           <form className="w-full" onSubmit={handleSubmit}>
-            {errors.erro && (
-              <Form.AlertaDeErro className="mb-3">
-                {errors.erro}
-              </Form.AlertaDeErro>
-            )}
+            {errors.erro && <Form.AlertaDeErro className="mb-3">{errors.erro}</Form.AlertaDeErro>}
 
             <Form.Input
               value={data.titulo}
@@ -101,8 +97,7 @@ export default function CriarNovaVagaDeProjeto() {
               onInput={(link_candidatura) =>
                 setData({
                   ...data,
-                  link_candidatura:
-                    link_candidatura.length <= 0 ? null : link_candidatura,
+                  link_candidatura: link_candidatura.length <= 0 ? null : link_candidatura,
                 })
               }
             />
@@ -123,9 +118,7 @@ export default function CriarNovaVagaDeProjeto() {
               name="horas"
               placeholder="3"
               required
-              onInput={(horas_por_semana) =>
-                setData({ ...data, horas_por_semana: Number(horas_por_semana) })
-              }
+              onInput={(horas_por_semana) => setData({ ...data, horas_por_semana: Number(horas_por_semana) })}
             />
 
             <Form.Input
@@ -137,9 +130,7 @@ export default function CriarNovaVagaDeProjeto() {
               placeholder="2"
               required
               observacao="A quantidade de vagas se refere somente àquelas destinadas a graduandos."
-              onInput={(quantidade) =>
-                setData({ ...data, quantidade: Number(quantidade) })
-              }
+              onInput={(quantidade) => setData({ ...data, quantidade: Number(quantidade) })}
             />
 
             <Form.Input
@@ -178,12 +169,7 @@ export default function CriarNovaVagaDeProjeto() {
               required
             />
 
-            <Button.CallToAction
-              type="submit"
-              className="mt-6"
-              disabled={processing}
-              aria-busy={processing}
-            >
+            <Button.CallToAction type="submit" className="mt-6" disabled={processing} aria-busy={processing}>
               Publicar
             </Button.CallToAction>
           </form>

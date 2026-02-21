@@ -35,9 +35,7 @@ export function BotaoDeTema() {
       router.post(
         "/acoes/tema/sistema",
         {
-          tema: themeMatch.matches
-            ? TEMAS_DO_SISTEMA.Escuro
-            : TEMAS_DO_SISTEMA.Claro,
+          tema: themeMatch.matches ? TEMAS_DO_SISTEMA.Escuro : TEMAS_DO_SISTEMA.Claro,
         },
         {
           errorBag: "temaSistema",

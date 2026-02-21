@@ -25,8 +25,7 @@ export default function NovoProjetoDeExtensao() {
 
     post("/professores/projetos/extensao/criar_e_associar", {
       onSuccess: (page) => {
-        const mensagem =
-          page.props.flash?.mensagemSucesso ?? "Projeto criado com sucesso!";
+        const mensagem = page.props.flash?.mensagemSucesso ?? "Projeto criado com sucesso!";
 
         toast(mensagem, { type: "success" });
       },
@@ -44,11 +43,7 @@ export default function NovoProjetoDeExtensao() {
 
         <section className="container-box">
           <form className="w-full" onSubmit={handleSubmit}>
-            {errors.erro && (
-              <Form.AlertaDeErro className="mb-3">
-                {errors.erro}
-              </Form.AlertaDeErro>
-            )}
+            {errors.erro && <Form.AlertaDeErro className="mb-3">{errors.erro}</Form.AlertaDeErro>}
 
             <Form.Input
               label="Título do Projeto"
@@ -67,9 +62,7 @@ export default function NovoProjetoDeExtensao() {
               onInput={(value) =>
                 setData({
                   ...data,
-                  data_de_inicio: value
-                    ? new Date(value).toJSON().slice(0, 10)
-                    : undefined,
+                  data_de_inicio: value ? new Date(value).toJSON().slice(0, 10) : undefined,
                 })
               }
               error={errors.data_de_inicio}

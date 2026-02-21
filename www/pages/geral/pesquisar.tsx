@@ -18,12 +18,8 @@ const Pesquisar = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
       <div className="w-full max-w-4xl bg-white rounded-lg shadow-md p-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">
-          Projetos e Pesquisas
-        </h1>
-        <p className="text-gray-600 mb-6">
-          Encontre projetos em nossa base de dados
-        </p>
+        <h1 className="text-2xl font-bold text-gray-800 mb-2">Projetos e Pesquisas</h1>
+        <p className="text-gray-600 mb-6">Encontre projetos em nossa base de dados</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex flex-col sm:flex-row gap-4 items-center">
@@ -63,9 +59,7 @@ const Pesquisar = () => {
                       ? "bg-blue-100 text-blue-800"
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
-                  onClick={() =>
-                    setTipoSelecionado(tipo.toLowerCase().replace(" ", "_"))
-                  }
+                  onClick={() => setTipoSelecionado(tipo.toLowerCase().replace(" ", "_"))}
                 >
                   {tipo}
                 </button>
@@ -87,30 +81,19 @@ const Pesquisar = () => {
                 </select>
               </div>
 
-              <div className="bg-blue-500 text-white rounded-full px-2 py-1 text-xs font-medium">
-                88
-              </div>
+              <div className="bg-blue-500 text-white rounded-full px-2 py-1 text-xs font-medium">88</div>
             </div>
           </div>
         </form>
 
         {/* Resultados simplificados */}
         <div className="mt-8">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">
-            Projetos Encontrados
-          </h2>
+          <h2 className="text-lg font-semibold text-gray-800 mb-4">Projetos Encontrados</h2>
           <div className="space-y-3">
             {[1, 2, 3].map((item) => (
-              <div
-                key={item}
-                className="p-4 bg-gray-50 rounded-lg border border-gray-200"
-              >
-                <h3 className="font-medium text-gray-800">
-                  Projeto de Exemplo {item}
-                </h3>
-                <p className="text-sm text-gray-600 mt-1">
-                  Descrição breve do projeto de pesquisa
-                </p>
+              <div key={item} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <h3 className="font-medium text-gray-800">Projeto de Exemplo {item}</h3>
+                <p className="text-sm text-gray-600 mt-1">Descrição breve do projeto de pesquisa</p>
                 <div className="flex justify-between mt-2">
                   <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
                     {item % 2 === 0 ? "Extensão" : "Iniciação Científica"}
