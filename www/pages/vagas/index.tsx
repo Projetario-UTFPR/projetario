@@ -87,7 +87,7 @@ function ListagemDeVagas() {
     return <AlertaDeErro>{vagasResponse.error}</AlertaDeErro>;
   }
 
-  const { dados: vagas, ...paginacao } = vagasResponse.data;
+  const { dados: vagas, ..._paginacao } = vagasResponse.data;
 
   if (vagas.length <= 0) {
     return <Alerta>Não existem vagas abertas no momento.</Alerta>;

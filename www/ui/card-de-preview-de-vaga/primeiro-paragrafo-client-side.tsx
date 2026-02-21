@@ -14,21 +14,23 @@ function removaImagensEObtenhaPrimeiroParagrafoDeTexto(paragrafos: NodeListOf<HT
   });
 }
 
-export const PrimeiroParagrafoDoCorpoClientSide = memo(({ html, className }: PrimeiroParagrafoDoCorpoProps) => {
-  const primeiroParagrafo = useMemo(() => {
-    const container = document.createElement("div");
-    container.innerHTML = html;
-    const paragrafos = container.querySelectorAll("p");
-    return removaImagensEObtenhaPrimeiroParagrafoDeTexto(paragrafos);
-  }, [html]);
+export const PrimeiroParagrafoDoCorpoClientSide = memo(
+  ({ html, className }: PrimeiroParagrafoDoCorpoProps) => {
+    const primeiroParagrafo = useMemo(() => {
+      const container = document.createElement("div");
+      container.innerHTML = html;
+      const paragrafos = container.querySelectorAll("p");
+      return removaImagensEObtenhaPrimeiroParagrafoDeTexto(paragrafos);
+    }, [html]);
 
-  if (!primeiroParagrafo) return null;
+    if (!primeiroParagrafo) return null;
 
-  return (
-    <div
-      className={clsx("text-black/70 dark:text-white/70", className)}
-      // biome-ignore lint/security/noDangerouslySetInnerHtml: O conteúdo HTML é definido somente por professores, logo, deve ser seguro.
-      dangerouslySetInnerHTML={{ __html: primeiroParagrafo.outerHTML }}
-    />
-  );
-});
+    return (
+      <div
+        className={clsx("text-black/70 dark:text-white/70", className)}
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: O conteúdo HTML é definido somente por professores, logo, deve ser seguro.
+        dangerouslySetInnerHTML={{ __html: primeiroParagrafo.outerHTML }}
+      />
+    );
+  },
+);
