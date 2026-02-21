@@ -5,6 +5,7 @@ use comum::erros::erro_de_dominio::ErroDeDominio;
 pub mod acoes;
 pub mod autenticacao;
 pub mod professores;
+pub mod vagas;
 
 pub type RespostaDoApp<T = HttpResponse> = Result<T, ErroDeDominio>;
 pub type RedirectDoApp = Redirect;
