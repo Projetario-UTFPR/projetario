@@ -1,20 +1,13 @@
 import { Link, usePage } from "@inertiajs/react";
-import * as Avatar from "@radix-ui/react-avatar";
 import * as Dropdown from "@radix-ui/react-dropdown-menu";
 import clsx from "clsx";
-import { type PropsWithChildren, useMemo } from "react";
+import type { PropsWithChildren } from "react";
+import { Avatar } from "@/components/avatar";
 import { Hr } from "@/components/hr";
 import { cargoEhMaiorOuIgual } from "@/core/utils/hierarquia-de-cargo";
 
 export function DropdownUsuario() {
   const autenticacao = usePage().props.autenticacao;
-
-  const iniciaisDoNomeDoUsuario = useMemo(() => {
-    return autenticacao?.usuario.nome
-      .split(" ")
-      .map((nome) => nome[0])
-      .join("");
-  }, [autenticacao]);
 
   if (!autenticacao) return null;
 
@@ -30,21 +23,7 @@ export function DropdownUsuario() {
         )}
       >
         {usuario.nome}
-        <Avatar.Root
-          className={clsx(
-            "size-10 rounded-full select-none outline-none overflow-hidden",
-            "drop-shadow-black/5 drop-shadow-md",
-          )}
-        >
-          <Avatar.Fallback
-            className={clsx(
-              "leading-1 flex size-full items-center justify-center",
-              "bg-slate-600 text-[15px] font-medium text-white",
-            )}
-          >
-            {iniciaisDoNomeDoUsuario}
-          </Avatar.Fallback>
-        </Avatar.Root>
+        <Avatar nomeDoUsuario={usuario.nome} />
       </Dropdown.Trigger>
 
       <Dropdown.Portal>
