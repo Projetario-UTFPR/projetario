@@ -20,7 +20,7 @@ pub struct Vaga {
     quantidade: u8,
     link_edital: String,
     link_candidatura: Option<String>,
-    /// Se um título não for fornecido, será utilizad o título do projeto ao qual
+    /// Se um título não for fornecido, será utilizado o título do projeto ao qual
     /// esta vaga está associada.
     titulo: Option<String>,
     conteudo: String,
