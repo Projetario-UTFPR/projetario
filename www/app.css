@@ -14,7 +14,9 @@
   --color-gray-900: #3b3b3b;
   --color-gray-1000: #282828;
 
+  --color-yellow-400: #ffd900;
   --color-yellow-500: #ffcc00;
+  --color-yellow-600: #f7b900;
   --color-yellow-800: #e2910e;
 
   --container-lg: calc(1268rem / 16);

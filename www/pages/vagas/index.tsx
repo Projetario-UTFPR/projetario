@@ -5,16 +5,18 @@ import { FunnelSimpleIcon } from "@phosphor-icons/react/dist/ssr/FunnelSimple";
 import { ListDashesIcon } from "@phosphor-icons/react/dist/ssr/ListDashes";
 import { MagnifyingGlassIcon } from "@phosphor-icons/react/dist/ssr/MagnifyingGlass";
 import { SquaresFourIcon } from "@phosphor-icons/react/dist/ssr/SquaresFour";
-import { useId } from "react";
+import { useEffect, useId, useState } from "react";
 import { Alerta } from "@/components/alerta";
 import Button from "@/components/button";
 import { AlertaDeErro } from "@/components/form/alerta-de-erro";
 import { H1 } from "@/components/h1";
 import { Main } from "@/components/main";
 import type { PreviewDeVaga } from "@/core/types/entidades/preview-de-vaga";
+import type { TipoDeProjeto } from "@/core/types/enums/tipo-de-projeto";
 import type { Paginacao } from "@/core/types/paginacao";
 import type { RespostaIncertaDoServidor } from "@/core/types/resposta-incerta";
 import { CardDePreviewDeVaga } from "@/ui/card-de-preview-de-vaga";
+import { FiltroDeTipoDeVaga } from "@/ui/vagas/index/filtro-de-tipo-de-vaga";
 
 type Props = PageProps & {
   vagas: RespostaIncertaDoServidor<Paginacao<PreviewDeVaga>>;
@@ -22,23 +24,29 @@ type Props = PageProps & {
 
 export default function ListarVagas() {
   const selectId = useId();
+  const [tipoDeVaga, setTipoDeVaga] = useState<TipoDeProjeto | null>(null);
+
+  useEffect(() => {
+    console.log(tipoDeVaga);
+  }, [tipoDeVaga]);
 
   return (
     <Main className="mt-20">
       <H1 className="mb-6">Projetos e pesquisas</H1>
 
-      <search className="mb-6 container-box p-6 flex flex-row gap-6">
+      <search className="mb-6 container-box p-6 flex flex-row gap-6 items-center">
         <Button.Secundario>
           <FunnelIcon size={24} weight="bold" />
           Filtros
         </Button.Secundario>
 
-        <div>
-          <label>
+        <div className="flex items-center px-4 py-2 rounded-3xl border border-black/20 dark:border-white/20 w-full">
+          <label className="flex items-center gap-2.5 w-full">
             <MagnifyingGlassIcon size={24} weight="bold" />
-            Encontre qualquer projeto
-            <input type="text" />
+            <input type="text" placeholder="Encontre qualquer projeto" className="w-full" />
           </label>
+
+          <FiltroDeTipoDeVaga onValueChange={(tipoDeVaga) => setTipoDeVaga(tipoDeVaga)} />
         </div>
 
         <label htmlFor={selectId} className="inline-flex items-center gap-4">
