@@ -18,37 +18,43 @@
   },
   "homepage": "https://github.com/Projetario-UTFPR/projetario#readme",
   "devDependencies": {
-    "@biomejs/biome": "2.0.0",
-    "@inertiajs/core": "2.1.2",
-    "@tailwindcss/typography": "0.5.16",
-    "@tailwindcss/vite": "4.1.7",
-    "@types/node": "22.15.19",
-    "@types/react": "19.1.4",
-    "@types/react-dom": "19.1.5",
-    "@vitejs/plugin-react": "4.4.1",
-    "laravel-vite-plugin": "1.2.0",
-    "typescript": "5.8.3",
-    "vite": "6.3.5"
+    "@biomejs/biome": "2.4.7",
+    "@inertiajs/core": "2.3.18",
+    "@tailwindcss/typography": "0.5.19",
+    "@tailwindcss/vite": "4.2.1",
+    "@types/node": "25.5.0",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.1",
+    "laravel-vite-plugin": "2.1.0",
+    "typescript": "5.9.3",
+    "vite": "8.0.0"
   },
   "dependencies": {
-    "@inertiajs/react": "2.1.2",
+    "@inertiajs/react": "2.3.18",
     "@phosphor-icons/react": "2.1.10",
-    "@radix-ui/react-avatar": "1.1.10",
-    "@radix-ui/react-dropdown-menu": "2.1.15",
+    "@radix-ui/react-avatar": "1.1.11",
+    "@radix-ui/react-dropdown-menu": "2.1.16",
     "@radix-ui/react-select": "2.2.6",
-    "@radix-ui/react-slot": "1.2.3",
-    "@tinymce/tinymce-react": "6.2.1",
+    "@radix-ui/react-slot": "1.2.4",
+    "@tinymce/tinymce-react": "6.3.0",
     "clsx": "2.1.1",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
     "react-toastify": "11.0.5",
-    "tailwindcss": "4.1.7",
+    "tailwindcss": "4.2.1",
     "tinymce": "7.9.1"
   },
   "overrides": {
     "@tinymce/tinymce-react": {
       "react": "$react",
       "react-dom": "$react-dom"
+    },
+    "@tailwindcss/vite": {
+      "vite": "$vite"
+    },
+    "laravel-vite-plugin": {
+      "vite": "$vite"
     }
   }
 }
