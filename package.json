@@ -44,7 +44,9 @@
     "react-dom": "19.2.4",
     "react-toastify": "11.0.5",
     "tailwindcss": "4.2.1",
-    "tinymce": "7.9.1"
+    "tinymce": "7.9.1",
+    "nuqs": "2.8.9",
+    "use-debounce": "10.1.0"
   },
   "overrides": {
     "@tinymce/tinymce-react": {
