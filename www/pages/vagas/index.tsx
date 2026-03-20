@@ -1,11 +1,13 @@
 import type { PageProps } from "@inertiajs/core";
-import { Deferred, usePage } from "@inertiajs/react";
+import { Deferred, router, usePage } from "@inertiajs/react";
 import { FunnelIcon } from "@phosphor-icons/react/dist/ssr/Funnel";
 import { FunnelSimpleIcon } from "@phosphor-icons/react/dist/ssr/FunnelSimple";
 import { ListDashesIcon } from "@phosphor-icons/react/dist/ssr/ListDashes";
 import { MagnifyingGlassIcon } from "@phosphor-icons/react/dist/ssr/MagnifyingGlass";
 import { SquaresFourIcon } from "@phosphor-icons/react/dist/ssr/SquaresFour";
-import { useEffect, useId, useState } from "react";
+import { parseAsInteger, parseAsString, parseAsStringEnum, useQueryStates } from "nuqs";
+import { useId } from "react";
+import { useDebouncedCallback } from "use-debounce";
 import { Alerta } from "@/components/alerta";
 import Button from "@/components/button";
 import { AlertaDeErro } from "@/components/form/alerta-de-erro";
@@ -15,6 +17,7 @@ import type { PreviewDeVaga } from "@/core/types/entidades/preview-de-vaga";
 import type { TipoDeProjeto } from "@/core/types/enums/tipo-de-projeto";
 import type { Paginacao } from "@/core/types/paginacao";
 import type { RespostaIncertaDoServidor } from "@/core/types/resposta-incerta";
+import { parseU8 } from "@/lib/nuqs";
 import { CardDePreviewDeVaga } from "@/ui/card-de-preview-de-vaga";
 import { FiltroDeTipoDeVaga } from "@/ui/vagas/index/filtro-de-tipo-de-vaga";
 
@@ -24,17 +27,37 @@ type Props = PageProps & {
 
 export default function ListarVagas() {
   const selectId = useId();
-  const [tipoDeVaga, setTipoDeVaga] = useState<TipoDeProjeto | null>(null);
 
-  useEffect(() => {
-    console.log(tipoDeVaga);
-  }, [tipoDeVaga]);
+  const [filters, _setFilters] = useQueryStates(
+    {
+      direcao_ord: parseAsStringEnum(["asc", "desc"]),
+      ordenar_por: parseAsStringEnum(["titulo", "data"]),
+      filtro: parseAsString,
+      pagina: parseAsInteger,
+      qtd_por_pagina: parseU8,
+      filtrar_por: parseAsStringEnum(["titulo", "coordenador"]),
+      tipo: parseAsStringEnum(["Extensao", "IniciacaoCientifica"] satisfies TipoDeProjeto[]),
+    },
+    { shallow: true },
+  );
+
+  const aplicarFiltros = useDebouncedCallback(() => {
+    const nonNull = ([_, value]: [string, unknown]) => value !== null;
+    const entries = Object.entries(filters).filter(nonNull) as string[][];
+    const searchParams = new URLSearchParams(entries).toString();
+    router.get(`?${searchParams}`, undefined, { preserveState: true, replace: true });
+  }, 300);
+
+  const setFilters = (_filters: Partial<typeof filters>) => {
+    _setFilters(_filters);
+    aplicarFiltros();
+  };
 
   return (
     <Main className="mt-20">
       <H1 className="mb-6">Projetos e pesquisas</H1>
 
-      <search className="mb-6 container-box p-6 flex flex-row gap-6 items-center">
+      <search className="mb-6 container-box p-6 flex flexrow gap-6 items-center">
         <Button.Secundario>
           <FunnelIcon size={24} weight="bold" />
           Filtros
@@ -46,7 +69,12 @@ export default function ListarVagas() {
             <input type="text" placeholder="Encontre qualquer projeto" className="w-full" />
           </label>
 
-          <FiltroDeTipoDeVaga onValueChange={(tipoDeVaga) => setTipoDeVaga(tipoDeVaga)} />
+          <FiltroDeTipoDeVaga
+            onValueChange={(tipo) => {
+              setFilters({ tipo });
+            }}
+            paramKey="tipo"
+          />
         </div>
 
         <label htmlFor={selectId} className="inline-flex items-center gap-4">
