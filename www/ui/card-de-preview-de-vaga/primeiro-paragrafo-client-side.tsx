@@ -8,7 +8,10 @@ type PrimeiroParagrafoDoCorpoProps = {
 
 function removaImagensEObtenhaPrimeiroParagrafoDeTexto(paragrafos: NodeListOf<HTMLParagraphElement>) {
   return Array.from(paragrafos).find((paragrafo) => {
-    paragrafo.querySelectorAll(":is(img, svg)").forEach((node) => node.remove());
+    paragrafo.querySelectorAll(":is(img, svg)").forEach((node) => {
+      node.remove();
+    });
+
     const paragrafoFicouVazio = !paragrafo.textContent.trim();
     return !paragrafoFicouVazio;
   });
