@@ -112,7 +112,13 @@ export default function ListarVagas() {
 }
 
 function ListagemDeVagasSkeleton() {
-  return <h1>carregando</h1>;
+  return (
+    <div className="flex gap-6.25">
+      <CardDePreviewDeVaga.Skeleton />
+      <CardDePreviewDeVaga.Skeleton />
+      <CardDePreviewDeVaga.Skeleton />
+    </div>
+  );
 }
 
 function ListagemDeVagas() {
@@ -130,7 +136,7 @@ function ListagemDeVagas() {
   }
 
   return (
-    <div className="grid grid-flow-row grid-cols-3 justify-between items-start">
+    <div className="grid grid-flow-row grid-cols-3 gap-6.25 justify-between items-start">
       {vagas.map((vaga) => (
         <CardDePreviewDeVaga vaga={vaga} key={`card-de-vaga-${vaga.id}`} />
       ))}
