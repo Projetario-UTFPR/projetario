@@ -2,6 +2,7 @@ use dominio::comum::filtragem::DirecaoOrdenacao;
 use dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
 use dominio::vagas::filtragem::{FiltroDeVaga, OrdenacaoDeVaga};
 use serde::Deserialize;
+use serde_with::{DefaultOnError, serde_as};
 use uuid::Uuid;
 
 /// Contém a versão serializada do [`BuscarVagasQueryDto`].
@@ -18,6 +19,7 @@ pub struct BuscarVagasDto {
     pub(crate) qtd_por_pagina: Option<u8>,
 }
 
+#[serde_as]
 #[derive(Deserialize)]
 pub struct BuscarVagasQueryDto {
     #[serde(default)]
@@ -31,8 +33,10 @@ pub struct BuscarVagasQueryDto {
     #[serde(default)]
     pub tipo: Option<String>,
     #[serde(default)]
+    #[serde_as(as = "DefaultOnError")]
     pub pagina: Option<u64>,
     #[serde(default)]
+    #[serde_as(as = "DefaultOnError")]
     pub qtd_por_pagina: Option<u8>,
 }
 
