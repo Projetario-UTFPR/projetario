@@ -36,16 +36,16 @@
     "@radix-ui/react-avatar": "1.1.11",
     "@radix-ui/react-dropdown-menu": "2.1.16",
     "@radix-ui/react-select": "2.2.6",
-    "@radix-ui/react-toggle": "1.1.10",
     "@radix-ui/react-slot": "1.2.4",
+    "@radix-ui/react-toggle-group": "1.1.11",
     "@tinymce/tinymce-react": "6.3.0",
     "clsx": "2.1.1",
+    "nuqs": "2.8.9",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-toastify": "11.0.5",
     "tailwindcss": "4.2.1",
     "tinymce": "7.9.1",
-    "nuqs": "2.8.9",
     "use-debounce": "10.1.0"
   },
   "overrides": {
