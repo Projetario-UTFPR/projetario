@@ -8,7 +8,7 @@ function Root({ children }: RootProps) {
   return (
     <div
       className={clsx(
-        "flex items-center px-4 py-2 rounded-3xl border border-black/20 dark:border-white/20 w-full",
+        "self-stretch flex items-center px-4 py-2 rounded-3xl border border-black/20 dark:border-white/20 w-full",
         "ring-0 has-[input:focus-visible]:ring-4 ring-yellow-500/40 transition-all will-change-[box-shadow] duration-100",
       )}
     >

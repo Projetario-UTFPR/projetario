@@ -1,11 +1,9 @@
 import type { PageProps } from "@inertiajs/core";
 import { Deferred, router, usePage } from "@inertiajs/react";
 import { FunnelIcon } from "@phosphor-icons/react/dist/ssr/Funnel";
-import { FunnelSimpleIcon } from "@phosphor-icons/react/dist/ssr/FunnelSimple";
 import { ListDashesIcon } from "@phosphor-icons/react/dist/ssr/ListDashes";
 import { SquaresFourIcon } from "@phosphor-icons/react/dist/ssr/SquaresFour";
 import { parseAsInteger, parseAsIsoDateTime, parseAsString, parseAsStringEnum, useQueryStates } from "nuqs";
-import { useId } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { Alerta } from "@/components/alerta";
 import Button from "@/components/button";
@@ -20,14 +18,13 @@ import { parseU8 } from "@/lib/nuqs";
 import { CardDePreviewDeVaga } from "@/ui/card-de-preview-de-vaga";
 import { FiltroDeTipoDeVaga } from "@/ui/vagas/index/filtro-de-tipo-de-vaga";
 import FiltroDeTitulo from "@/ui/vagas/index/filtro-de-titulo";
+import { SelectDeOrdenacao } from "@/ui/vagas/index/select-de-ordenacao";
 
 type Props = PageProps & {
   vagas: RespostaIncertaDoServidor<Paginacao<PreviewDeVaga>>;
 };
 
 export default function ListarVagas() {
-  const selectId = useId();
-
   const [filters, _setFilters] = useQueryStates(
     {
       titulo: parseAsString,
@@ -75,20 +72,10 @@ export default function ListarVagas() {
           />
         </FiltroDeTitulo.Root>
 
-        <label htmlFor={selectId} className="inline-flex items-center gap-4">
-          <span>
-            <FunnelSimpleIcon size={24} weight="bold" />
-          </span>
-          <select name="ordenacao" id={selectId}>
-            <option value="">Alterar ordenação</option>
-
-            <hr />
-
-            <option value="data">Data de publicação</option>
-            <option value="titulo">Ordem alfabética do título</option>
-          </select>
-          {/* <CaretDownIcon size={20} weight="bold" /> */}
-        </label>
+        <SelectDeOrdenacao
+          defaultValue="datetime-decreasing"
+          onSelect={([ordenar_por, direcao_ord]) => setFilters({ ordenar_por, direcao_ord })}
+        />
 
         <div>
           <button type="button">
