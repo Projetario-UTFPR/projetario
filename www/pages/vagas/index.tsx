@@ -3,7 +3,6 @@ import { Deferred, router, usePage } from "@inertiajs/react";
 import { FunnelIcon } from "@phosphor-icons/react/dist/ssr/Funnel";
 import { FunnelSimpleIcon } from "@phosphor-icons/react/dist/ssr/FunnelSimple";
 import { ListDashesIcon } from "@phosphor-icons/react/dist/ssr/ListDashes";
-import { MagnifyingGlassIcon } from "@phosphor-icons/react/dist/ssr/MagnifyingGlass";
 import { SquaresFourIcon } from "@phosphor-icons/react/dist/ssr/SquaresFour";
 import { parseAsInteger, parseAsIsoDateTime, parseAsString, parseAsStringEnum, useQueryStates } from "nuqs";
 import { useId } from "react";
@@ -20,6 +19,7 @@ import type { RespostaIncertaDoServidor } from "@/core/types/resposta-incerta";
 import { parseU8 } from "@/lib/nuqs";
 import { CardDePreviewDeVaga } from "@/ui/card-de-preview-de-vaga";
 import { FiltroDeTipoDeVaga } from "@/ui/vagas/index/filtro-de-tipo-de-vaga";
+import FiltroDeTitulo from "@/ui/vagas/index/filtro-de-titulo";
 
 type Props = PageProps & {
   vagas: RespostaIncertaDoServidor<Paginacao<PreviewDeVaga>>;
@@ -48,7 +48,7 @@ export default function ListarVagas() {
     const entries = Object.entries(filters).filter(nonNull) as string[][];
     const searchParams = new URLSearchParams(entries).toString();
     router.get(`?${searchParams}`, undefined, { preserveState: true, replace: true });
-  }, 300);
+  }, 500);
 
   const setFilters = (_filters: Partial<typeof filters>) => {
     _setFilters(_filters);
@@ -65,19 +65,15 @@ export default function ListarVagas() {
           Filtros
         </Button.Secundario>
 
-        <div className="flex items-center px-4 py-2 rounded-3xl border border-black/20 dark:border-white/20 w-full">
-          <label className="flex items-center gap-2.5 w-full">
-            <MagnifyingGlassIcon size={24} weight="bold" />
-            <input type="text" placeholder="Encontre qualquer projeto" className="w-full" />
-          </label>
-
+        <FiltroDeTitulo.Root>
+          <FiltroDeTitulo.Input onInput={(titulo) => setFilters({ titulo })} />
           <FiltroDeTipoDeVaga
             onValueChange={(tipo) => {
               setFilters({ tipo });
             }}
             paramKey="tipo"
           />
-        </div>
+        </FiltroDeTitulo.Root>
 
         <label htmlFor={selectId} className="inline-flex items-center gap-4">
           <span>
