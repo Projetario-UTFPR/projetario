@@ -23,6 +23,8 @@ export function Item({ value, children, ...props }: ItemProps) {
         "data-[state=on]:dark:bg-yellow-500/10 data-[state=off]:dark:bg-gray-500/20",
         "data-[state=off]:dark:hover:bg-gray-500/30 data-[state=off]:dark:active:bg-gray-500/40",
         "data-[state=on]:dark:hover:bg-yellow-500/15 data-[state=on]:dark:active:bg-yellow-500/25",
+
+        "outline-none ring-0 ring-yellow-500/40 focus-visible:ring-4",
       )}
     >
       {children}
