@@ -110,15 +110,12 @@ impl BuscarVagasQueryDto {
             })
             .unwrap_or_default();
 
-        let ordenador = self
-            .ordenar_por
+        self.ordenar_por
             .as_deref()
             .and_then(|ordenar_por| match ordenar_por {
                 "titulo" => Some(OrdenacaoDeVaga::Titulo(direcao_ordenacao)),
                 "data" => Some(OrdenacaoDeVaga::Data(direcao_ordenacao)),
                 _ => None,
-            });
-
-        ordenador
+            })
     }
 }
