@@ -1,5 +1,5 @@
 import { Deferred, Head, useForm, usePage } from "@inertiajs/react";
-import type { FormEvent } from "react";
+import type { SubmitEventHandler } from "react";
 import { toast } from "react-toastify";
 import Button from "@/components/button";
 import Form from "@/components/form";
@@ -41,7 +41,7 @@ export default function CriarNovaVagaDeProjeto() {
     inscricoes_ate: new Date(),
   });
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit: SubmitEventHandler = (event) => {
     event.preventDefault();
 
     post("/professores/vagas/criar", {
@@ -164,8 +164,8 @@ export default function CriarNovaVagaDeProjeto() {
               tema={tema}
               label="Corpo da vaga"
               atualizarConteudo={(conteudo) => setData({ ...data, conteudo })}
-              error={errors.conteudo}
-              value={data.conteudo}
+              erro={errors.conteudo}
+              initialValue="<p>Descreva a vaga em detalhes.</p>"
               required
             />
 
