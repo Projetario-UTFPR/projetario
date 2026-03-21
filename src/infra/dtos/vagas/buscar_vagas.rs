@@ -1,6 +1,7 @@
-use dominio::comum::filtragem::DirecaoOrdenacao;
+use comum::sqlx::DbDateTime;
+use dominio::comum::filtragem::{DirecaoOrdenacao, LimitadorDeData};
 use dominio::projetos::enums::tipo_de_projeto::TipoDeProjeto;
-use dominio::vagas::filtragem::{FiltroDeVaga, OrdenacaoDeVaga};
+use dominio::vagas::filtragem::OrdenacaoDeVaga;
 use serde::Deserialize;
 use serde_with::{DefaultOnError, serde_as};
 use uuid::Uuid;
@@ -12,9 +13,11 @@ use uuid::Uuid;
 /// [`BuscarVagasQueryDto::sanitize`]: BuscarVagasQueryDto::sanitize
 #[derive(Clone)]
 pub struct BuscarVagasDto {
-    pub(crate) filtro: Option<FiltroDeVaga>,
-    pub(crate) ordenacao: Option<OrdenacaoDeVaga>,
+    pub(crate) titulo: Option<String>,
+    pub(crate) coordenador: Option<Uuid>,
     pub(crate) tipo: Option<TipoDeProjeto>,
+    pub(crate) data_de_publicacao: Option<(DbDateTime, LimitadorDeData)>,
+    pub(crate) ordenacao: Option<OrdenacaoDeVaga>,
     pub(crate) pagina: Option<u64>,
     pub(crate) qtd_por_pagina: Option<u8>,
 }
@@ -23,15 +26,21 @@ pub struct BuscarVagasDto {
 #[derive(Deserialize)]
 pub struct BuscarVagasQueryDto {
     #[serde(default)]
-    pub filtrar_por: Option<String>,
+    pub titulo: Option<String>,
     #[serde(default)]
-    pub filtro: Option<String>,
+    #[serde_with(as = "DefaultOnError")]
+    pub coordenador: Option<Uuid>,
+    #[serde(default)]
+    pub tipo: Option<String>,
+    #[serde(default)]
+    #[serde_with(as = "DefaultOnError")]
+    pub dp_data: Option<DbDateTime>,
+    #[serde(default)]
+    pub dp_lim: Option<String>,
     #[serde(default)]
     pub ordenar_por: Option<String>,
     #[serde(default)]
     pub direcao_ord: Option<String>,
-    #[serde(default)]
-    pub tipo: Option<String>,
     #[serde(default)]
     #[serde_as(as = "DefaultOnError")]
     pub pagina: Option<u64>,
@@ -45,17 +54,36 @@ impl BuscarVagasQueryDto {
     ///
     /// [`BuscarVagasDto`]: BuscarVagasDto
     pub fn sanitize(self) -> BuscarVagasDto {
-        let filtro = self.processe_filtro_silenciosamente();
         let ordenacao = self.processe_ordenador_silenciosamente();
         let tipo_de_projeto = self.processe_tipo_de_projeto_silenciosamente();
+        let data_de_publicacao = self.processe_data_de_publicacao();
 
         BuscarVagasDto {
-            filtro,
-            ordenacao,
+            titulo: self.titulo,
+            coordenador: self.coordenador,
             tipo: tipo_de_projeto,
+            data_de_publicacao,
+            ordenacao,
             pagina: self.pagina,
             qtd_por_pagina: self.qtd_por_pagina,
         }
+    }
+
+    fn processe_data_de_publicacao(&self) -> Option<(DbDateTime, LimitadorDeData)> {
+        let limitador_de_data = self
+            .dp_lim
+            .as_deref()
+            .and_then(|limitador| match limitador {
+                "ate" => Some(LimitadorDeData::Ate),
+                "apos" => Some(LimitadorDeData::Apos),
+                _ => None,
+            });
+
+        if let (Some(data), Some(limitador)) = (self.dp_data, limitador_de_data) {
+            return Some((data, limitador));
+        }
+
+        None
     }
 
     fn processe_tipo_de_projeto_silenciosamente(&self) -> Option<TipoDeProjeto> {
@@ -92,20 +120,5 @@ impl BuscarVagasQueryDto {
             });
 
         ordenador
-    }
-
-    fn processe_filtro_silenciosamente(&self) -> Option<FiltroDeVaga> {
-        if let (Some(filtro), Some(valor)) = (self.filtrar_por.as_deref(), self.filtro.as_deref()) {
-            return match filtro {
-                "titulo" => Some(FiltroDeVaga::Titulo(valor.into())),
-                "coordenador" => match Uuid::try_parse(valor) {
-                    Ok(id_coordenador) => Some(FiltroDeVaga::Coordenador(id_coordenador)),
-                    Err(_) => None,
-                },
-                _ => None,
-            };
-        }
-
-        None
     }
 }

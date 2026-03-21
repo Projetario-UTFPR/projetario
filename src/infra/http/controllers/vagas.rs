@@ -1,7 +1,7 @@
 use actix_web::web::{Data, Query};
 use actix_web::{HttpRequest, web};
 use dominio::comum::paginacao::Paginacao;
-use dominio::vagas::filtragem::{EstadoDaVaga, FiltroDeVaga};
+use dominio::vagas::filtragem::EstadoDaVaga;
 use dominio::vagas::servicos::buscar_vagas::{
     BuscarVagasDeProjetosParams,
     PossiveisFiltrosParaBuscarVagas,
@@ -55,15 +55,6 @@ async fn obtenha_propriedade_vagas(
 ) -> Result<serde_json::Value, InertiaError> {
     let servico_buscar_vagas = obtenha_servico_buscar_vagas(&db_conn);
 
-    let (titulo, coordenador) = buscar_vagas_dto
-        .filtro
-        .map(|filtro| match filtro {
-            FiltroDeVaga::Titulo(titulo) => (Some(titulo), None),
-            FiltroDeVaga::Coordenador(id) => (None, Some(id)),
-            _ => (None, None),
-        })
-        .unwrap_or_default();
-
     let vagas = servico_buscar_vagas
         .executar(BuscarVagasDeProjetosParams {
             ordenador: buscar_vagas_dto.ordenacao,
@@ -72,10 +63,10 @@ async fn obtenha_propriedade_vagas(
                 buscar_vagas_dto.qtd_por_pagina,
             )),
             possiveis_filtros: PossiveisFiltrosParaBuscarVagas {
-                titulo,
+                titulo: buscar_vagas_dto.titulo,
                 tipo: buscar_vagas_dto.tipo,
-                coordenador,
-                data_de_publicacao: None,
+                coordenador: buscar_vagas_dto.coordenador,
+                data_de_publicacao: buscar_vagas_dto.data_de_publicacao,
                 estado: Some(EstadoDaVaga::Ativa),
             },
         })

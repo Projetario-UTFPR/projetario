@@ -5,7 +5,7 @@ import { FunnelSimpleIcon } from "@phosphor-icons/react/dist/ssr/FunnelSimple";
 import { ListDashesIcon } from "@phosphor-icons/react/dist/ssr/ListDashes";
 import { MagnifyingGlassIcon } from "@phosphor-icons/react/dist/ssr/MagnifyingGlass";
 import { SquaresFourIcon } from "@phosphor-icons/react/dist/ssr/SquaresFour";
-import { parseAsInteger, parseAsString, parseAsStringEnum, useQueryStates } from "nuqs";
+import { parseAsInteger, parseAsIsoDateTime, parseAsString, parseAsStringEnum, useQueryStates } from "nuqs";
 import { useId } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { Alerta } from "@/components/alerta";
@@ -30,13 +30,15 @@ export default function ListarVagas() {
 
   const [filters, _setFilters] = useQueryStates(
     {
+      titulo: parseAsString,
+      coordenador: parseAsString,
+      tipo: parseAsStringEnum(["Extensao", "IniciacaoCientifica"] satisfies TipoDeProjeto[]),
+      dp_data: parseAsIsoDateTime,
+      dp_lim: parseAsStringEnum(["ate", "apos"]),
       direcao_ord: parseAsStringEnum(["asc", "desc"]),
       ordenar_por: parseAsStringEnum(["titulo", "data"]),
-      filtro: parseAsString,
       pagina: parseAsInteger,
       qtd_por_pagina: parseU8,
-      filtrar_por: parseAsStringEnum(["titulo", "coordenador"]),
-      tipo: parseAsStringEnum(["Extensao", "IniciacaoCientifica"] satisfies TipoDeProjeto[]),
     },
     { shallow: true },
   );
