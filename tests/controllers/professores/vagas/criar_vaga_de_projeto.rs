@@ -180,7 +180,6 @@ async fn um_professor_deveria_poder_criar_vagas_para_seus_projetos(
         .await
         .into_assertable_inertia();
 
-    dbg!(&page);
     assert!(page.get_props()["errors"].as_object().unwrap().is_empty());
 
     let count: i64 = sqlx::query_scalar("SELECT COUNT(id) FROM vaga")

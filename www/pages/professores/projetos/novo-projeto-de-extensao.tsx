@@ -1,6 +1,6 @@
 import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import { PlusIcon } from "@phosphor-icons/react/dist/ssr/Plus";
-import type { FormEvent } from "react";
+import type { SubmitEventHandler } from "react";
 import { toast } from "react-toastify";
 import Button from "@/components/button";
 import Form from "@/components/form";
@@ -21,7 +21,7 @@ export default function NovoProjetoDeExtensao() {
   const tema = resolvaTema(props.temaPreferido, props.temaSistema);
   const { post, data, setData, errors, processing } = useForm<FormData>();
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit: SubmitEventHandler = (event) => {
     event.preventDefault();
 
     post("/professores/projetos/extensao/criar_e_associar", {
@@ -72,11 +72,11 @@ export default function NovoProjetoDeExtensao() {
 
             <Form.Editor
               required
-              label="Conteúdo"
-              error={errors.descricao}
-              atualizarConteudo={(descricao) => setData({ ...data, descricao })}
-              initialValue="Descreva o projeto em detalhes."
               tema={tema}
+              label="Conteúdo"
+              erro={errors.descricao}
+              initialValue="Descreva o projeto em detalhes."
+              atualizarConteudo={(descricao) => setData({ ...data, descricao })}
             />
 
             <div className="flex items-center gap-3 mt-6">

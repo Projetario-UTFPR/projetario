@@ -63,7 +63,6 @@ pub async fn um_professor_deveria_poder_criar_um_projeto_de_extensao(
         .await
         .into_assertable_inertia();
 
-    dbg!(&pagina.get_props());
     assert!(pagina.get_props()["errors"].as_object().unwrap().is_empty());
     // endregion: --- Garante que não houve erros
 
