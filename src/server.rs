@@ -28,6 +28,7 @@ pub fn get_server() -> App<
     let storage = FileSessionStore::default();
 
     App::new()
+        .wrap(NormalizePath::trim())
         .service(actix_files::Files::new("/bundle/", "./public/bundle/").prefer_utf8(true))
         .service(actix_files::Files::new("/tiny-mce/", "./public/tiny-mce/").prefer_utf8(true))
         .route(
@@ -50,7 +51,6 @@ pub fn get_server() -> App<
                         .cookie_name(app_config.sessions_cookie_name.to_string())
                         .build(),
                 )
-                .wrap(NormalizePath::trim())
                 .configure(WebRouter::register)
                 // serviço de fallback de arquivos o ideal é manter tudo fora desse escopo, mas se ainda não tiver
                 // sido montado, esse aqui garante que vai ser entregue mesmo que sofra modificações decorrentes
