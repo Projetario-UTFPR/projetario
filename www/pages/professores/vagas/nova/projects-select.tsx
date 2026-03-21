@@ -1,11 +1,9 @@
 import { router, usePage } from "@inertiajs/react";
-import { CaretDownIcon } from "@phosphor-icons/react/dist/ssr/CaretDown";
-import * as S from "@radix-ui/react-select";
-import clsx from "clsx";
 import type { PropsWithChildren } from "react";
 import { Alerta } from "@/components/alerta";
 import { AlertaDeErro } from "@/components/form/alerta-de-erro";
 import { InputLabelSpan } from "@/components/form/label-span";
+import Select from "@/components/select";
 import type { Projeto } from "@/core/types/entidades/projeto";
 import type { Paginacao } from "@/core/types/paginacao";
 import type { RespostaIncertaDoServidor } from "@/core/types/resposta-incerta";
@@ -71,73 +69,32 @@ type ProjectsSelectSuccessProps = {
 
 function ProjectsSelectSuccess({ projects, selected, onSelect }: ProjectsSelectSuccessProps) {
   return (
-    <S.Root required name="select-de-projetos" value={selected} onValueChange={onSelect}>
-      <S.Trigger className="group text-input leading-0 flex items-center justify-between">
-        <S.Value placeholder="Escolha um projeto" className="placeholder:text-gray-300" />
-        <S.Icon>
-          <CaretDownIcon
-            size={16}
-            weight="bold"
-            className="transition-all text-gray-500 group-data-[state=open]:rotate-180"
-          />
-        </S.Icon>
-      </S.Trigger>
+    <Select.Root required name="select-de-projetos" value={selected} onValueChange={onSelect}>
+      <Select.Trigger placeholder="Escolha um projeto" />
 
-      <S.Portal>
-        <S.Content
-          position="popper"
-          side="bottom"
-          align="center"
-          sideOffset={4}
-          alignOffset={12}
-          sticky="partial"
-          collisionPadding={24}
-          className={clsx(
-            "overflow-hidden bg-white dark:bg-gray-800 shadow-md rounded-2xl border border-black/10",
-            "w-[var(--radix-select-trigger-width)] p-2 flex flex-col gap-0.5",
-            "data-[side=bottom]:animate-slide-up-and-fade data-[side=left]:animate-slide-right-and-fade",
-            "data-[side=right]:animate-slide-left-and-fade data-[side=top]:animate-slide-down-and-fade",
-          )}
-        >
-          {projects.total > 0 ? (
-            projects.dados.map(ProjectItem)
-          ) : (
-            <Alerta>Você ainda não possui nenhum projeto de extensão.</Alerta>
-          )}
-        </S.Content>
-      </S.Portal>
-    </S.Root>
+      <Select.Content>
+        {projects.total > 0 ? (
+          <Select.ViewportGroup>{projects.dados.map(ProjectItem)}</Select.ViewportGroup>
+        ) : (
+          <Alerta>Você ainda não possui nenhum projeto de extensão.</Alerta>
+        )}
+      </Select.Content>
+    </Select.Root>
   );
 }
 
 function ProjectItem(project: Projeto) {
   return (
-    <S.Item
-      key={`projects-select-project-item-id-${project.id}`}
-      value={project.id}
-      autoFocus={false}
-      className={clsx(
-        "py-1 px-2 rounded-xl relative overflow-hidden",
-        "outline-none",
-        "before:absolute before:inset-2 before:rounded-xl before:transition-all",
-        "before:duration-100 before:bg-transparent",
-        "hover:before:inset-0 hover:before:bg-yellow-500/50",
-        "active:before:bg-yellow-500 focus:before:bg-yellow-500/50 focus:before:inset-0",
-        "data-[state=checked]:before:bg-yellow-500 data-[state=checked]:before:inset-0",
-        "dark:active:text-black data-[state=checked]:dark:text-black",
-      )}
-    >
-      <S.ItemText>
-        <div className="block relative z-10 cursor-default">{project.titulo}</div>
-      </S.ItemText>
-    </S.Item>
+    <Select.Item key={`projects-select-project-item-id-${project.id}`} value={project.id} autoFocus={false}>
+      {project.titulo}
+    </Select.Item>
   );
 }
 
 export function ProjectsSelectSkeleton() {
   return (
     <ProjectsSelectWrapper>
-      <div className="text-input animate-pulse bg-gray-200 dark:bg-white/5 dark:border dark:border-white/20 h-8.5" />
+      <Select.Skeleton />
     </ProjectsSelectWrapper>
   );
 }
