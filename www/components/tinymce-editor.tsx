@@ -53,15 +53,18 @@ import "tinymce/skins/ui/oxide/content.inline.min.css";
 
 import { Editor, type IAllProps } from "@tinymce/tinymce-react";
 import clsx from "clsx";
+import type { RefObject } from "react";
+import type { Editor as TEditor } from "tinymce/tinymce";
 import type { TemaEstrito } from "@/tema";
 import Form from "./form";
 
-type TinyMCEEditorProps = Omit<IAllProps, "licenseKey"> & {
+export type TinyMCEEditorProps = Omit<IAllProps, "licenseKey"> & {
   erro?: string;
   tema: TemaEstrito;
+  editorRef?: RefObject<TEditor>;
 };
 
-export function TinyMCEEditor({ erro, tema, ...props }: TinyMCEEditorProps) {
+export function TinyMCEEditor({ erro, tema, editorRef, ...props }: TinyMCEEditorProps) {
   return (
     <div className="conteudo-editor">
       {erro && <Form.AlertaDeErro>{erro}</Form.AlertaDeErro>}
@@ -101,7 +104,7 @@ export function TinyMCEEditor({ erro, tema, ...props }: TinyMCEEditorProps) {
         ]}
         id="editor"
         init={{
-          skin_url: "default",
+          // skin_url: "default",
           autoresize_bottom_margin: 0,
           language: "pt_BR",
           language_url: "/tiny-mce/langs/pt_BR.js",
@@ -141,6 +144,9 @@ export function TinyMCEEditor({ erro, tema, ...props }: TinyMCEEditorProps) {
           extended_valid_elements: "script[src|async|defer|type|charset],style,div[*],center",
           custom_elements: "style,script,center,div",
           skin: tema === "escuro" ? "oxide-dark" : "oxide",
+          setup: (editor) => {
+            if (editorRef) editorRef.current = editor;
+          },
         }}
       />
     </div>
