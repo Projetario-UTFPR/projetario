@@ -35,8 +35,8 @@ export function SelectDeOrdenacao({ defaultValue, onSelect }: Props) {
       <Select.Content>
         <Select.ViewportGroup>
           <Select.Header title={tituloDoSelect} />
-          <Select.Item value="datetime-decreasing">Mais antigas</Select.Item>
-          <Select.Item value="datetime-increasing">Mais recentes</Select.Item>
+          <Select.Item value="datetime-decreasing">Mais recentes</Select.Item>
+          <Select.Item value="datetime-increasing">Mais antigas</Select.Item>
           <Select.Item value="title-increasing">Título (A-Z)</Select.Item>
           <Select.Item value="title-decreasing">Título (Z-A)</Select.Item>
         </Select.ViewportGroup>
