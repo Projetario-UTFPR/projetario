@@ -9,7 +9,7 @@ use futures_util::future::LocalBoxFuture;
 use inertia_rust::actix::{SessionErrors, is_inertia_response};
 use inertia_rust::{InertiaSessionToReflash, InertiaTemporarySession};
 use log::error;
-use serde_json::Map;
+use serde_json::{Map, from_str};
 
 pub struct ReflashTemporarySessionMiddleware;
 
@@ -88,16 +88,11 @@ where
             // If it's not a Inertia redirect or response, it might be assets response
             // then, reflash everything so that assets don't affect real user's requests
             let (prev_url, curr_url, optional_errors) = if !is_inertia_response(&res) {
-                if let Some(flash_messages) = session.remove(app_config.sessions_flash_key) {
-                    if let Ok(flash_messages) =
-                        serde_json::from_str::<HashMap<String, String>>(&flash_messages)
-                    {
-                        if let Err(err) =
-                            session.insert(app_config.sessions_flash_key, flash_messages)
-                        {
-                            error!("Failed to reflash flash messages: {}", err);
-                        };
-                    }
+                if let Some(flash_messages) = session.remove(app_config.sessions_flash_key)
+                    && let Ok(flash_messages) = from_str::<HashMap<String, String>>(&flash_messages)
+                    && let Err(err) = session.insert(app_config.sessions_flash_key, flash_messages)
+                {
+                    error!("Failed to reflash flash messages: {}", err);
                 }
 
                 (before_prev_url, prev_url, errors)

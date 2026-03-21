@@ -2,7 +2,7 @@ use comum::sqlx::{DbDateTime, db_date_time_now};
 use fake::faker::internet::pt_br::{FreeEmail, Password};
 use fake::faker::name::pt_br::Name;
 use fake::{Fake, faker};
-use rand::Rng;
+use rand::RngExt as _;
 use uuid::Uuid;
 
 use crate::identidade::entidades::usuario::{Usuario, UsuarioBuilder, UsuarioModelo};

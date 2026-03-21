@@ -1,4 +1,4 @@
-use rand::Rng;
+use rand::RngExt as _;
 
 use crate::identidade::entidades::aluno::{Aluno, AlunoBuilder};
 use crate::test::fabricas_de_entidades::usuario_modelo::UsuarioParcial;

@@ -150,10 +150,10 @@ impl Usuario {
     }
 
     pub fn coloque_url_curriculo_lattes(&mut self, url: String) {
-        if let Some(ref url_atual) = self.url_curriculo_lattes {
-            if url.eq(url_atual) {
-                return;
-            }
+        if let Some(ref url_atual) = self.url_curriculo_lattes
+            && url.eq(url_atual)
+        {
+            return;
         }
 
         self.url_curriculo_lattes = Some(url);

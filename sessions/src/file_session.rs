@@ -234,18 +234,17 @@ impl FileSessionStore<'_> {
     }
 
     async fn maybe_create_session_directory(&self) {
-        if !std::path::Path::new(self.get_sessions_dir()).is_dir() {
-            if let Err(err) = DirBuilder::new()
+        if !std::path::Path::new(self.get_sessions_dir()).is_dir()
+            && let Err(err) = DirBuilder::new()
                 .recursive(true)
                 .create(self.get_sessions_dir())
                 .await
-            {
-                log::error!(
-                    "Session storage does not exist and couldn't be created. Consider creating the directory '{}' yourself. Error: {}",
-                    self.get_sessions_dir(),
-                    err
-                );
-            }
+        {
+            log::error!(
+                "Session storage does not exist and couldn't be created. Consider creating the directory '{}' yourself. Error: {}",
+                self.get_sessions_dir(),
+                err
+            );
         }
     }
 

@@ -5,7 +5,7 @@ use crate::infra::repositorios::sqlx::coordenadores_de_projetos::RepositorioDeCo
 
 pub fn obtenha_servico_criar_projeto_de_extensao(
     db_conn: &PgPool,
-) -> ServicoCriarProjetoDeExtensao<RepositorioDeCoordenadoresDeProjetosSQLX> {
+) -> ServicoCriarProjetoDeExtensao<RepositorioDeCoordenadoresDeProjetosSQLX<'_>> {
     let repositorio_coordenadores = RepositorioDeCoordenadoresDeProjetosSQLX::novo(db_conn);
     ServicoCriarProjetoDeExtensao::novo(repositorio_coordenadores)
 }
