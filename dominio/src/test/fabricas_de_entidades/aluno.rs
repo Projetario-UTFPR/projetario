@@ -1,4 +1,4 @@
-use rand::Rng;
+use rand::RngExt as _;
 
 use crate::identidade::entidades::aluno::Aluno;
 use crate::identidade::entidades::aluno::builder::AlunoBuilder;
