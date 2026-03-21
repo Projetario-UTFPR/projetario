@@ -1,9 +1,9 @@
 import type { PageProps } from "@inertiajs/core";
 import { Deferred, router, usePage } from "@inertiajs/react";
 import { FunnelIcon } from "@phosphor-icons/react/dist/ssr/Funnel";
-import { ListDashesIcon } from "@phosphor-icons/react/dist/ssr/ListDashes";
-import { SquaresFourIcon } from "@phosphor-icons/react/dist/ssr/SquaresFour";
+import clsx from "clsx";
 import { parseAsInteger, parseAsIsoDateTime, parseAsString, parseAsStringEnum, useQueryStates } from "nuqs";
+import { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { Alerta } from "@/components/alerta";
 import Button from "@/components/button";
@@ -16,6 +16,7 @@ import type { Paginacao } from "@/core/types/paginacao";
 import type { RespostaIncertaDoServidor } from "@/core/types/resposta-incerta";
 import { parseU8 } from "@/lib/nuqs";
 import { CardDePreviewDeVaga } from "@/ui/card-de-preview-de-vaga";
+import { DirecaoDosCardsDeVagas } from "@/ui/vagas/index/direcao-dos-cards-de-vagas";
 import { FiltroDeTipoDeVaga } from "@/ui/vagas/index/filtro-de-tipo-de-vaga";
 import FiltroDeTitulo from "@/ui/vagas/index/filtro-de-titulo";
 import { SelectDeOrdenacao } from "@/ui/vagas/index/select-de-ordenacao";
@@ -24,7 +25,20 @@ type Props = PageProps & {
   vagas: RespostaIncertaDoServidor<Paginacao<PreviewDeVaga>>;
 };
 
+const DIRECAO_FAVORITA_KEY = "projetario_utfpr_vacancies_direction";
+
+const obtenhaPrefereCardsHorizontais = () => window.localStorage.getItem(DIRECAO_FAVORITA_KEY) === "true";
+const salvePrefereCardsHorizontais = (value: boolean) =>
+  window.localStorage.setItem(DIRECAO_FAVORITA_KEY, value.toString());
+
 export default function ListarVagas() {
+  const [cardsHorizontais, _setCardsHorizontais] = useState(obtenhaPrefereCardsHorizontais());
+
+  const setCardsHorizontais = (value: boolean) => {
+    _setCardsHorizontais(value);
+    salvePrefereCardsHorizontais(value);
+  };
+
   const [filters, _setFilters] = useQueryStates(
     {
       titulo: parseAsString,
@@ -77,36 +91,32 @@ export default function ListarVagas() {
           onSelect={([ordenar_por, direcao_ord]) => setFilters({ ordenar_por, direcao_ord })}
         />
 
-        <div>
-          <button type="button">
-            <ListDashesIcon size={24} weight="bold" />
-          </button>
-          <button type="button">
-            <SquaresFourIcon size={24} weight="bold" />
-          </button>
-        </div>
+        <DirecaoDosCardsDeVagas
+          defaultValue={obtenhaPrefereCardsHorizontais() ? "horizontal" : "vertical"}
+          onValueChange={(direcao) => setCardsHorizontais(direcao === "horizontal")}
+        />
       </search>
 
-      <Deferred data="vagas" fallback={ListagemDeVagasSkeleton}>
+      <Deferred data="vagas" fallback={<ListagemDeVagasSkeleton cardsHorizontais={cardsHorizontais} />}>
         <div className="mb-6">
-          <ListagemDeVagas />
+          <ListagemDeVagas cardsHorizontais={cardsHorizontais} />
         </div>
       </Deferred>
     </Main>
   );
 }
 
-function ListagemDeVagasSkeleton() {
+function ListagemDeVagasSkeleton({ cardsHorizontais }: { cardsHorizontais: boolean }) {
   return (
-    <div className="flex gap-6.25">
-      <CardDePreviewDeVaga.Skeleton />
-      <CardDePreviewDeVaga.Skeleton />
-      <CardDePreviewDeVaga.Skeleton />
+    <div className={clsx("flex gap-6.25", cardsHorizontais && "flex-col")}>
+      <CardDePreviewDeVaga.Skeleton direcao={cardsHorizontais ? "horizontal" : "vertical"} />
+      <CardDePreviewDeVaga.Skeleton direcao={cardsHorizontais ? "horizontal" : "vertical"} />
+      <CardDePreviewDeVaga.Skeleton direcao={cardsHorizontais ? "horizontal" : "vertical"} />
     </div>
   );
 }
 
-function ListagemDeVagas() {
+function ListagemDeVagas({ cardsHorizontais }: { cardsHorizontais: boolean }) {
   const page = usePage<Props>();
   const vagasResponse = page.props.vagas;
 
@@ -121,9 +131,18 @@ function ListagemDeVagas() {
   }
 
   return (
-    <div className="grid grid-flow-row grid-cols-3 gap-6.25 justify-between items-start">
+    <div
+      className={clsx(
+        "gap-6.25",
+        cardsHorizontais ? "flex flex-col" : "grid grid-flow-row grid-cols-3 justify-between items-start",
+      )}
+    >
       {vagas.map((vaga) => (
-        <CardDePreviewDeVaga vaga={vaga} key={`card-de-vaga-${vaga.id}`} />
+        <CardDePreviewDeVaga
+          vaga={vaga}
+          key={`card-de-vaga-${vaga.id}`}
+          direcao={cardsHorizontais ? "horizontal" : "vertical"}
+        />
       ))}
     </div>
   );
