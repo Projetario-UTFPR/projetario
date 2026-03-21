@@ -1,15 +1,14 @@
-import * as Toggle from "@radix-ui/react-toggle";
+import * as ToggleGroup from "@radix-ui/react-toggle-group";
 import clsx from "clsx";
 import type { TipoDeProjeto } from "@/core/types/enums/tipo-de-projeto";
 
-type ItemProps = Omit<Toggle.ToggleProps, "value"> & {
+type ItemProps = Omit<ToggleGroup.ToggleGroupItemProps, "value"> & {
   value: TipoDeProjeto;
-  toggle: (value: TipoDeProjeto, pressed: boolean) => void;
 };
 
-export function Item({ value, children, toggle, ...props }: ItemProps) {
+export function Item({ value, children, ...props }: ItemProps) {
   return (
-    <Toggle.Root
+    <ToggleGroup.Item
       value={value}
       {...props}
       className={clsx(
@@ -25,9 +24,8 @@ export function Item({ value, children, toggle, ...props }: ItemProps) {
         "data-[state=off]:dark:hover:bg-gray-500/30 data-[state=off]:dark:active:bg-gray-500/40",
         "data-[state=on]:dark:hover:bg-yellow-500/15 data-[state=on]:dark:active:bg-yellow-500/25",
       )}
-      onPressedChange={(pressed) => toggle(value, pressed)}
     >
       {children}
-    </Toggle.Root>
+    </ToggleGroup.Item>
   );
 }

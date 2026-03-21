@@ -1,3 +1,4 @@
+import * as ToggleGroup from "@radix-ui/react-toggle-group";
 import { useState } from "react";
 import type { TipoDeProjeto } from "@/core/types/enums/tipo-de-projeto";
 import { Item } from "./item";
@@ -24,15 +25,10 @@ function resolvaFiltragemExclusivaPorTipoDeVaga(_tiposPermitidos: TipoDeProjeto[
 
 function obtenhaListaInicialDeTiposSelecionados(paramKey: string): TipoDeProjeto[] {
   const searchParams = new URLSearchParams(window.location.search);
-  const tipoJaSelecionado = searchParams.get(paramKey);
+  const tipoValidoSelecionado = TIPOS_DE_PROJETO.find((tipo) => tipo === searchParams.get(paramKey));
 
-  if (!tipoJaSelecionado) return [...TIPOS_DE_PROJETO];
-
-  const tipoJaSelecionadoEhValido = TIPOS_DE_PROJETO.includes(tipoJaSelecionado as TipoDeProjeto);
-
-  if (!tipoJaSelecionadoEhValido) return [...TIPOS_DE_PROJETO];
-
-  return [tipoJaSelecionado as TipoDeProjeto];
+  if (tipoValidoSelecionado) return [tipoValidoSelecionado];
+  return [...TIPOS_DE_PROJETO];
 }
 
 export function FiltroDeTipoDeVaga({ onValueChange, paramKey }: Props) {
@@ -40,34 +36,21 @@ export function FiltroDeTipoDeVaga({ onValueChange, paramKey }: Props) {
     obtenhaListaInicialDeTiposSelecionados(paramKey),
   );
 
-  const calculeNovosTiposSelecionados = (value: TipoDeProjeto, pressed: boolean) => {
-    if (pressed) return [...tiposSelecionados, value];
-    return tiposSelecionados.filter((tipo) => tipo !== value);
-  };
-
-  const atualizarTiposSelecionados = (value: TipoDeProjeto, pressed: boolean) => {
-    const novosTipos = calculeNovosTiposSelecionados(value, pressed);
+  const atualizarTiposSelecionados = (novosTipos: TipoDeProjeto[]) => {
     const tipoExclusivo = resolvaFiltragemExclusivaPorTipoDeVaga(novosTipos);
     setTiposSelecionados(novosTipos);
     onValueChange(tipoExclusivo);
   };
 
   return (
-    <div className="shrink-0 flex items-center justify-center gap-1.25">
-      <Item
-        value="Extensao"
-        pressed={tiposSelecionados.includes("Extensao")}
-        toggle={atualizarTiposSelecionados}
-      >
-        Extensão
-      </Item>
-      <Item
-        value="IniciacaoCientifica"
-        pressed={tiposSelecionados.includes("IniciacaoCientifica")}
-        toggle={atualizarTiposSelecionados}
-      >
-        Iniciação científica
-      </Item>
-    </div>
+    <ToggleGroup.Root
+      type="multiple"
+      defaultValue={tiposSelecionados}
+      onValueChange={atualizarTiposSelecionados}
+      className="shrink-0 flex items-center justify-center gap-1.25"
+    >
+      <Item value="Extensao">Extensão</Item>
+      <Item value="IniciacaoCientifica">Iniciação científica</Item>
+    </ToggleGroup.Root>
   );
 }
