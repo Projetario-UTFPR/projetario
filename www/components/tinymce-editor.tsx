@@ -66,10 +66,6 @@ export function TinyMCEEditor({ erro, tema, ...props }: TinyMCEEditorProps) {
     <div className="conteudo-editor">
       {erro && <Form.AlertaDeErro>{erro}</Form.AlertaDeErro>}
 
-      {/** biome-ignore lint/nursery/useUniqueElementIds: \
-       * editor é um id único e será utilizado para estilizar \
-       * o editor no `app.css`
-       */}
       <Editor
         {...props}
         plugins={["code", "lists", "image", "anchor", "link", "quickbars", "autoresize", "table"]}
