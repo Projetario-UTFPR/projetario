@@ -27,15 +27,17 @@ type Props = {
   initialValue?: string;
   erro?: string;
   atualizarConteudo?: (conteudo: string) => void;
+  value?: string;
 };
 
 export const Editor = memo(
-  ({ tema = "claro", label, required, erro, atualizarConteudo, initialValue }: Props) => {
+  ({ tema = "claro", label, required, erro, atualizarConteudo, initialValue, value }: Props) => {
     return (
       <div className="flex flex-col gap-2">
         <InputLabelSpan required={required}>{label}</InputLabelSpan>
         <Suspense fallback={<EditorSkeleton />}>
           <LazyTinyMceEditor
+            value={value}
             tema={tema}
             erro={erro}
             initialValue={initialValue}
