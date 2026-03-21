@@ -75,8 +75,8 @@ impl ControllerAutenticacao {
             );
         }
 
-        let login = if body.email.is_some() {
-            TipoDeLogin::EmailInstitucional(body.email.as_ref().unwrap())
+        let login = if let Some(email) = body.email.as_deref() {
+            TipoDeLogin::EmailInstitucional(email)
         } else {
             TipoDeLogin::RegistroDeAluno(body.registro_aluno.as_ref().unwrap())
         };

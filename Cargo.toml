@@ -17,17 +17,17 @@ comum.path = "comum"
 dominio.path = "dominio"
 inertia-sessions.path = "sessions"
 config.path = "config"
-actix-files = "0.6.6"
-actix-session = "0.10.1"
-actix-web = "4.11.0"
-anyhow = "1.0.98"
-async-trait = "0.1.88"
-inertia-rust = { version = "2.4.3", features = [
+actix-files = "0.6.10"
+actix-session = "0.11.0"
+actix-web = "4.13.0"
+anyhow = "1.0.102"
+async-trait = "0.1.89"
+inertia-rust = { version = "2.4.6", features = [
     "actix",
     "vite-hbs-template-resolver",
     "actix-validator",
 ] }
-tokio = { version = "1.45.0", features = [
+tokio = { version = "1.50.0", features = [
     "fs",
     "io-std",
     "rt",
@@ -36,17 +36,17 @@ tokio = { version = "1.45.0", features = [
 ] }
 vite-rust = "0.2"
 log = "0.4.27"
-serde = "1.0.219"
-serde_json = "1.0.140"
-rand = "0.9.1"
-chrono = { version = "0.4.41", features = ["serde"] }
+serde = "1.0.228"
+serde_json = "1.0.149"
+rand = "0.10.0"
+chrono = { version = "0.4.44", features = ["serde"] }
 pretty_assertions = "1.4.1"
 dotenvy = "0.15.7"
 env_logger = "0.11.8"
-futures-util = "0.3.31"
-thiserror = "2.0.12"
-rstest = "0.25.0"
-sqlx = { version = "0.8.5", features = [
+futures-util = "0.3.32"
+thiserror = "2.0.18"
+rstest = "0.26.1"
+sqlx = { version = "0.8.6", features = [
     "runtime-tokio",
     "tls-rustls-ring-native-roots",
     "postgres",
@@ -57,8 +57,12 @@ sqlx = { version = "0.8.5", features = [
 ] }
 pbkdf2 = { version = "0.12", features = ["simple"] }
 base64 = { version = "0.22", features = ["std"] }
-uuid = { version = "1.17.0", features = ["v4", "serde"] }
-url = "2.5.4"
+uuid = { version = "1.22.0", features = ["v4", "serde"] }
+url = "2.5.8"
+derive_builder = "0.20.2"
+proptest = "1.10.0"
+proptest-arbitrary-interop = "0.1.0"
+fake = { version = "4.4.0", features = ["derive", "chrono", "url"] }
 
 [dependencies]
 dominio.workspace = true

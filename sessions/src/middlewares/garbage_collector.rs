@@ -1,10 +1,10 @@
-use actix_web::Error;
-use actix_web::dev::{self, Service, ServiceRequest, ServiceResponse, Transform};
-use futures_util::future::LocalBoxFuture;
-use rand::Rng;
 use std::future::{Ready, ready};
 
+use actix_web::Error;
+use actix_web::dev::{self, Service, ServiceRequest, ServiceResponse, Transform};
 use config::app::AppConfig;
+use futures_util::future::LocalBoxFuture;
+use rand::RngExt as _;
 
 // the file_session.rs file from this GIST
 use super::super::file_session::clean_expired_sessions;

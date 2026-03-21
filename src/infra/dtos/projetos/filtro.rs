@@ -40,13 +40,13 @@ impl Validate for FiltroDto {
             erros.add("filtro", erro);
         }
 
-        if let Some(id_coordenador) = &self.coordenacao {
-            if Uuid::try_parse(id_coordenador).is_err() {
-                let erro = ValidationError::new("uuid_invalido").with_message(Cow::Borrowed(
-                    "Para filtrar projetos pelo coordenador, é necessário inserir um UUID válido.",
-                ));
-                erros.add("coordenacao", erro);
-            }
+        if let Some(id_coordenador) = &self.coordenacao
+            && Uuid::try_parse(id_coordenador).is_err()
+        {
+            let erro = ValidationError::new("uuid_invalido").with_message(Cow::Borrowed(
+                "Para filtrar projetos pelo coordenador, é necessário inserir um UUID válido.",
+            ));
+            erros.add("coordenacao", erro);
         }
 
         Ok(())
