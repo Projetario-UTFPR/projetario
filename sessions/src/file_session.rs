@@ -1,9 +1,17 @@
+use std::collections::HashMap;
+use std::io;
+use std::str::FromStr;
+
 use actix_session::storage::{
-    LoadError, SaveError, SessionKey, SessionStore, UpdateError, generate_session_key,
+    LoadError,
+    SaveError,
+    SessionKey,
+    SessionStore,
+    UpdateError,
+    generate_session_key,
 };
 use chrono::{DateTime, Duration, Utc};
 use config::app::AppConfig;
-use std::{collections::HashMap, io, str::FromStr};
 use tokio::fs::{DirBuilder, DirEntry, File, read_dir, read_to_string, remove_file};
 use tokio::io::{AsyncReadExt, AsyncSeekExt, AsyncWriteExt};
 
@@ -23,9 +31,7 @@ impl Default for FileSessionStore<'_> {
 
 #[cfg(test)]
 impl<'a> FileSessionStore<'a> {
-    fn new(sessions_directory: &'a str) -> Self {
-        Self { sessions_directory }
-    }
+    fn new(sessions_directory: &'a str) -> Self { Self { sessions_directory } }
 }
 
 impl SessionStore for FileSessionStore<'_> {
@@ -204,9 +210,7 @@ impl SessionStore for FileSessionStore<'_> {
 }
 
 impl FileSessionStore<'_> {
-    pub fn get_sessions_dir(&self) -> &str {
-        self.sessions_directory
-    }
+    pub fn get_sessions_dir(&self) -> &str { self.sessions_directory }
 
     pub fn get_session_path(&self, session_key: &str) -> String {
         format!("{}/{}.json", self.get_sessions_dir(), session_key)
@@ -230,18 +234,17 @@ impl FileSessionStore<'_> {
     }
 
     async fn maybe_create_session_directory(&self) {
-        if !std::path::Path::new(self.get_sessions_dir()).is_dir() {
-            if let Err(err) = DirBuilder::new()
+        if !std::path::Path::new(self.get_sessions_dir()).is_dir()
+            && let Err(err) = DirBuilder::new()
                 .recursive(true)
                 .create(self.get_sessions_dir())
                 .await
-            {
-                log::error!(
-                    "Session storage does not exist and couldn't be created. Consider creating the directory '{}' yourself. Error: {}",
-                    self.get_sessions_dir(),
-                    err
-                );
-            }
+        {
+            log::error!(
+                "Session storage does not exist and couldn't be created. Consider creating the directory '{}' yourself. Error: {}",
+                self.get_sessions_dir(),
+                err
+            );
         }
     }
 
@@ -327,19 +330,18 @@ async fn file_should_be_cleaned(file: &DirEntry) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use crate::test_utils::loaded_options;
+    use std::collections::HashMap;
 
-    use super::{FileSessionStore, inner_clean_expired_sessions};
     use actix_session::storage::{LoadError, SessionStore, generate_session_key};
     use actix_web::cookie::time;
     use config::app::AppConfig;
     use inertia_rust::hashmap;
     use rstest::rstest;
-    use std::collections::HashMap;
-    use tokio::{
-        fs::{File, read_dir, remove_dir_all},
-        io::AsyncWriteExt,
-    };
+    use tokio::fs::{File, read_dir, remove_dir_all};
+    use tokio::io::AsyncWriteExt;
+
+    use super::{FileSessionStore, inner_clean_expired_sessions};
+    use crate::test_utils::loaded_options;
 
     async fn write_session(session_key: &str, content: &str, store: &FileSessionStore<'_>) {
         store.maybe_create_session_directory().await;
