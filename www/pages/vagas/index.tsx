@@ -59,7 +59,7 @@ export default function ListarVagas() {
     const entries = Object.entries(filters).filter(nonNull) as string[][];
     const searchParams = new URLSearchParams(entries).toString();
     router.get(`?${searchParams}`, undefined, { preserveState: true, replace: true });
-  }, 500);
+  }, 300);
 
   const setFilters = (_filters: Partial<typeof filters>) => {
     _setFilters(_filters);
