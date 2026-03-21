@@ -8,14 +8,6 @@ import "tinymce/themes/silver/theme";
 // Toolbar icons
 import "tinymce/icons/default";
 
-// Editor styles
-import "tinymce/skins/ui/oxide/skin";
-import "tinymce/skins/ui/oxide-dark/skin";
-
-// The default content CSS can be changed or replaced with appropriate CSS for the editor content.
-// import "tinymce/skins/content/default/content.js";
-// import "tinymce/skins/content/dark/content.js";
-//
 // importing the plugin js.
 import "tinymce/plugins/emoticons/js/emojis";
 import "tinymce/plugins/advlist";
@@ -47,9 +39,6 @@ import "tinymce/plugins/table";
 import "tinymce/plugins/visualblocks";
 import "tinymce/plugins/visualchars";
 import "tinymce/plugins/wordcount";
-/* content UI CSS is required */
-import "tinymce/skins/ui/oxide/content.inline";
-import "tinymce/skins/ui/oxide/content.inline.min.css";
 
 import { Editor, type IAllProps } from "@tinymce/tinymce-react";
 import clsx from "clsx";
@@ -65,11 +54,14 @@ export type TinyMCEEditorProps = Omit<IAllProps, "licenseKey"> & {
 };
 
 export function TinyMCEEditor({ erro, tema, editorRef, ...props }: TinyMCEEditorProps) {
+  const skin = tema === "escuro" ? "oxide-dark" : "oxide";
+
   return (
     <div className="conteudo-editor">
       {erro && <Form.AlertaDeErro>{erro}</Form.AlertaDeErro>}
 
       <Editor
+        key={`tinymce-editor-skin-${skin}`}
         {...props}
         plugins={["code", "lists", "image", "anchor", "link", "quickbars", "autoresize", "table"]}
         toolbar={[
@@ -104,7 +96,8 @@ export function TinyMCEEditor({ erro, tema, editorRef, ...props }: TinyMCEEditor
         ]}
         id="editor"
         init={{
-          // skin_url: "default",
+          skin,
+          base_url: "/bundle/tinymce",
           autoresize_bottom_margin: 0,
           language: "pt_BR",
           language_url: "/tiny-mce/langs/pt_BR.js",
@@ -143,7 +136,6 @@ export function TinyMCEEditor({ erro, tema, editorRef, ...props }: TinyMCEEditor
           valid_children: "+body[style]",
           extended_valid_elements: "script[src|async|defer|type|charset],style,div[*],center",
           custom_elements: "style,script,center,div",
-          skin: tema === "escuro" ? "oxide-dark" : "oxide",
           setup: (editor) => {
             if (editorRef) editorRef.current = editor;
           },
