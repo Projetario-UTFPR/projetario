@@ -1,9 +1,11 @@
 import * as S from "@radix-ui/react-select";
 import clsx from "clsx";
 
-type Props = S.SelectItemProps;
+type Props = S.SelectItemProps & {
+  containerClassName?: string;
+};
 
-export function SelectItem({ className, children, ...props }: Props) {
+export function SelectItem({ className, containerClassName, children, ...props }: Props) {
   return (
     <S.Item
       {...props}
@@ -16,11 +18,11 @@ export function SelectItem({ className, children, ...props }: Props) {
         "active:before:bg-yellow-500 focus:before:bg-yellow-500/50 focus:before:inset-0",
         "data-[state=checked]:before:bg-yellow-500 data-[state=checked]:before:inset-0",
         "dark:active:text-black data-[state=checked]:text-black",
-        className,
+        containerClassName,
       )}
     >
       <S.ItemText>
-        <span className="block relative z-10 cursor-default">{children}</span>
+        <span className={clsx("flex items-center relative z-10 cursor-default", className)}>{children}</span>
       </S.ItemText>
     </S.Item>
   );
