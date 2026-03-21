@@ -19,10 +19,8 @@ export function SelectItem({ className, children, ...props }: Props) {
         className,
       )}
     >
-      <S.ItemText asChild>
-        <div>
-          <span className="block relative z-10 cursor-default">{children}</span>
-        </div>
+      <S.ItemText>
+        <span className="block relative z-10 cursor-default">{children}</span>
       </S.ItemText>
     </S.Item>
   );
