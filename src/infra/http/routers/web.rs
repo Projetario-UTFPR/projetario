@@ -1,3 +1,5 @@
+use inertia_rust::InertiaService;
+
 use crate::infra::http::RouterRegistrable;
 use crate::infra::http::controllers::acoes::AcoesControllersGroup;
 use crate::infra::http::controllers::autenticacao::ControllerAutenticacao;
@@ -7,7 +9,8 @@ pub struct WebRouter;
 
 impl RouterRegistrable for WebRouter {
     fn register(cfg: &mut actix_web::web::ServiceConfig) {
-        cfg.configure(ControllerAutenticacao::register)
+        cfg.inertia_route("/", "index")
+            .configure(ControllerAutenticacao::register)
             .configure(ProfessoresControllersGroup::register)
             .configure(AcoesControllersGroup::register);
     }
