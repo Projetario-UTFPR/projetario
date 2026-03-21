@@ -30,10 +30,20 @@ export function Footer() {
             <div>
               <h6 className="mb-2 uppercase">Redes do Projetário</h6>
               <div className="flex gap-2">
-                <a target="_blank" referrerPolicy="no-referrer" href={RedesSociais.projetario.github}>
+                <a
+                  target="_blank"
+                  referrerPolicy="no-referrer"
+                  href={RedesSociais.projetario.github}
+                  rel="noopener"
+                >
                   <GithubLogoIcon size={24} weight="fill" />
                 </a>
-                <a target="_blank" referrerPolicy="no-referrer" href={RedesSociais.projetario.instagram}>
+                <a
+                  target="_blank"
+                  referrerPolicy="no-referrer"
+                  href={RedesSociais.projetario.instagram}
+                  rel="noopener"
+                >
                   <InstagramLogoIcon size={24} weight="fill" />
                 </a>
               </div>
@@ -42,13 +52,23 @@ export function Footer() {
             <div>
               <h6 className="mb-2 uppercase">Redes da UTFPR</h6>
               <div className="flex gap-2">
-                <a target="_blank" referrerPolicy="no-referrer" href={RedesSociais.utfpr.instagram}>
+                <a
+                  target="_blank"
+                  referrerPolicy="no-referrer"
+                  href={RedesSociais.utfpr.instagram}
+                  rel="noopener"
+                >
                   <InstagramLogoIcon size={24} weight="fill" />
                 </a>
-                <a target="_blank" referrerPolicy="no-referrer" href={RedesSociais.utfpr.linkedin}>
+                <a
+                  target="_blank"
+                  referrerPolicy="no-referrer"
+                  href={RedesSociais.utfpr.linkedin}
+                  rel="noopener"
+                >
                   <LinkedinLogoIcon size={24} weight="fill" />
                 </a>
-                <a target="_blank" referrerPolicy="no-referrer" href={RedesSociais.utfpr.x}>
+                <a target="_blank" referrerPolicy="no-referrer" href={RedesSociais.utfpr.x} rel="noopener">
                   <XLogoIcon size={24} weight="fill" />
                 </a>
               </div>

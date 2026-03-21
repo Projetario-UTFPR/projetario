@@ -12,11 +12,12 @@ function onSuccess(page: Page<PageProps>) {
   atualizarHtmlComNovoTema(page.props.temaPreferido, page.props.temaSistema);
 }
 
+const only = ["temaSistema", "temaPreferido"];
+
 export function BotaoDeTema() {
   const [processando, coloqueProcessando] = useState(false);
   const tema = usePage().props.temaPreferido;
   const IconeTema = icone(tema);
-  const only = ["temaSistema", "temaPreferido"];
 
   const alterarTema = () => {
     router.post("/acoes/tema/proximo", undefined, {
