@@ -20,11 +20,11 @@ export function CardDePreviewDeVaga({ vaga, className, direcao = "vertical" }: C
       <img
         src={vaga.imagem}
         alt={`Capa do projeto ${vaga.titulo}`}
-        className="rounded-2xl select-none flex-1/3"
+        className="rounded-2xl select-none object-cover w-full"
         draggable={false}
       />
 
-      <div className="flex flex-col gap-6 flex-2/3">
+      <div className="flex flex-col gap-6">
         <div>
           <span className="text-xl font-medium block">{vaga.titulo}</span>
 
