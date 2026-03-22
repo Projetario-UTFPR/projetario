@@ -3,6 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import laravel from "laravel-vite-plugin";
 import type { UserConfig } from "vite";
+import { viteStaticCopy } from "vite-plugin-static-copy";
 import tsconfig from "./tsconfig.json";
 
 export const tsconfigPathAliases = Object.fromEntries(
@@ -33,6 +34,9 @@ export default {
       buildDirectory: "bundle",
       ssrOutputDirectory: "dist/ssr",
       ssr: "www/ssr.tsx",
+    }),
+    viteStaticCopy({
+      targets: [{ src: "node_modules/tinymce/skins", dest: "tinymce" }],
     }),
   ],
   publicDir: "/public",
