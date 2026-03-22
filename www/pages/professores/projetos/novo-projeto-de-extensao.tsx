@@ -18,12 +18,19 @@ type FormData = {
 export default function NovoProjetoDeExtensao() {
   const props = usePage().props;
   const tema = resolvaTema(props.temaPreferido, props.temaSistema);
-  const { post, data, setData, errors, processing } = useForm<FormData>();
+  const { submit, data, setData, errors, processing } = useForm<FormData>(
+    "post",
+    "/professores/projetos/extensao/criar_e_associar",
+    {
+      descricao: "<p>Descreva o projeto em detalhes.",
+      titulo: "",
+    },
+  );
 
   const handleSubmit: SubmitEventHandler = (event) => {
     event.preventDefault();
 
-    post("/professores/projetos/extensao/criar_e_associar", {
+    submit({
       onSuccess: (page) => {
         const mensagem = page.props.flash?.mensagemSucesso ?? "Projeto criado com sucesso!";
 
@@ -74,7 +81,7 @@ export default function NovoProjetoDeExtensao() {
               tema={tema}
               label="Conteúdo"
               erro={errors.descricao}
-              initialValue="Descreva o projeto em detalhes."
+              value={data.descricao}
               atualizarConteudo={(descricao) => setData({ ...data, descricao })}
             />
 
